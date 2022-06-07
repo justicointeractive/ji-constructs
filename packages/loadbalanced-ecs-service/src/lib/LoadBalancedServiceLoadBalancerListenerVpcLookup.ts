@@ -14,7 +14,7 @@ export class LoadBalancedServiceLoadBalancerListenerVpcLookup extends Construct 
   vpc: IVpc;
   listener: IApplicationListener;
 
-  constructor(scope: Construct, id: string, listenerArn: string) {
+  constructor(scope: Construct, id: string, public listenerArn: string) {
     super(scope, id);
 
     this.loadBalancer = ApplicationLoadBalancer.fromLookup(

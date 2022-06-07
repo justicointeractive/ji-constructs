@@ -56,7 +56,7 @@ export class LoadBalancedService extends Construct {
       }
     ));
 
-    const { loadBalancer, listener, vpc } =
+    const { loadBalancer, listener, vpc, listenerArn } =
       typeof loadBalancerListenerArnOrLookup === 'string'
         ? new LoadBalancedServiceLoadBalancerListenerVpcLookup(
             this,
@@ -99,7 +99,7 @@ export class LoadBalancedService extends Construct {
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
-      priority: findPrioritySync(listener.listenerArn, domainName),
+      priority: findPrioritySync(listenerArn, domainName),
       conditions: [ListenerCondition.hostHeaders([domainName])],
       action: ListenerAction.forward([targetGroup]),
     });
