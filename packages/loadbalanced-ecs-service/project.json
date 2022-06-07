@@ -1,0 +1,48 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/loadbalanced-ecs-service/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/loadbalanced-ecs-service",
+        "tsConfig": "packages/loadbalanced-ecs-service/tsconfig.lib.json",
+        "packageJson": "packages/loadbalanced-ecs-service/package.json",
+        "main": "packages/loadbalanced-ecs-service/src/index.ts",
+        "assets": ["packages/loadbalanced-ecs-service/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/loadbalanced-ecs-service/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/loadbalanced-ecs-service"],
+      "options": {
+        "jestConfig": "packages/loadbalanced-ecs-service/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["${projectName}:deploy"]
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": [],
+  "root": "packages/loadbalanced-ecs-service"
+}

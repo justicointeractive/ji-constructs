@@ -13,8 +13,16 @@
     "lib": ["es2017", "dom"],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
+    "strict": true,
     "baseUrl": ".",
-    "paths": {}
+    "paths": {
+      "@ji-constructs/elb-rule-priority": [
+        "packages/elb-rule-priority/src/index.ts"
+      ],
+      "@ji-constructs/loadbalanced-ecs-service": [
+        "packages/loadbalanced-ecs-service/src/index.ts"
+      ]
+    }
   },
   "exclude": ["node_modules", "tmp"]
 }
