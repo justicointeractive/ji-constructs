@@ -17,10 +17,13 @@ if (require.main === module) {
 }
 
 export function findPrioritySync(listenerArn: string, hostname: string) {
-  const scriptPath = path.join(__dirname, './src/index.js');
-  const result = spawnSync(scriptPath, [listenerArn, hostname], {
+  const scriptPath = path.join(__dirname, './index.js');
+  const result = spawnSync('node', [scriptPath, listenerArn, hostname], {
     encoding: 'utf8',
   });
+  if (result.error != null) {
+    throw result.error;
+  }
   const asNumber = Number(result.stdout.trim());
   if (isNaN(asNumber) || asNumber === 0) {
     throw new Error(`invalid result: ${result.stdout}`);
