@@ -2,7 +2,7 @@ import { findPrioritySync } from '@ji-constructs/elb-rule-priority';
 import * as assert from 'assert';
 import { Duration } from 'aws-cdk-lib';
 import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
-import { IVpc, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { Cluster, Ec2Service, ICluster } from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationListener,
@@ -81,6 +81,8 @@ export class LoadBalancedService extends cdk.Construct {
             ),
           })
         : clusterOrClusterName);
+
+    cluster.connections.allowFrom(loadBalancer.connections, Port.allTcp());
 
     const targetGroup = new ApplicationTargetGroup(this, 'TargetGroup', {
       vpc,

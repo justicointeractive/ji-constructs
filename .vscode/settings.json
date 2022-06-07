@@ -1,8 +1,9 @@
 {
-    "workbench.colorCustomizations": {
-        "editorCursor.foreground": "#2684ff",
-        "activityBar.background": "#340987",
-        "titleBar.activeBackground": "#490DBD",
-        "titleBar.activeForeground": "#FBFAFF"
-    }
+  "workbench.colorCustomizations": {
+    "editorCursor.foreground": "#2684ff",
+    "activityBar.background": "#340987",
+    "titleBar.activeBackground": "#490DBD",
+    "titleBar.activeForeground": "#FBFAFF"
+  },
+  "conventionalCommits.scopes": ["loadbalanced-ecs-service"]
 }
