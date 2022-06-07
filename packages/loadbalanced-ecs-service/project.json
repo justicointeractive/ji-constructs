@@ -33,7 +33,7 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
-        "postTargets": ["${projectName}:deploy"]
+        "postTargets": ["loadbalanced-ecs-service:deploy"]
       }
     },
     "deploy": {
