@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.1.1...loadbalanced-ecs-service-0.2.0) (2022-06-07)
+
+
+### Features
+
+* **loadbalanced-ecs-service:** make it easier to integrate an existing vpc with a new cluster ([826e773](https://github.com/justicointeractive/ji-constructs/commit/826e773dec581784b0e31dbb75b5a3c839e9ab73))
+
 ### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.1.0...loadbalanced-ecs-service-0.1.1) (2022-06-07)
 
 
