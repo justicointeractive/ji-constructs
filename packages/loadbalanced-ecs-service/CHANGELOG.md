@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.2.0...loadbalanced-ecs-service-0.2.1) (2022-06-07)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** pass listener arn through lookup as a string ([fa6e68b](https://github.com/justicointeractive/ji-constructs/commit/fa6e68b992fe3713bec8acd4df504e8dade310ff))
+
 ## [0.2.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.1.1...loadbalanced-ecs-service-0.2.0) (2022-06-07)
 
 
