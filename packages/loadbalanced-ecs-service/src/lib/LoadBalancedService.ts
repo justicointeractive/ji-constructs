@@ -23,7 +23,7 @@ import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 import * as cdk from 'constructs';
 import { Construct } from 'constructs';
 import { domainNameToZoneName } from './domainNameToZoneName';
-import { LoadBalancedServiceLoadBalancerListenerVpcLookup } from './LoadBalancedServiceLoadBalancerListenerVpcLookup';
+import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListenerLookup';
 
 export class LoadBalancedService extends Construct {
   certificate: DnsValidatedCertificate;
@@ -43,8 +43,6 @@ export class LoadBalancedService extends Construct {
       createRoute53ARecord = true,
       serviceFactory,
       domainName,
-      clusterOrClusterName,
-      loadBalancerListenerArnOrLookup,
       route53ZoneName,
     } = options;
 
@@ -57,26 +55,26 @@ export class LoadBalancedService extends Construct {
     ));
 
     const { loadBalancer, listener, vpc, listenerArn } =
-      typeof loadBalancerListenerArnOrLookup === 'string'
-        ? new LoadBalancedServiceLoadBalancerListenerVpcLookup(
+      typeof options.listener === 'string'
+        ? new LoadBalancedServiceListenerLookup(
             this,
             'LBLookup',
-            loadBalancerListenerArnOrLookup
+            options.listener
           )
-        : loadBalancerListenerArnOrLookup;
+        : options.listener;
 
     this.loadBalancer = loadBalancer;
 
     const cluster = (this.cluster =
-      'name' in clusterOrClusterName
+      'name' in options.cluster
         ? Cluster.fromClusterAttributes(this, 'ECSCluster', {
             vpc,
-            clusterName: clusterOrClusterName.name,
-            securityGroups: clusterOrClusterName.securityGroupIds.map((id, i) =>
+            clusterName: options.cluster.name,
+            securityGroups: options.cluster.securityGroupIds.map((id, i) =>
               SecurityGroup.fromLookupById(this, `SecurityGroup${i + 1}`, id)
             ),
           })
-        : clusterOrClusterName);
+        : options.cluster);
 
     cluster.connections.allowFrom(loadBalancer.connections, Port.allTcp());
 
@@ -129,11 +127,9 @@ export class LoadBalancedService extends Construct {
 
 export interface LoadBalancedServiceContext {
   domainName: string;
-  loadBalancerListenerArnOrLookup:
-    | string
-    | LoadBalancedServiceLoadBalancerListenerVpcLookup;
+  listener: string | LoadBalancedServiceListenerLookup;
+  cluster: ICluster | { name: string; securityGroupIds: string[] };
   route53ZoneName?: string;
-  clusterOrClusterName: ICluster | { name: string; securityGroupIds: string[] };
 }
 export interface LoadBalancedServiceDefaults {
   createRoute53ARecord?: boolean;

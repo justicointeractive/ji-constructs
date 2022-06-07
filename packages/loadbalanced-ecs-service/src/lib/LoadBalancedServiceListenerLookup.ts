@@ -9,7 +9,7 @@ import {
 import { Construct } from 'constructs';
 import { listenerArnToAlbArn } from './listenerArnToAlbArn';
 
-export class LoadBalancedServiceLoadBalancerListenerVpcLookup extends Construct {
+export class LoadBalancedServiceListenerLookup extends Construct {
   loadBalancer: IApplicationLoadBalancer;
   vpc: IVpc;
   listener: IApplicationListener;

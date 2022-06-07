@@ -1,2 +1,2 @@
 export * from './lib/LoadBalancedService';
-export * from './lib/LoadBalancedServiceLoadBalancerListenerVpcLookup';
+export * from './lib/LoadBalancedServiceListenerLookup';
