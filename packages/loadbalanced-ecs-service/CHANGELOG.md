@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.2.3...loadbalanced-ecs-service-0.3.0) (2022-06-08)
+
+
+### Features
+
+* **loadbalanced-ecs-service:** provide scope construct to service factory ([85f6905](https://github.com/justicointeractive/ji-constructs/commit/85f6905367a0360ea8222ae672aabe9b9736d296))
+
 ### [0.2.3](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.2.2...loadbalanced-ecs-service-0.2.3) (2022-06-07)
 
 ### Dependency Updates
