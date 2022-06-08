@@ -115,7 +115,7 @@ export class LoadBalancedService extends Construct {
       });
     }
 
-    const service = serviceFactory(cluster, {
+    const service = serviceFactory(this, cluster, {
       vpc,
       targetGroup,
       hostedZone: domainZone,
@@ -138,6 +138,7 @@ export interface LoadBalancedServiceDefaults {
 
 export interface LoadBalancedServiceFactories {
   serviceFactory: (
+    scope: Construct,
     cluster: ICluster,
     extras: {
       vpc: IVpc;
