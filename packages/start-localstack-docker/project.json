@@ -28,7 +28,21 @@
         "jestConfig": "packages/start-localstack-docker/jest.config.ts",
         "passWithNoTests": true
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["start-localstack-docker:deploy"]
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
-  "tags": []
+  "tags": [],
+  "root": "packages/start-localstack-docker"
 }

@@ -22,7 +22,7 @@
       "@ji-constructs/loadbalanced-ecs-service": [
         "packages/loadbalanced-ecs-service/src/index.ts"
       ],
-      "@ji-contructs/start-localstack-docker": [
+      "@ji-constructs/start-localstack-docker": [
         "packages/start-localstack-docker/src/index.ts"
       ]
     }
