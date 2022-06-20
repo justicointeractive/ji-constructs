@@ -1,0 +1,34 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/start-localstack-docker/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/start-localstack-docker",
+        "tsConfig": "packages/start-localstack-docker/tsconfig.lib.json",
+        "packageJson": "packages/start-localstack-docker/package.json",
+        "main": "packages/start-localstack-docker/src/index.ts",
+        "assets": ["packages/start-localstack-docker/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/start-localstack-docker/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/start-localstack-docker"],
+      "options": {
+        "jestConfig": "packages/start-localstack-docker/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
