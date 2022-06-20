@@ -1,5 +1,7 @@
 jest.mock('child_process');
+jest.mock('wait-on');
 
+import * as waitOn from 'wait-on';
 import { mockSpawn } from '../test/mockSpawn';
 import { startLocalstackDocker } from './start-localstack-docker';
 
@@ -9,6 +11,7 @@ beforeEach(() => {
 
 describe('startLocalstackDocker', () => {
   it('should start and stop localstack', async () => {
+    (waitOn as jest.Mock).mockResolvedValue(void 0);
     const allSpawns = mockSpawn(
       {
         command:

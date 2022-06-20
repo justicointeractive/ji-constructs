@@ -1,4 +1,5 @@
 import { exec } from 'child_process';
+import * as waitOn from 'wait-on';
 
 export async function startLocalstackDocker(options: {
   services?: string[];
@@ -24,7 +25,13 @@ export async function startLocalstackDocker(options: {
   );
 
   const dynamodbContainerId = execResult.stdout;
-  console.log({ dynamodbContainerId });
+
+  await waitOn({
+    resources: [`http://localhost:${edgePort}`],
+    validateStatus: (status) => {
+      return status === 404;
+    },
+  });
 
   return async () => {
     await execPromise(`docker stop ${dynamodbContainerId}`);
