@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.2.0...start-localstack-docker-0.3.0) (2022-06-21)
+
+
+### Features
+
+* **start-localstack-docker:** export options type ([a1209b7](https://github.com/justicointeractive/ji-constructs/commit/a1209b7c323cb5b4f7f561eab511ce8dcf8ae5fe))
+
 ## 0.1.0 (2022-06-21)
 
 
