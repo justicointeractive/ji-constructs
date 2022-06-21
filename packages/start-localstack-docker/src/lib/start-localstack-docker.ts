@@ -1,10 +1,14 @@
 import { exec } from 'child_process';
 import * as waitOn from 'wait-on';
 
-export async function startLocalstackDocker(options: {
+export type StartLocalstackDockerOptions = {
   services?: string[];
   edgePort?: number;
-}): Promise<() => Promise<void>> {
+};
+
+export async function startLocalstackDocker(
+  options: StartLocalstackDockerOptions
+): Promise<() => Promise<void>> {
   const envVars: Record<string, string> = {};
   const ports: Record<string, string> = {};
 

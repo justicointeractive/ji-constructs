@@ -7,6 +7,7 @@
   },
   "conventionalCommits.scopes": [
     "loadbalanced-ecs-service",
-    "elb-rule-priority"
+    "elb-rule-priority",
+    "start-localstack-docker"
   ]
 }
