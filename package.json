@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "release": "nx run-many --all --target=version"
+    "release": "nx run-many --all --target=version && git push --follow-tags"
   },
   "private": true,
   "dependencies": {
