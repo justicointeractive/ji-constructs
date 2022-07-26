@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.3.0...start-localstack-docker-0.4.0) (2022-07-26)
+
+
+### Features
+
+* pass a timeout through to waitOn ([6c93431](https://github.com/justicointeractive/ji-constructs/commit/6c934315c146f4af2238e846d53bcf9e7b282d81))
+
 ## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.2.0...start-localstack-docker-0.3.0) (2022-06-21)
 
 
