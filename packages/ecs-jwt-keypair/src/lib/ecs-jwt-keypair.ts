@@ -16,7 +16,7 @@ export class EcsJwtKeyPair extends Construct {
     publicKey: EcsSecret;
   };
 
-  constructor(scope: Construct, id: string, props: { keyName?: string }) {
+  constructor(scope: Construct, id: string, props: { keyName?: string } = {}) {
     super(scope, id);
 
     this.keyPair = new KeyPair(this, 'KeyPair', {
