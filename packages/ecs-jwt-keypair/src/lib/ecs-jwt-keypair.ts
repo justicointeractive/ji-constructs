@@ -1,5 +1,5 @@
 import { Secret as EcsSecret } from 'aws-cdk-lib/aws-ecs';
-import { Role } from 'aws-cdk-lib/aws-iam';
+import { IRole } from 'aws-cdk-lib/aws-iam';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { KeyPair, PublicKeyFormat } from 'cdk-ec2-key-pair';
 import { Construct } from 'constructs';
@@ -45,7 +45,7 @@ export class EcsJwtKeyPair extends Construct {
     };
   }
 
-  grantRead(taskRole: Role) {
+  grantRead(taskRole: IRole) {
     this.keyPair.grantReadOnPrivateKey(taskRole);
     this.keyPair.grantReadOnPublicKey(taskRole);
   }
