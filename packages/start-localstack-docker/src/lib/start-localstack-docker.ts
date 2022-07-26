@@ -4,6 +4,7 @@ import * as waitOn from 'wait-on';
 export type StartLocalstackDockerOptions = {
   services?: string[];
   edgePort?: number;
+  timeout?: number;
 };
 
 export async function startLocalstackDocker(
@@ -35,6 +36,7 @@ export async function startLocalstackDocker(
     validateStatus: (status) => {
       return status === 404;
     },
+    timeout: options.timeout,
   });
 
   return async () => {
