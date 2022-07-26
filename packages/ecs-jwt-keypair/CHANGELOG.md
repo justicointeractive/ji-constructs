@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.1...ecs-jwt-keypair-0.1.2) (2022-07-26)
+
+
+### Bug Fixes
+
+* add method to grant read ([cfef434](https://github.com/justicointeractive/ji-constructs/commit/cfef434c99a9abe9e4b3b6f3a0e60ff28a9e5dfb))
+
 ### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.0...ecs-jwt-keypair-0.1.1) (2022-07-26)
 
 
