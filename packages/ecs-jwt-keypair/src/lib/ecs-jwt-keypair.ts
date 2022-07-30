@@ -1,3 +1,4 @@
+import { Stack } from 'aws-cdk-lib';
 import { Secret as EcsSecret } from 'aws-cdk-lib/aws-ecs';
 import { IRole } from 'aws-cdk-lib/aws-iam';
 import { ISecret, Secret } from 'aws-cdk-lib/aws-secretsmanager';
@@ -20,7 +21,13 @@ export class EcsJwtKeyPair extends Construct {
   constructor(scope: Construct, id: string, props: { keyName?: string } = {}) {
     super(scope, id);
 
+    const stackName = Stack.of(this).stackName;
+    const resourcePrefix =
+      stackName.length > 30
+        ? stackName.slice(0, 15) + stackName.slice(-15)
+        : stackName;
     this.keyPair = new KeyPair(this, 'KeyPair', {
+      resourcePrefix,
       name: props.keyName ?? this.node.addr,
       storePublicKey: true,
       publicKeyFormat: PublicKeyFormat.PEM,
