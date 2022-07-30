@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.4](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.3...ecs-jwt-keypair-0.1.4) (2022-07-30)
+
+
+### Bug Fixes
+
+* fewer characters in key pair resource prefix ([34be5de](https://github.com/justicointeractive/ji-constructs/commit/34be5de16e3ad3dad3f892574fd477cc4b68d945))
+
 ### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.2...ecs-jwt-keypair-0.1.3) (2022-07-26)
 
 
