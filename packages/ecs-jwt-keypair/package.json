@@ -1,4 +1,11 @@
 {
   "name": "@ji-constructs/ecs-jwt-keypair",
-  "version": "0.1.4"
+  "version": "0.1.4",
+  "keywords": [
+    "aws-cdk",
+    "cdk",
+    "jwt",
+    "jsonwebtoken",
+    "rs256"
+  ]
 }
