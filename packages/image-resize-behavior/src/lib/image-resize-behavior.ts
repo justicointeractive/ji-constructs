@@ -20,7 +20,7 @@ import { Bucket, BucketProps } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import path = require('path');
 
-type ImageResizeBehaviorProps = {
+export type ImageResizeBehaviorProps = {
   createDistribution?: boolean;
   s3BucketOrProps?: Bucket | BucketProps;
   s3OriginProps?: Partial<S3OriginProps>;
