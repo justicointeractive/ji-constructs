@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.3](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.2...image-resize-behavior-0.3.3) (2022-08-15)
+
+
+### Bug Fixes
+
+* more dependency tracking ([35b1fb6](https://github.com/justicointeractive/ji-constructs/commit/35b1fb6ac875496837e8f57a3a35c3f5281679cd))
+
 ### [0.3.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.1...image-resize-behavior-0.3.2) (2022-08-15)
 
 ### [0.3.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.0...image-resize-behavior-0.3.1) (2022-08-15)
