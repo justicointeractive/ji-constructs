@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.0...image-resize-behavior-0.3.1) (2022-08-15)
+
+
+### Bug Fixes
+
+* path to embedded lambda js ([7122859](https://github.com/justicointeractive/ji-constructs/commit/7122859f382a657949f79d49473359f55dab28e3))
+
 ## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.2.0...image-resize-behavior-0.3.0) (2022-08-15)
 
 
