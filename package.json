@@ -5,7 +5,8 @@
   "scripts": {
     "prepare": "husky install",
     "release": "nx run-many --all --target=version && git push --follow-tags",
-    "build": "nx run-many --all --target=build"
+    "build": "nx run-many --all --target=build",
+    "test": "nx run-many --all --target=test"
   },
   "private": true,
   "dependencies": {

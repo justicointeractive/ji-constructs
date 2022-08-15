@@ -1,8 +1,4 @@
 {
   "name": "@ji-constructs/cdk-image-resize-behavior",
-  "version": "0.3.2",
-  "peerDependencies": {
-    "sharp": "*",
-    "@aws-sdk/client-s3": "*"
-  }
+  "version": "0.3.2"
 }
