@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.1...image-resize-behavior-0.3.2) (2022-08-15)
+
 ### [0.3.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.0...image-resize-behavior-0.3.1) (2022-08-15)
 
 
