@@ -16,6 +16,9 @@
     "strict": true,
     "baseUrl": ".",
     "paths": {
+      "@ji-constructs/cdk-image-resize-behavior": [
+        "packages/image-resize-behavior/src/index.ts"
+      ],
       "@ji-constructs/ecs-jwt-keypair": [
         "packages/ecs-jwt-keypair/src/index.ts"
       ],

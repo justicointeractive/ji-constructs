@@ -1,0 +1,57 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/image-resize-behavior/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "./dist/packages/workspace-plugin:build",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/image-resize-behavior",
+        "tsConfig": "packages/image-resize-behavior/tsconfig.lib.json",
+        "packageJson": "packages/image-resize-behavior/package.json",
+        "main": "packages/image-resize-behavior/src/index.ts",
+        "assets": ["packages/image-resize-behavior/*.md"],
+        "embed": [
+          "packages/lambdas/image-resize-viewer-request-function",
+          "packages/lambdas/image-resize-origin-response-function"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/image-resize-behavior/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/image-resize-behavior"],
+      "options": {
+        "jestConfig": "packages/image-resize-behavior/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "dependsOn": ["build"]
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["image-resize-behavior:deploy"]
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": [],
+  "implicitDependencies": [
+    "workspace-plugin",
+    "lambdas-image-resize-origin-response-function",
+    "lambdas-image-resize-viewer-request-function"
+  ]
+}

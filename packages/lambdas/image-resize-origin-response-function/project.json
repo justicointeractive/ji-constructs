@@ -1,0 +1,40 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lambdas/image-resize-origin-response-function/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/lambdas/image-resize-origin-response-function",
+        "tsConfig": "packages/lambdas/image-resize-origin-response-function/tsconfig.lib.json",
+        "packageJson": "packages/lambdas/image-resize-origin-response-function/package.json",
+        "main": "packages/lambdas/image-resize-origin-response-function/src/index.ts",
+        "assets": [
+          "packages/lambdas/image-resize-origin-response-function/*.md"
+        ]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/lambdas/image-resize-origin-response-function/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": [
+        "coverage/packages/lambdas/image-resize-origin-response-function"
+      ],
+      "options": {
+        "jestConfig": "packages/lambdas/image-resize-origin-response-function/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}
