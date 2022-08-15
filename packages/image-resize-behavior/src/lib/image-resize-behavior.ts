@@ -9,7 +9,7 @@ import {
   OriginAccessIdentity,
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
-import { S3Origin } from 'aws-cdk-lib/aws-cloudfront-origins';
+import { S3Origin, S3OriginProps } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Function as Lambda } from 'aws-cdk-lib/aws-lambda';
 import {
   NodejsFunction,
@@ -23,6 +23,7 @@ import path = require('path');
 type ImageResizeBehaviorProps = {
   createDistribution?: boolean;
   s3BucketOrProps?: Bucket | BucketProps;
+  s3OriginProps?: Partial<S3OriginProps>;
   originResponseLambdaProps?: NodejsFunctionProps;
   viewerRequestLambdaProps?: NodejsFunctionProps;
   cloudfrontDistributionProps?: DistributionProps;
@@ -46,6 +47,7 @@ export class ImageResizeBehavior extends Construct {
     const {
       createDistribution = true,
       s3BucketOrProps,
+      s3OriginProps,
       originResponseLambdaProps,
       viewerRequestLambdaProps,
       cloudfrontDistributionProps,
@@ -108,6 +110,7 @@ export class ImageResizeBehavior extends Construct {
 
     this.behaviorOptions = {
       origin: new S3Origin(this.imagesBucket, {
+        ...s3OriginProps,
         originAccessIdentity,
       }),
       cachePolicy,
