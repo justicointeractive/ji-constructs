@@ -51,7 +51,7 @@ export class ImageResizeBehavior extends Construct {
       originResponseLambdaProps,
       viewerRequestLambdaProps,
       cloudfrontDistributionProps,
-      embedRootDir = `${__dirname}../../embedded`, // src/lib/../../embedded
+      embedRootDir = `${__dirname}/../../embedded`, // src/lib/../../embedded
     } = props;
 
     this.imagesBucket =
