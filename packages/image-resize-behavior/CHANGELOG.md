@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.2.0...image-resize-behavior-0.3.0) (2022-08-15)
+
+
+### Features
+
+* export image resize behavior props ([8500ce0](https://github.com/justicointeractive/ji-constructs/commit/8500ce084f9a491cd3dfe05d05eaf9c4feaeec0d))
+
 ## [0.2.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.1.0...image-resize-behavior-0.2.0) (2022-08-15)
 
 
