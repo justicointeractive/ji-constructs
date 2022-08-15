@@ -65,7 +65,7 @@ export class ImageResizeBehavior extends Construct {
       {
         bundling: {
           minify: true,
-          nodeModules: ['sharp'],
+          nodeModules: ['sharp', '@aws-sdk/client-s3'],
         },
         entry: path.resolve(
           `${embedRootDir}/packages/lambdas/image-resize-origin-response-function/src/index.js`

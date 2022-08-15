@@ -9,7 +9,6 @@
       "options": {
         "outputPath": "dist/packages/image-resize-behavior",
         "tsConfig": "packages/image-resize-behavior/tsconfig.lib.json",
-        "packageJson": "packages/image-resize-behavior/package.json",
         "main": "packages/image-resize-behavior/src/index.ts",
         "assets": ["packages/image-resize-behavior/*.md"],
         "embed": [
