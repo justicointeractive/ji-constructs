@@ -18,6 +18,10 @@ export default async function runExecutor(
       `./dist/${embedded}`,
       `${options.outputPath}/embedded/${embedded}`
     );
+    await copy(
+      `./package-lock.json`,
+      `${options.outputPath}/embedded/${embedded}/package-lock.json`
+    );
   }
 
   return {
