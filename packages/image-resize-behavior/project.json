@@ -31,7 +31,7 @@
         "jestConfig": "packages/image-resize-behavior/jest.config.ts",
         "passWithNoTests": true
       },
-      "dependsOn": ["build"]
+      "dependsOn": [{ "target": "build", "projects": "self" }]
     },
     "version": {
       "executor": "@jscutlery/semver:version",
