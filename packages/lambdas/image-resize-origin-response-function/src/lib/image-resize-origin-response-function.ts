@@ -123,7 +123,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   // Save the new image to s3 bucket. Don't await for this to finish.
   // Even if the upload fails we return the converted image
-  s3.putObject({
+  await s3.putObject({
     Body: resultImageBuffer,
     Bucket,
     ContentType: 'image/' + params.extension,
