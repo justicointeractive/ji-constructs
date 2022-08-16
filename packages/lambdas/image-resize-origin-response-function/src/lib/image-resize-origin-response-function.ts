@@ -39,6 +39,8 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   const request = event.Records[0].cf.request;
 
+  console.log({ request });
+
   // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
   const [, Bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
 
@@ -58,6 +60,8 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     // List all keys starting with path/to/file.
     Prefix: params.prefix + '.',
   });
+
+  console.log({ prefix: params.prefix, Contents });
 
   if (!Contents?.length) {
     return response;
@@ -100,8 +104,9 @@ export const handler: CloudFrontResponseHandler = async (event) => {
   }
   // If the requested extension is different than the base image extension, then
   // format it to the new extension
-  if (ContentType !== `image/${params.extension}`)
+  if (ContentType !== `image/${params.extension}`) {
     sharpPromise.toFormat(params.extension as keyof sharp.FormatEnum);
+  }
 
   const buffer = await sharpPromise.toBuffer();
 
