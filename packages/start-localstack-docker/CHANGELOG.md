@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.4.2-alpha.5](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2-alpha.4...start-localstack-docker-0.4.2-alpha.5) (2022-08-16)
+
 ### [0.4.2-alpha.4](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2-alpha.3...start-localstack-docker-0.4.2-alpha.4) (2022-08-16)
 
 ### [0.4.2-alpha.3](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2-alpha.2...start-localstack-docker-0.4.2-alpha.3) (2022-08-16)
