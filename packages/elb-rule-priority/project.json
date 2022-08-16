@@ -33,7 +33,8 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
-        "postTargets": ["elb-rule-priority:deploy"]
+        "postTargets": ["elb-rule-priority:deploy"],
+        "trackDeps": true
       }
     },
     "deploy": {

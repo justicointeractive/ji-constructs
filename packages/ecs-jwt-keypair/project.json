@@ -33,7 +33,8 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
-        "postTargets": ["ecs-jwt-keypair:deploy"]
+        "postTargets": ["ecs-jwt-keypair:deploy"],
+        "trackDeps": true
       }
     },
     "deploy": {

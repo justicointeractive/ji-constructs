@@ -33,7 +33,8 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
-        "postTargets": ["start-localstack-docker:deploy"]
+        "postTargets": ["start-localstack-docker:deploy"],
+        "trackDeps": true
       }
     },
     "deploy": {

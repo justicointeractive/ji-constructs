@@ -37,7 +37,8 @@
       "executor": "@jscutlery/semver:version",
       "options": {
         "preset": "conventional",
-        "postTargets": ["image-resize-behavior:deploy"]
+        "postTargets": ["image-resize-behavior:deploy"],
+        "trackDeps": true
       }
     },
     "deploy": {
