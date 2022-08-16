@@ -73,6 +73,8 @@ export const handler: CloudFrontResponseHandler = async (event) => {
       Prefix: s3KeyPrefix + params.baseName + '.',
     });
 
+    console.log({ s3KeyPrefix, Bucket, params, Contents });
+
     if (!Contents?.length) {
       return null;
     }
