@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.6](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.5...image-resize-behavior-0.3.6) (2022-08-16)
+
+
+### Bug Fixes
+
+* provide path to package-lock.json, include tslib module ([2f889ee](https://github.com/justicointeractive/ji-constructs/commit/2f889eec1093e53826b1918ba00da25e61c6e92b))
+
 ### [0.3.5](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.4...image-resize-behavior-0.3.5) (2022-08-16)
 
 
