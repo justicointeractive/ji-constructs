@@ -18,7 +18,25 @@
     }
   },
   "targetDependencies": {
-    "build": ["^build"],
-    "version": ["test", "build", "^build", "^version"]
+    "build": [
+      {
+        "target": "build",
+        "projects": "dependencies"
+      }
+    ],
+    "version": [
+      {
+        "target": "version",
+        "projects": "dependencies"
+      },
+      {
+        "target": "test",
+        "projects": "self"
+      },
+      {
+        "target": "build",
+        "projects": "self"
+      }
+    ]
   }
 }
