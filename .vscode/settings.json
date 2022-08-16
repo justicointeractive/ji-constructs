@@ -11,5 +11,6 @@
     "start-localstack-docker",
     "ecs-jwt-keypair",
     "image-resize-behavior"
-  ]
+  ],
+  "conventionalCommits.gitmoji": false
 }

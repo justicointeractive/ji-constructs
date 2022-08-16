@@ -99,7 +99,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     Bucket,
   });
 
-  const sourceImageBuffer = await readableToBuffer(Body);
+  const sourceImageBuffer = await readableToBuffer(Body as Readable);
 
   const sharpPromise = sharp(sourceImageBuffer);
 
@@ -146,11 +146,9 @@ export const handler: CloudFrontResponseHandler = async (event) => {
   return response;
 };
 
-async function readableToBuffer(
-  Body: Readable | ReadableStream<any> | Blob | undefined
-) {
+async function readableToBuffer(readable: Readable) {
   const bodyBuffers: Buffer[] = [];
-  for await (const buffer of Body as Readable) {
+  for await (const buffer of readable) {
     bodyBuffers.push(buffer);
   }
   const bodyBuffer = Buffer.concat(bodyBuffers);
