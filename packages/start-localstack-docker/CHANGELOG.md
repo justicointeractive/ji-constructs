@@ -9,6 +9,13 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 * track deps for releases ([ca5d611](https://github.com/justicointeractive/ji-constructs/commit/ca5d611712fcce34340866388f56f3dec6356869))
 
+### [0.4.1](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.0...start-localstack-docker-0.4.1) (2022-08-16)
+
+
+### Bug Fixes
+
+* track deps for releases ([ca5d611](https://github.com/justicointeractive/ji-constructs/commit/ca5d611712fcce34340866388f56f3dec6356869))
+
 ## [0.4.0](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.3.0...start-localstack-docker-0.4.0) (2022-07-26)
 
 
