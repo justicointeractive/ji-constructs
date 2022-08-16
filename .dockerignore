@@ -1,0 +1,6 @@
+.github
+**/node_modules
+Dockerfile
+*.Dockerfile
+**/cdk.out
+.git/

@@ -49,7 +49,6 @@ export class ImageResizeBehavior extends Construct {
       createDistribution = true,
       s3BucketOrProps,
       s3OriginProps,
-      s3KeyPrefix,
       originResponseLambdaProps,
       viewerRequestLambdaProps,
       cloudfrontDistributionProps,
@@ -71,13 +70,7 @@ export class ImageResizeBehavior extends Construct {
           commandHooks: {
             beforeInstall: () => [],
             beforeBundling: () => [],
-            afterBundling: () => [
-              `rm package.json package-lock.json`,
-              // lambda@edge does not support env vars
-              ...(s3KeyPrefix
-                ? [`echo S3_KEY_PREFIX="${s3KeyPrefix}" >> .env`]
-                : []),
-            ],
+            afterBundling: () => [`rm package.json package-lock.json`],
           },
         },
         depsLockFilePath: path.resolve(

@@ -4,13 +4,8 @@ import {
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
-import { config } from 'dotenv';
 import * as sharp from 'sharp';
 import { Readable } from 'stream';
-
-config();
-
-const s3KeyPrefix = process.env.S3_KEY_PREFIX ?? '';
 
 const s3 = new S3({
   region: 'us-east-1',
@@ -50,6 +45,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
   const [, Bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
+  const s3KeyPrefix = request.origin?.s3?.path ?? '';
 
   if (Number(response.status) !== 404) {
     if (Number(response.status) !== 200) {
