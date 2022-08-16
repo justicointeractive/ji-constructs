@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.7-alpha.4](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.7-alpha.3...ecs-jwt-keypair-0.1.7-alpha.4) (2022-08-16)
+
 ### [0.1.7-alpha.3](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.7-alpha.2...ecs-jwt-keypair-0.1.7-alpha.3) (2022-08-16)
 
 ### [0.1.7-alpha.2](https://github.com/justicointeractive/ji-constructs/compare/ecs-jwt-keypair-0.1.7-alpha.1...ecs-jwt-keypair-0.1.7-alpha.2) (2022-08-16)
