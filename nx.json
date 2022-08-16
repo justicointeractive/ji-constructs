@@ -19,6 +19,6 @@
   },
   "targetDependencies": {
     "build": ["^build"],
-    "version": ["test", "build", "^version"]
+    "version": ["test", "build", "^build", "^version"]
   }
 }
