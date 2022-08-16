@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.7-alpha.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.7-alpha.1...image-resize-behavior-0.3.7-alpha.2) (2022-08-16)
+
+
+### Bug Fixes
+
+* don't require tslib in lambda code ([3fe4c59](https://github.com/justicointeractive/ji-constructs/commit/3fe4c59e255824aa4576a0cd66416ca030a1b376))
+* nuke package.json/package-lock.json after bundling/installing ([db37fe0](https://github.com/justicointeractive/ji-constructs/commit/db37fe0f2a42e2cf04e7a9ae17163ec4cfe48f3b))
+
 ### [0.3.7-alpha.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.7-alpha.0...image-resize-behavior-0.3.7-alpha.1) (2022-08-16)
 
 ### [0.3.7-alpha.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.6...image-resize-behavior-0.3.7-alpha.0) (2022-08-16)
