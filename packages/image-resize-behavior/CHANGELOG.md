@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.7-alpha.3](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.7-alpha.2...image-resize-behavior-0.3.7-alpha.3) (2022-08-16)
+
+
+### Features
+
+* support prefixed s3 keys ([6ffb634](https://github.com/justicointeractive/ji-constructs/commit/6ffb6342f5b15385f2277ba080d029fbbc80a213))
+
 ### [0.3.7-alpha.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.7-alpha.1...image-resize-behavior-0.3.7-alpha.2) (2022-08-16)
 
 
