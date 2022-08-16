@@ -9,6 +9,7 @@
     "loadbalanced-ecs-service",
     "elb-rule-priority",
     "start-localstack-docker",
-    "ecs-jwt-keypair"
+    "ecs-jwt-keypair",
+    "image-resize-behavior"
   ]
 }

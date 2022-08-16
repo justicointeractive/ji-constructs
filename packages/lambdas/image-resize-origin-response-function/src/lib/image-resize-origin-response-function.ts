@@ -1,6 +1,5 @@
 import { S3 } from '@aws-sdk/client-s3';
 import {
-  CloudFrontRequest,
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
@@ -11,7 +10,7 @@ const s3 = new S3({
   region: 'us-east-1',
 });
 
-function extractDataFromUri(request: CloudFrontRequest) {
+export function extractDataFromUri(request: { uri: string }) {
   const uri = request.uri;
   // AWS key is the URI without the initial '/'
   const key = uri.substring(1);
@@ -43,10 +42,6 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   console.log({ request, response });
 
-  // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
-  const [, Bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
-  const s3KeyPrefix = request.origin?.s3?.path ?? '';
-
   if (Number(response.status) !== 404) {
     if (Number(response.status) !== 200) {
       response.status = String(400);
@@ -56,35 +51,51 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   // Image not found in bucket
   const params = extractDataFromUri(request);
+
   if (!params) {
     return response;
   }
 
-  const { Contents } = await s3.listObjects({
-    Bucket,
-    // List all keys starting with path/to/file.
-    Prefix: s3KeyPrefix + params.baseName + '.',
-  });
+  // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
+  const [, Bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
 
-  console.log({ Bucket, baseName: params.baseName, Contents });
+  // path has a leading / but key prefix has a trailing one instead
+  const s3KeyPrefix = request.origin?.s3?.path
+    ? request.origin.s3.path.substring(1) + '/'
+    : '';
 
-  if (!Contents?.length) {
-    return response;
-  }
+  console.log({ Bucket, baseName: params.baseName });
 
-  const baseImageKey = (() => {
+  const baseImageKey = await (async () => {
+    const { Contents } = await s3.listObjects({
+      Bucket,
+      // List all keys starting with path/to/file.
+      Prefix: s3KeyPrefix + params.baseName + '.',
+    });
+
+    if (!Contents?.length) {
+      return null;
+    }
+
+    // strip key prefixes, prefix will be added back in later
+    const unprefixedKeys = Contents.map(({ Key }) =>
+      Key?.substring(s3KeyPrefix.length)
+    );
+
     /**
      * Try to find an existent image for the requested extension.
      * If there isn't one, the use as base image the first from the Contents array
      */
-    const found = Contents.find(
-      ({ Key }) =>
-        Key?.substring(s3KeyPrefix.length).split(`${params.baseName}.`)[1] ===
-        params.extension
+    const found = unprefixedKeys.find(
+      (Key) => Key?.split(`${params.baseName}.`)[1] === params.extension
     );
-    if (found) return found.Key;
-    return Contents[0].Key;
+
+    return found ?? unprefixedKeys[0];
   })();
+
+  if (!baseImageKey) {
+    return response;
+  }
 
   // Use the found key to get the image from the s3 bucket
   const { Body, ContentType } = await s3.getObject({
@@ -92,12 +103,9 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     Bucket,
   });
 
-  const bodyBuffers: Buffer[] = [];
-  for await (const buffer of Body as Readable) {
-    bodyBuffers.push(buffer);
-  }
+  const sourceImageBuffer = await readableToBuffer(Body);
 
-  const sharpPromise = sharp(Buffer.concat(bodyBuffers));
+  const sharpPromise = sharp(sourceImageBuffer);
 
   // If dimensions passed, resize base image
   if (params.width || params.height) {
@@ -115,12 +123,12 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     sharpPromise.toFormat(params.extension as keyof sharp.FormatEnum);
   }
 
-  const buffer = await sharpPromise.toBuffer();
+  const resultImageBuffer = await sharpPromise.toBuffer();
 
   // Save the new image to s3 bucket. Don't await for this to finish.
   // Even if the upload fails we return the converted image
   s3.putObject({
-    Body: buffer,
+    Body: resultImageBuffer,
     Bucket,
     ContentType: 'image/' + params.extension,
     CacheControl: 'max-age=31536000',
@@ -129,7 +137,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
   });
 
   response.status = String(200);
-  response.body = buffer.toString('base64');
+  response.body = resultImageBuffer.toString('base64');
   response.bodyEncoding = 'base64';
   response.headers = response.headers ?? {};
   response.headers['content-type'] = [
@@ -141,3 +149,14 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   return response;
 };
+
+async function readableToBuffer(
+  Body: Readable | ReadableStream<any> | Blob | undefined
+) {
+  const bodyBuffers: Buffer[] = [];
+  for await (const buffer of Body as Readable) {
+    bodyBuffers.push(buffer);
+  }
+  const bodyBuffer = Buffer.concat(bodyBuffers);
+  return bodyBuffer;
+}
