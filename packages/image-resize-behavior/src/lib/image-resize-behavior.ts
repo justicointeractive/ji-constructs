@@ -65,7 +65,7 @@ export class ImageResizeBehavior extends Construct {
       {
         bundling: {
           minify: true,
-          nodeModules: ['sharp', '@aws-sdk/client-s3', 'tslib'],
+          nodeModules: ['sharp', '@aws-sdk/client-s3'],
         },
         depsLockFilePath: path.resolve(
           `${embedRootDir}/packages/lambdas/image-resize-origin-response-function/package-lock.json`
@@ -86,7 +86,7 @@ export class ImageResizeBehavior extends Construct {
       this,
       'ViewerRequestFunction',
       {
-        bundling: { minify: true, nodeModules: ['tslib'] },
+        bundling: { minify: true, nodeModules: [] },
         depsLockFilePath: path.resolve(
           `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function/package-lock.json`
         ),

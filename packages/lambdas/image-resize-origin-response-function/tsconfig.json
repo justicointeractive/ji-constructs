@@ -1,5 +1,5 @@
 {
-  "extends": "../../../tsconfig.base.json",
+  "extends": "../../../tsconfig.lambda.json",
   "files": [],
   "include": [],
   "references": [
