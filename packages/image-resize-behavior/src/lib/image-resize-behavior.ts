@@ -10,7 +10,7 @@ import {
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin, S3OriginProps } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Function as Lambda } from 'aws-cdk-lib/aws-lambda';
+import { Function as Lambda, Runtime } from 'aws-cdk-lib/aws-lambda';
 import {
   NodejsFunction,
   NodejsFunctionProps,
@@ -75,6 +75,7 @@ export class ImageResizeBehavior extends Construct {
         ),
         handler: 'handler',
         timeout: Duration.seconds(15),
+        runtime: Runtime.NODEJS_16_X,
         ...originResponseLambdaProps,
       }
     );
@@ -86,7 +87,15 @@ export class ImageResizeBehavior extends Construct {
       this,
       'ViewerRequestFunction',
       {
-        bundling: { minify: true, nodeModules: [] },
+        bundling: {
+          minify: true,
+          nodeModules: [],
+          commandHooks: {
+            beforeInstall: () => [],
+            beforeBundling: () => [],
+            afterBundling: () => [`rm package.json package-lock.json`],
+          },
+        },
         depsLockFilePath: path.resolve(
           `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function/package-lock.json`
         ),
@@ -94,6 +103,7 @@ export class ImageResizeBehavior extends Construct {
           `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function/src/index.js`
         ),
         handler: 'handler',
+        runtime: Runtime.NODEJS_16_X,
         ...viewerRequestLambdaProps,
       }
     );
