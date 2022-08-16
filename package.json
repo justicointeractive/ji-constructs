@@ -19,6 +19,7 @@
     "aws-sdk": "^2.1149.0",
     "cdk-ec2-key-pair": "^3.3.1",
     "constructs": "^10.1.31",
+    "dotenv": "^16.0.1",
     "fs-extra": "^10.1.0",
     "lodash": "^4.17.21",
     "sharp": "^0.30.7",

@@ -24,6 +24,7 @@ export type ImageResizeBehaviorProps = {
   createDistribution?: boolean;
   s3BucketOrProps?: Bucket | BucketProps;
   s3OriginProps?: Partial<S3OriginProps>;
+  s3KeyPrefix?: string;
   originResponseLambdaProps?: NodejsFunctionProps;
   viewerRequestLambdaProps?: NodejsFunctionProps;
   cloudfrontDistributionProps?: DistributionProps;
@@ -48,6 +49,7 @@ export class ImageResizeBehavior extends Construct {
       createDistribution = true,
       s3BucketOrProps,
       s3OriginProps,
+      s3KeyPrefix,
       originResponseLambdaProps,
       viewerRequestLambdaProps,
       cloudfrontDistributionProps,
@@ -66,6 +68,17 @@ export class ImageResizeBehavior extends Construct {
         bundling: {
           minify: true,
           nodeModules: ['sharp', '@aws-sdk/client-s3'],
+          commandHooks: {
+            beforeInstall: () => [],
+            beforeBundling: () => [],
+            afterBundling: () => [
+              `rm package.json package-lock.json`,
+              // lambda@edge does not support env vars
+              ...(s3KeyPrefix
+                ? [`echo S3_KEY_PREFIX="${s3KeyPrefix}" >> .env`]
+                : []),
+            ],
+          },
         },
         depsLockFilePath: path.resolve(
           `${embedRootDir}/packages/lambdas/image-resize-origin-response-function/package-lock.json`

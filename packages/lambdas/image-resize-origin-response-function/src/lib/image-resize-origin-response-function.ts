@@ -4,10 +4,17 @@ import {
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
+import { config } from 'dotenv';
 import * as sharp from 'sharp';
 import { Readable } from 'stream';
 
-const s3 = new S3({});
+config();
+
+const s3KeyPrefix = process.env.S3_KEY_PREFIX ?? '';
+
+const s3 = new S3({
+  region: 'us-east-1',
+});
 
 function extractDataFromUri(request: CloudFrontRequest) {
   const uri = request.uri;
@@ -20,7 +27,7 @@ function extractDataFromUri(request: CloudFrontRequest) {
   if (dimensionMatch)
     return {
       key,
-      prefix: dimensionMatch[1],
+      baseName: dimensionMatch[1],
       width: parseInt(dimensionMatch[2]),
       height: parseInt(dimensionMatch[3]),
       extension: dimensionMatch[4],
@@ -30,7 +37,7 @@ function extractDataFromUri(request: CloudFrontRequest) {
   const simpleMatch = uri.match(/\/(.*)\.([^.]*)$/);
 
   if (simpleMatch) {
-    return { key, prefix: simpleMatch[1], extension: simpleMatch[2] };
+    return { key, baseName: simpleMatch[1], extension: simpleMatch[2] };
   }
 }
 
@@ -39,13 +46,15 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   const request = event.Records[0].cf.request;
 
-  console.log({ request });
+  console.log({ request, response });
 
   // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
   const [, Bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
 
   if (Number(response.status) !== 404) {
-    if (Number(response.status) !== 200) response.status = String(400);
+    if (Number(response.status) !== 200) {
+      response.status = String(400);
+    }
     return response;
   }
 
@@ -58,10 +67,10 @@ export const handler: CloudFrontResponseHandler = async (event) => {
   const { Contents } = await s3.listObjects({
     Bucket,
     // List all keys starting with path/to/file.
-    Prefix: params.prefix + '.',
+    Prefix: s3KeyPrefix + params.baseName + '.',
   });
 
-  console.log({ prefix: params.prefix, Contents });
+  console.log({ Bucket, baseName: params.baseName, Contents });
 
   if (!Contents?.length) {
     return response;
@@ -73,7 +82,9 @@ export const handler: CloudFrontResponseHandler = async (event) => {
      * If there isn't one, the use as base image the first from the Contents array
      */
     const found = Contents.find(
-      ({ Key }) => Key?.split(`${params.prefix}.`)[1] === params.extension
+      ({ Key }) =>
+        Key?.substring(s3KeyPrefix.length).split(`${params.baseName}.`)[1] ===
+        params.extension
     );
     if (found) return found.Key;
     return Contents[0].Key;
@@ -81,7 +92,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   // Use the found key to get the image from the s3 bucket
   const { Body, ContentType } = await s3.getObject({
-    Key: baseImageKey,
+    Key: s3KeyPrefix + baseImageKey,
     Bucket,
   });
 
@@ -117,7 +128,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     Bucket,
     ContentType: 'image/' + params.extension,
     CacheControl: 'max-age=31536000',
-    Key: params.key,
+    Key: s3KeyPrefix + params.key,
     StorageClass: 'STANDARD',
   });
 
