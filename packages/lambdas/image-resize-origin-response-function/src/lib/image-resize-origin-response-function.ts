@@ -40,8 +40,6 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   const request = event.Records[0].cf.request;
 
-  console.log({ request, response });
-
   if (Number(response.status) !== 404) {
     if (Number(response.status) !== 200) {
       response.status = String(400);
@@ -64,16 +62,12 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     ? request.origin.s3.path.substring(1) + '/'
     : '';
 
-  console.log({ Bucket, baseName: params.baseName });
-
   const baseImageKey = await (async () => {
     const { Contents } = await s3.listObjects({
       Bucket,
       // List all keys starting with path/to/file.
       Prefix: s3KeyPrefix + params.baseName + '.',
     });
-
-    console.log({ s3KeyPrefix, params, Bucket, Contents });
 
     if (!Contents?.length) {
       return null;
