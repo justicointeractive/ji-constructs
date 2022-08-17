@@ -16,17 +16,19 @@ export function extractDataFromUri(request: { uri: string }) {
   const requestedKey = uri.substring(1);
 
   // Try to match dimensions first
-  // e.g.: /path/to/file-100wx100h.webp
-  const dimensionMatch = uri.match(/^\/(.*)\.([^.]*);([a-z0-9=&]+)$/i);
+  // e.g.: /path/to/file.png;width=100&height=100;.webp
+  const dimensionMatch = uri.match(
+    /^\/(.*)\.([^.]*);([a-z0-9=&]*);\.([^.]*)$/i
+  );
 
   if (!dimensionMatch) {
     return null;
   }
 
-  const [, baseName, extension, paramString] = dimensionMatch;
+  const [, baseName, extension, paramString, format] = dimensionMatch;
 
   const params = new URLSearchParams(paramString);
-  const paramObj: Record<string, string> = {};
+  const paramObj: Record<string, string> = { format };
   params.forEach((value, key) => (paramObj[key] = value));
 
   return {

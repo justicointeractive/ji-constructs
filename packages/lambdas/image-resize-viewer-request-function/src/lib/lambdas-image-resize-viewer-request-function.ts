@@ -1,4 +1,5 @@
 import { CloudFrontRequestHandler } from 'aws-lambda';
+import { omit } from 'lodash';
 
 const WEBP = 'webp';
 const PERMITTED_EXTENSIONS = ['png', 'jpg', 'jpeg', WEBP];
@@ -40,18 +41,22 @@ export function rewriteUrl(request: {
       : extensionLower;
   }
 
+  const resultFormat = params.format;
+
   if (params.format === extensionLower) {
     delete params.format;
   }
 
-  const uriParams = new URLSearchParams(params as Record<string, string>);
+  const uriParams = new URLSearchParams(
+    omit(params as Record<string, string>, ['format'])
+  );
   uriParams.sort();
   const uriParamString = uriParams.toString();
 
   const forwardUri =
-    uriParamString.length === 0
+    Object.values(params).length === 0
       ? `${prefix}.${extension}`
-      : `${prefix}.${extension};${uriParamString}`;
+      : `${prefix}.${extension};${uriParamString};.${resultFormat}`;
 
   return forwardUri;
 }
