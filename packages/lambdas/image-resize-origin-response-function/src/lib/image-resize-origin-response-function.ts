@@ -10,6 +10,9 @@ const s3 = new S3({
   region: 'us-east-1',
 });
 
+const resizeUrlExpression =
+  /^\/(?<baseName>.*)\.(?<extension>[^.]*);(?<paramString>[^;]*);\.(?<format>[^.]*)$/i;
+
 export function extractDataFromUri(request: { uri: string }) {
   const uri = request.uri;
   // AWS key is the URI without the initial '/'
@@ -17,15 +20,13 @@ export function extractDataFromUri(request: { uri: string }) {
 
   // Try to match dimensions first
   // e.g.: /path/to/file.png;width=100&height=100;.webp
-  const dimensionMatch = uri.match(
-    /^\/(.*)\.([^.]*);([a-z0-9=&]*);\.([^.]*)$/i
-  );
+  const dimensionMatch = uri.match(resizeUrlExpression);
 
-  if (!dimensionMatch) {
+  if (!dimensionMatch?.groups) {
     return null;
   }
 
-  const [, baseName, extension, paramString, format] = dimensionMatch;
+  const { baseName, extension, paramString, format } = dimensionMatch.groups;
 
   const params = new URLSearchParams(paramString);
   const paramObj: Record<string, string> = { format };
