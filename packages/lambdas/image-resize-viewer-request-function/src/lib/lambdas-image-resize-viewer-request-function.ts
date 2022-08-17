@@ -1,73 +1,85 @@
-import { CloudFrontRequest, CloudFrontRequestHandler } from 'aws-lambda';
-
-const SKIPPED_EXTENSIONS = ['svg'];
+import { CloudFrontRequestHandler } from 'aws-lambda';
 
 const WEBP = 'webp';
-const regex = /(.*)\.([^.]*)$/;
+const PERMITTED_EXTENSIONS = ['png', 'jpg', 'jpeg', WEBP];
 
-function getDataFromRequest(request: CloudFrontRequest) {
-  const headers = request.headers;
-  // URI of original image
-  const uri = request.uri;
+export const handler: CloudFrontRequestHandler = async (event) => {
+  const request = event.Records[0].cf.request;
 
+  request.uri = rewriteUrl(request);
+
+  return request;
+};
+
+export function rewriteUrl(request: {
+  uri: string;
+  querystring: string;
+  headers: Partial<Record<string, { value: string }[]>>;
+}) {
+  const { extension, prefix } = extractExtension(request.uri);
+  const extensionLower = extension.toLowerCase();
+
+  // parse the querystrings key-value pairs. In our case it would be d=100x100
+  /* eslint-disable prefer-const */
+  let params = pickUrlParams(new URLSearchParams(request.querystring), [
+    'width',
+    'height',
+    'format',
+  ]);
+  /* eslint-enable prefer-const */
+
+  // Do nothing for unsupported extensions
+  // TODO: allow forcing resize if extension doesn't match
+  if (!PERMITTED_EXTENSIONS.includes(extensionLower)) {
+    return request.uri;
+  }
+
+  if (params.format ?? 'auto' === 'auto') {
+    params.format = request.headers['accept']?.[0]?.value?.includes(WEBP)
+      ? WEBP
+      : extensionLower;
+  }
+
+  if (params.format === extensionLower) {
+    delete params.format;
+  }
+
+  const uriParams = new URLSearchParams(params as Record<string, string>);
+  uriParams.sort();
+  const uriParamString = uriParams.toString();
+
+  const forwardUri =
+    uriParamString.length === 0
+      ? `${prefix}.${extension}`
+      : `${prefix}.${extension};${uriParamString}`;
+
+  return forwardUri;
+}
+
+function pickUrlParams<TKeys extends string[]>(
+  params: URLSearchParams,
+  keys: TKeys
+) {
+  const pickedParams: Partial<Record<TKeys[number], string>> = {};
+  keys.forEach((k) => {
+    const value = params.get(k);
+    if (value != null) {
+      pickedParams[k as TKeys[number]] = value;
+    }
+  });
+  return pickedParams;
+}
+
+function extractExtension(uri: string) {
   // parse the prefix, image name and extension from the uri.
   // In our case /path-to-image/image.[original-extension]
   const match = uri.match(/(.*)\.([^.]*)$/);
 
   if (!match) {
-    return { extension: '', prefix: uri };
+    return { prefix: uri, extension: '' };
   }
 
-  const prefix = match[1];
-  let extension = match[2];
+  const [, prefix, extension] = match;
 
-  // read the accept header to determine if webp is supported.
-  const accept = headers['accept'] ? headers['accept'][0].value : '';
-
-  // Don't modify the extension if it is skipped
-  if (SKIPPED_EXTENSIONS.includes(extension)) {
-    return { extension, prefix };
-  }
-
-  // check support for webp
-  if (accept.includes(WEBP)) {
-    extension = WEBP;
-  }
-
-  return { extension, prefix };
+  return { prefix, extension };
 }
-
-export const handler: CloudFrontRequestHandler = async (event) => {
-  const request = event.Records[0].cf.request;
-
-  if (request.uri === '/') {
-    throw new Error(String(403));
-  }
-
-  if (!request.uri.match(regex)) {
-    return request;
-  }
-
-  const { extension, prefix } = getDataFromRequest(request);
-
-  // Don't do any formatting for skipped extensions
-  if (SKIPPED_EXTENSIONS.includes(extension)) {
-    return request;
-  }
-
-  // parse the querystrings key-value pairs. In our case it would be d=100x100
-  const parsed = new URLSearchParams(request.querystring);
-  const width = parsed.get('width');
-  const height = parsed.get('height');
-
-  // if no dimensions, just pass the request but modifying the extension
-  if (!width && !height) {
-    request.uri = `${prefix}.${extension}`;
-    return request;
-  }
-
-  const forwardUri = `${prefix}-${width || 0}wx${height || 0}h.${extension}`;
-
-  request.uri = forwardUri;
-  return request;
-};
