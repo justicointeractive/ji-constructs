@@ -82,6 +82,7 @@ export class ImageResizeBehavior extends Construct {
         handler: 'handler',
         timeout: Duration.seconds(15),
         runtime: Runtime.NODEJS_16_X,
+        memorySize: 1024,
         ...originResponseLambdaProps,
       }
     );
