@@ -1,7 +1,7 @@
 import { CloudFrontRequestHandler } from 'aws-lambda';
 
-const WEBP = 'webp';
-const PERMITTED_EXTENSIONS = ['png', 'jpg', 'jpeg', WEBP];
+const PREFERRED_EXTENSIONS = ['avif', 'webp'];
+const PERMITTED_EXTENSIONS = ['png', 'jpg', 'jpeg', ...PREFERRED_EXTENSIONS];
 
 export const handler: CloudFrontRequestHandler = async (event) => {
   const request = event.Records[0].cf.request;
@@ -35,9 +35,14 @@ export function rewriteUrl(request: {
   }
 
   if (params.format ?? 'auto' === 'auto') {
-    params.format = request.headers['accept']?.[0]?.value?.includes(WEBP)
-      ? WEBP
-      : extensionLower;
+    const acceptValue = request.headers['accept']?.[0]?.value || null;
+    const bestAcceptedFormat =
+      (acceptValue &&
+        PREFERRED_EXTENSIONS.find((ext) =>
+          acceptValue.includes(`image/${ext}`)
+        )) ||
+      extensionLower;
+    params.format = bestAcceptedFormat;
   }
 
   const { format: resultFormat, ...resultParams } = params;
