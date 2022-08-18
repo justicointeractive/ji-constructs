@@ -60,6 +60,9 @@ export class ImageResizeBehavior extends Construct {
         ? s3BucketOrProps
         : new Bucket(this, 'Bucket', s3BucketOrProps);
 
+    const originResponseCodeRoot = path.resolve(
+      `${embedRootDir}/packages/lambdas/image-resize-origin-response-function`
+    );
     this.imageOriginResponseLambda = new NodejsFunction(
       this,
       'OriginResponseFunction',
@@ -73,12 +76,9 @@ export class ImageResizeBehavior extends Construct {
             afterBundling: () => [`rm package.json package-lock.json`],
           },
         },
-        depsLockFilePath: path.resolve(
-          `${embedRootDir}/packages/lambdas/image-resize-origin-response-function/package-lock.json`
-        ),
-        entry: path.resolve(
-          `${embedRootDir}/packages/lambdas/image-resize-origin-response-function/src/index.js`
-        ),
+        projectRoot: originResponseCodeRoot,
+        depsLockFilePath: `${originResponseCodeRoot}/package-lock.json`,
+        entry: `${originResponseCodeRoot}/src/index.js`,
         handler: 'handler',
         timeout: Duration.seconds(15),
         runtime: Runtime.NODEJS_16_X,
@@ -90,6 +90,9 @@ export class ImageResizeBehavior extends Construct {
     this.imagesBucket.grantRead(this.imageOriginResponseLambda);
     this.imagesBucket.grantPut(this.imageOriginResponseLambda);
 
+    const viewerRequestCodeRoot = path.resolve(
+      `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function`
+    );
     this.imageViewerRequestLambda = new NodejsFunction(
       this,
       'ViewerRequestFunction',
@@ -103,12 +106,9 @@ export class ImageResizeBehavior extends Construct {
             afterBundling: () => [`rm package.json package-lock.json`],
           },
         },
-        depsLockFilePath: path.resolve(
-          `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function/package-lock.json`
-        ),
-        entry: path.resolve(
-          `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function/src/index.js`
-        ),
+        projectRoot: viewerRequestCodeRoot,
+        depsLockFilePath: `${viewerRequestCodeRoot}/package-lock.json`,
+        entry: `${viewerRequestCodeRoot}/src/index.js`,
         handler: 'handler',
         runtime: Runtime.NODEJS_16_X,
         ...viewerRequestLambdaProps,
