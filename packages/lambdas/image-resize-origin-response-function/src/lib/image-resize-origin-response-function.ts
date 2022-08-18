@@ -13,33 +13,6 @@ const s3 = new S3({
 const resizeUrlExpression =
   /^\/(?<baseName>.*)\.(?<extension>[^.]*);(?<paramString>[^;]*);\.(?<format>[^.]*)$/i;
 
-export function extractDataFromUri(request: { uri: string }) {
-  const uri = request.uri;
-  // AWS key is the URI without the initial '/'
-  const requestedKey = uri.substring(1);
-
-  // Try to match dimensions first
-  // e.g.: /path/to/file.png;width=100&height=100;.webp
-  const dimensionMatch = uri.match(resizeUrlExpression);
-
-  if (!dimensionMatch?.groups) {
-    return null;
-  }
-
-  const { baseName, extension, paramString, format } = dimensionMatch.groups;
-
-  const params = new URLSearchParams(paramString);
-  const paramObj: Record<string, string> = { format };
-  params.forEach((value, key) => (paramObj[key] = value));
-
-  return {
-    requestedKey,
-    baseName,
-    params: paramObj,
-    extension,
-  };
-}
-
 export const handler: CloudFrontResponseHandler = async (event) => {
   const response: CloudFrontResultResponse = event.Records[0].cf.response;
 
@@ -94,6 +67,33 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   return response;
 };
+
+export function extractDataFromUri(request: { uri: string }) {
+  const uri = request.uri;
+  // AWS key is the URI without the initial '/'
+  const requestedKey = uri.substring(1);
+
+  // Try to match dimensions first
+  // e.g.: /path/to/file.png;width=100&height=100;.webp
+  const dimensionMatch = uri.match(resizeUrlExpression);
+
+  if (!dimensionMatch?.groups) {
+    return null;
+  }
+
+  const { baseName, extension, paramString, format } = dimensionMatch.groups;
+
+  const params = new URLSearchParams(paramString);
+  const paramObj: Record<string, string> = { format };
+  params.forEach((value, key) => (paramObj[key] = value));
+
+  return {
+    requestedKey,
+    baseName,
+    params: paramObj,
+    extension,
+  };
+}
 
 async function readableToBuffer(readable: Readable) {
   const bodyBuffers: Buffer[] = [];
@@ -159,6 +159,7 @@ async function ensureResizedImage(
     CacheControl: `max-age=${params.maxAge}`,
     Key: s3KeyPrefix + params.requestedKey,
     StorageClass: 'STANDARD',
+    // TODO: Tagging: ??? (some way to apply lifecycle policy to derrived images)
   });
 
   return resultImageBuffer;
