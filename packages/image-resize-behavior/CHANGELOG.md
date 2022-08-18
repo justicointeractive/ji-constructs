@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.3.14](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.13...image-resize-behavior-0.3.14) (2022-08-18)
+
+
+### Bug Fixes
+
+* **image-resize-behavior:** give image resizer more rams ([4da374f](https://github.com/justicointeractive/ji-constructs/commit/4da374fc139a0ced29ea1996a404a09638001fbb))
+
 ### [0.3.13](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.12...image-resize-behavior-0.3.13) (2022-08-18)
 
 ### Dependency Updates
