@@ -42,7 +42,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   const maxAge = 31536000;
 
-  const resultImageBuffer = await ensureResizedImage(
+  const { resultImageBuffer, contentType } = await ensureResizedImage(
     { bucket, s3KeyPrefix },
     {
       maxAge,
@@ -50,16 +50,15 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     }
   );
 
-  if (resultImageBuffer == null) {
-    return response;
-  }
-
   response.status = String(200);
   response.body = resultImageBuffer.toString('base64');
   response.bodyEncoding = 'base64';
   response.headers = response.headers ?? {};
   response.headers['content-type'] = [
-    { key: 'Content-Type', value: 'image/' + params.extension },
+    {
+      key: 'Content-Type',
+      value: contentType,
+    },
   ];
   response.headers['cache-control'] = [
     { key: 'Cache-Control', value: `max-age=${maxAge}` },
@@ -150,17 +149,19 @@ async function ensureResizedImage(
 
   const resultImageBuffer = await sharpPromise.toBuffer();
 
+  const contentType = 'image/' + (params.params.format ?? params.extension);
+
   // Save the new image to s3 bucket. Don't await for this to finish.
   // Even if the upload fails we return the converted image
   await s3.putObject({
     Body: resultImageBuffer,
     Bucket: bucket,
-    ContentType: 'image/' + params.params.format ?? params.extension,
+    ContentType: contentType,
     CacheControl: `max-age=${params.maxAge}`,
     Key: s3KeyPrefix + params.requestedKey,
     StorageClass: 'STANDARD',
     // TODO: Tagging: ??? (some way to apply lifecycle policy to derrived images)
   });
 
-  return resultImageBuffer;
+  return { resultImageBuffer, contentType };
 }
