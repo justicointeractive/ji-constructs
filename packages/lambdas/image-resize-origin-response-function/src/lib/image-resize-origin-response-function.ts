@@ -1,22 +1,15 @@
-import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { S3 } from '@aws-sdk/client-s3';
-import { DynamoDBDocumentClient, UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import {
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
 import * as sharp from 'sharp';
 import { Readable } from 'stream';
+import { updateInventory } from './updateInventory';
 
 const s3 = new S3({
   region: 'us-east-1',
 });
-
-const dynamodb = DynamoDBDocumentClient.from(
-  new DynamoDBClient({
-    region: 'us-east-1',
-  })
-);
 
 const resizeUrlExpression =
   /^\/(?<baseName>.*)\.(?<extension>[^.]*);(?<paramString>[^;]*);\.(?<format>[^.]*)$/i;
@@ -84,30 +77,6 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   return response;
 };
-
-async function updateInventory(
-  inventoryTableName: string,
-  s3KeyPrefix: string,
-  params: {
-    requestedKey: string;
-    baseName: string;
-    params: Record<string, string>;
-    extension: string;
-  }
-) {
-  await dynamodb.send(
-    new UpdateCommand({
-      TableName: inventoryTableName,
-      Key: { Key: s3KeyPrefix + params.requestedKey },
-      AttributeUpdates: {
-        LastRetrievedFromOrigin: { Value: new Date().toISOString() },
-        BaseKey: {
-          Value: s3KeyPrefix + params.baseName + '.' + params.extension,
-        },
-      },
-    })
-  );
-}
 
 export function extractDataFromUri(request: { uri: string }) {
   const uri = request.uri;
