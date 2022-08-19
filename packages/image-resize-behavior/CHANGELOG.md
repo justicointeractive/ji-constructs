@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.4.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.4.0...image-resize-behavior-0.4.1) (2022-08-19)
+
+
+### Bug Fixes
+
+* **image-resize-behavior:** do include client-dynamodb dep ([3132e8b](https://github.com/justicointeractive/ji-constructs/commit/3132e8b86c254ed23430b47ab682f9b660f0c1ae))
+* **image-resize-behavior:** remove client-dynamodb dependency ([36476ac](https://github.com/justicointeractive/ji-constructs/commit/36476ac0d97e7ee0f4e85664da87b84e827da77b))
+
 ## [0.4.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.3.15...image-resize-behavior-0.4.0) (2022-08-19)
 
 ### Dependency Updates
