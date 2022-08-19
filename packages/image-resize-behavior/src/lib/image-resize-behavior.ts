@@ -72,12 +72,7 @@ export class ImageResizeBehavior extends Construct {
       {
         bundling: {
           minify: true,
-          nodeModules: [
-            'sharp',
-            '@aws-sdk/client-s3',
-            '@aws-sdk/lib-dynamodb',
-            '@aws-sdk/client-dynamodb',
-          ],
+          nodeModules: ['sharp', '@aws-sdk/client-s3', '@aws-sdk/lib-dynamodb'],
           commandHooks: {
             beforeInstall: () => [],
             beforeBundling: () => [],
