@@ -92,6 +92,7 @@ export function extractDataFromUri(request: { uri: string }) {
   }
 
   const { baseName, extension, paramString, format } = dimensionMatch.groups;
+  const baseKey = baseName + '.' + extension;
 
   const params = new URLSearchParams(paramString);
   const paramObj: Record<string, string> = { format };
@@ -99,9 +100,8 @@ export function extractDataFromUri(request: { uri: string }) {
 
   return {
     requestedKey,
-    baseName,
+    baseKey,
     params: paramObj,
-    extension,
   };
 }
 
@@ -123,16 +123,13 @@ async function ensureResizedImage(
   params: {
     maxAge: number;
     requestedKey: string;
-    baseName: string;
-    extension: string;
+    baseKey: string;
     params: Partial<Record<'width' | 'height' | 'format', string>>;
   }
 ) {
-  const baseImageKey = params.baseName + '.' + params.extension;
-
   // Use the found key to get the image from the s3 bucket
   const { Body } = await s3.getObject({
-    Key: s3KeyPrefix + baseImageKey,
+    Key: s3KeyPrefix + params.baseKey,
     Bucket: bucket,
   });
 
@@ -158,7 +155,7 @@ async function ensureResizedImage(
 
   const resultImageBuffer = await sharpPromise.toBuffer();
 
-  const contentType = 'image/' + (params.params.format ?? params.extension);
+  const contentType = 'image/' + params.params.format;
 
   // Save the new image to s3 bucket. Don't await for this to finish.
   // Even if the upload fails we return the converted image

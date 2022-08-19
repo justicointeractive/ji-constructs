@@ -12,21 +12,20 @@ export async function updateInventory(
   s3KeyPrefix: string,
   params: {
     requestedKey: string;
-    baseName: string;
+    baseKey: string;
     params: Record<string, string>;
-    extension: string;
   },
   client = dynamodb
 ) {
   await client.send(
     new UpdateCommand({
       TableName: inventoryTableName,
-      Key: { Key: s3KeyPrefix + params.requestedKey },
+      Key: {
+        BaseKey: s3KeyPrefix + params.baseKey,
+        Key: s3KeyPrefix + params.requestedKey,
+      },
       AttributeUpdates: {
         LastRetrievedFromOrigin: { Value: new Date().toISOString() },
-        BaseKey: {
-          Value: s3KeyPrefix + params.baseName + '.' + params.extension,
-        },
       },
     })
   );

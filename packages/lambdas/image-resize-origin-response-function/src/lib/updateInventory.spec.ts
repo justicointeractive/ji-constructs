@@ -24,8 +24,12 @@ describe('updateInventory', () => {
     await dynamodbClient.send(
       new CreateTableCommand({
         TableName: 'testTable',
-        KeySchema: [{ AttributeName: 'Key', KeyType: 'HASH' }],
+        KeySchema: [
+          { AttributeName: 'BaseKey', KeyType: 'HASH' },
+          { AttributeName: 'Key', KeyType: 'RANGE' },
+        ],
         AttributeDefinitions: [
+          { AttributeName: 'BaseKey', AttributeType: AttributeType.STRING },
           { AttributeName: 'Key', AttributeType: AttributeType.STRING },
         ],
         ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
@@ -43,8 +47,7 @@ describe('updateInventory', () => {
       'testPrefix/',
       {
         requestedKey: 'test/123.png;width=100;.avif',
-        baseName: 'test/123',
-        extension: 'png',
+        baseKey: 'test/123.png',
         params: {
           width: '100',
           format: 'avif',
@@ -56,7 +59,10 @@ describe('updateInventory', () => {
       await documentClient.send(
         new GetCommand({
           TableName: 'testTable',
-          Key: { Key: 'testPrefix/test/123.png;width=100;.avif' },
+          Key: {
+            BaseKey: 'testPrefix/test/123.png',
+            Key: 'testPrefix/test/123.png;width=100;.avif',
+          },
         })
       )
     ).toMatchObject({ Item: { BaseKey: 'testPrefix/test/123.png' } });

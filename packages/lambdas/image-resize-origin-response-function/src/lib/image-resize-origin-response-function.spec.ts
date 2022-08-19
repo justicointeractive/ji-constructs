@@ -6,8 +6,7 @@ describe('image-resize-origin-response-function', () => {
       extractDataFromUri({ uri: '/path/to/file.png;width=100;.png' })
     ).toMatchObject({
       requestedKey: 'path/to/file.png;width=100;.png',
-      baseName: 'path/to/file',
-      extension: 'png',
+      baseKey: 'path/to/file.png',
       params: { width: '100' },
     });
   });
@@ -15,8 +14,7 @@ describe('image-resize-origin-response-function', () => {
     expect(
       extractDataFromUri({ uri: '/path/to/file.png;width=100;.webp' })
     ).toMatchObject({
-      baseName: 'path/to/file',
-      extension: 'png',
+      baseKey: 'path/to/file.png',
       params: { format: 'webp', width: '100' },
     });
   });
@@ -24,8 +22,7 @@ describe('image-resize-origin-response-function', () => {
     expect(
       extractDataFromUri({ uri: '/path/to/file.png;;.webp' })
     ).toMatchObject({
-      baseName: 'path/to/file',
-      extension: 'png',
+      baseKey: 'path/to/file.png',
       params: { format: 'webp' },
     });
   });
