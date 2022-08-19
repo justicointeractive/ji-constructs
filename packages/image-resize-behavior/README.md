@@ -1,14 +1,13 @@
 # AWS Image Resizer Construct Library
 
-This construct library is ported from [https://github.com/nlopezm/aws-cdk-image-resize](https://github.com/nlopezm/aws-cdk-image-resize)
+This construct library is adapted from [https://github.com/nlopezm/aws-cdk-image-resize](https://github.com/nlopezm/aws-cdk-image-resize) which was inspired by [this blog](https://aws.amazon.com/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/) from the AWS official website and [this one](https://web.dev/serve-responsive-images/) from [web.dev](https://web.dev/), and provides a way to easily setup the required arquitecture to start serving performant images.
 
-This construct library is inspired by [this blog](https://aws.amazon.com/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/) from the AWS official website and [this one](https://web.dev/serve-responsive-images/) from [web.dev](https://web.dev/), and provides a way to easily setup the required arquitecture to start serving performant images.
+## Optimization
 
-The goal of this library is to take image serving performance to the next level by formatting and resizing resources.
+If the client is requesting an image and if the client supports _avif_ or _webp_, this construct will take care of returning an optimized image (which is usually 80% lighter than the conventional jpg/png images).
 
-If the client is requesting an image and if the client supports _webp_, this construct will take care of returning a _webp_ image (which is usually 80% lighter than the convencional jpg/png images).
+## Resizing
 
-**What about resizing?**
 You might want to serve multiple image versions. Why would your mobile users pay the cost of loading the same big files desktop users need?
 Just pass `width` and/or `height` (in px) as query params and you will get original image cropped to the requested sizes.
 
@@ -37,22 +36,26 @@ Let’s understand what happens in these various steps 1 to 5
 
 **Step 1:** The requested image URI is manipulated in the viewer-facing Lambda@Edge function to serve appropriate dimension and format. This happens before the request hits the cache. The URI should be the path to the original resource (e.g. /image.jpg).
 The manipulated URI will look something like this:
-a. `/images.webp`, if webp supported by the client
-b. `/images-${width}wx${height}h.webp`, in case width and/or height are supplied as query params
 
-**Step 2**: CloudFront fetches the object from origin.
+1. `/image.png`, if no optimization or resize is possible
+2. `/image.png;;.webp`, if webp supported by the client
+3. `/image.png;width=${width}&height=${height};.webp`, in case width and/or height are supplied as query params
 
-**Step 3:** If the required image is already present in the bucket or is generated and stored (via step 5), CloudFront returns the object to viewer. At this stage, the image is >cached.
+**Step 2**: CloudFront fetches the object from S3.
 
-**Step 4:** The object from cache is returned to user.
+**Step 3:** If the required image is already present in the bucket, S3 returns the object to CloudFront. Otherwise it returns a 404 Not Found response.
 
-**Step 5** Resize & format operations are invoked only when an image is not present in origin. A network call is made to the S3 bucket (origin) to fetch the source image and resized. The generated image is persisted back to the bucket and sent to CloudFront.
+**Step 4:** CloudFront returns the resulting image to the viewer.
 
-**Note:** Step 2,3 and 5 are executed only when the object is stale or does not exist in cache. Static resources like images should have a long Time to Live (TTL) as possible to improve cache-hit ratios.
+**Step 5:** If the image is not present in the bucket, the original image is fetched, the resize and optimizations are applied and the resulting file is put into the bucket so subsequent requests return this image that is now already present in the bucket. If the original image could not be fetched, the 404 is passed onto the viewer.
+
+**Note:** Step 2, 3 and 5 are executed only when the object is stale or does not exist in CloudFront cache. Static resources like images should have a long Time to Live (TTL) as possible to improve cache-hit ratios.
 
 _This step by step is also taken from [AWS blog](https://aws.amazon.com/blogs/networking-and-content-delivery/resizing-images-with-amazon-cloudfront-lambdaedge-aws-cdn-blog/) with some minor tweaks._
 
 ## How to use
+
+### Default
 
 ```ts
 import * as cdk from 'aws-cdk-lib/core';
@@ -62,14 +65,36 @@ export class MyStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
     super(scope, id, props);
 
-    new ImageResize(this, 'ImageResize', {
-      s3BucketProps: { bucketName: 'image-resize-lib-test' },
+    const imageResize = new ImageResizeBehavior(this, 'ImageResize');
+  }
+}
+```
+
+### BYOB (bring your own bucket... and cloudfront distribution)
+
+```ts
+import * as cdk from 'aws-cdk-lib/core';
+import { ImageResize } from 'aws-cdk-image-resize';
+
+export class MyStack extends cdk.Stack {
+  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
+    super(scope, id, props);
+
+    const bucket = new Bucket(this, 'Bucket');
+
+    const imageResize = new ImageResizeBehavior(this, 'ImageResize', {
+      createDistribution: false,
+      s3BucketOrProps: bucket,
+    });
+
+    const cloudfront = new Distribution(this, 'Distribution', {
+      defaultBehavior: imageResize.behaviorOptions,
     });
   }
 }
 ```
 
-This is the basic usage. All of the props are optional, but the construct is 100% customizable:
+The construct is 100% customizable:
 
 - s3BucketProps: https://docs.aws.amazon.com/cdk/api/latest/docs/aws-s3-readme.html
 - originResponseLambdaProps: https://docs.aws.amazon.com/cdk/api/latest/docs/aws-lambda-readme.html
@@ -81,53 +106,6 @@ This is the basic usage. All of the props are optional, but the construct is 100
 This Construct will create
 
 - 1 Lambda@Edge function for the Viewer Request
-- 1 Lambda@Edge function for the Origin Response with permissions to write and read the S3 bucket. This lambda uses [sharp library](https://www.npmjs.com/package/sharp) under the hood
-- 1 Cloudfront Distribution
-- 1 S3 bucket
-
-## Customizing lambdas
-
-Everything is customizable, even lambda functions. In fact, I suggest customizing the Viewer Request function so that it only allows an specific set of dimensions.
-
-```ts
-import * as cdk from 'aws-cdk-lib/core'
-import { ImageResize } from 'aws-cdk-image-resize'
-import * as lambda from 'aws-cdk-lib/aws-lambda'
-
-export class MyStack extends cdk.Stack {
-  constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
-    super(scope, id, props)
-
-    new ImageResize(this, 'ImageResize', {
-      s3BucketProps: { bucketName: 'image-resize-lib-test' },
-      viewerRequestLambdaProps: {
-       // In practice, you will probably want to use lambda.Code.fromAsset
-       // @see https://docs.aws.amazon.com/cdk/api/latest/docs/aws-lambda-readme.html
-        code: lambda.Code.fromInline(`exports.handler = function(event, ctx, cb) {
-          const request = event.Records[0].cf.request
-          const { height, width } = querystring.parse(request.querystring);
-          // ...
-          if(dimensionAllowed) {
-            request.uri = `/path/to/file/original-${width}wx${height}h.webp`
-          } else {
-            request.uri = '/path/to/file/original.webp'
-          }
-          return cb(null, request);
-        }
-      `),
-      },
-    })
-  }
-}
-```
-
-Just make sure the request.uri is in one of the following formats.
-Let's take `/images/umbrella.jpg` as our original uri.
-
-- If you want the image to be formatted to other extension, then modify its extension. In case of `webp`, the final uri would be `/images/umbrella.webp`.
-  See other available extensions in [sharp library](https://www.npmjs.com/package/sharp).
-- If you want to format the image to specific `width` and `height`, then return `/images/umbrella-${width}wx${height}h.${ext}`. e.g.: `width=500`, `height=300`, `extension=webp` - `/images/umbrella-500wx300h.webp`
-- If you want to define it's width and let the height to adapt automatically to keep the aspect ratio, pass `0` as `height`. e.g.: `width=500`, `height=[adapted to keep aspect ratio]`, `extension=webp` - `/images/umbrella-500wx0h.webp`
-- If you want to define it's `height` and let the `width` to adapt automatically to keep the aspect ratio, pass `0` as `width`. e.g.: `height=500`, `width=[adapted to keep aspect ratio]`, `extension=webp` - `/images/umbrella-0wx500h.webp`
-
-And that's it. The rest of the job will be done by the `Origin Response Lambda`
+- 1 Lambda@Edge function for the Origin Response with permissions to write and read the S3 bucket. This lambda uses [sharp library](https://www.npmjs.com/package/sharp) under the hood.
+- 1 Cloudfront Distribution (optional)
+- 1 S3 bucket (optional)
