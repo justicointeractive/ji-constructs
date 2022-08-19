@@ -15,10 +15,10 @@ import {
   NodejsFunction,
   NodejsFunctionProps,
 } from 'aws-cdk-lib/aws-lambda-nodejs';
-
 import { Bucket, BucketProps } from 'aws-cdk-lib/aws-s3';
 import { Construct } from 'constructs';
 import * as path from 'path';
+import { ImageResizeInventory } from './image-resize-inventory';
 
 export type ImageResizeBehaviorProps = {
   createDistribution?: boolean;
@@ -37,6 +37,7 @@ export class ImageResizeBehavior extends Construct {
   imageViewerRequestLambda: Lambda;
   behaviorOptions: BehaviorOptions;
   distribution?: Distribution;
+  imageResizeInventory: ImageResizeInventory;
 
   constructor(
     scope: Construct,
@@ -55,6 +56,8 @@ export class ImageResizeBehavior extends Construct {
       embedRootDir = `${__dirname}/../../embedded`, // src/lib/../../embedded
     } = props;
 
+    this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory');
+
     this.imagesBucket =
       s3BucketOrProps instanceof Bucket
         ? s3BucketOrProps
@@ -69,7 +72,12 @@ export class ImageResizeBehavior extends Construct {
       {
         bundling: {
           minify: true,
-          nodeModules: ['sharp', '@aws-sdk/client-s3'],
+          nodeModules: [
+            'sharp',
+            '@aws-sdk/client-s3',
+            '@aws-sdk/lib-dynamodb',
+            '@aws-sdk/client-dynamodb',
+          ],
           commandHooks: {
             beforeInstall: () => [],
             beforeBundling: () => [],
@@ -89,6 +97,9 @@ export class ImageResizeBehavior extends Construct {
 
     this.imagesBucket.grantRead(this.imageOriginResponseLambda);
     this.imagesBucket.grantPut(this.imageOriginResponseLambda);
+    this.imageResizeInventory.derrivedImagesTable.grantWriteData(
+      this.imageOriginResponseLambda
+    );
 
     const viewerRequestCodeRoot = path.resolve(
       `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function`
@@ -116,7 +127,6 @@ export class ImageResizeBehavior extends Construct {
     );
 
     const cachePolicy = new CachePolicy(this, 'CachePolicy', {
-      cachePolicyName: 'images-cache-policy',
       defaultTtl: Duration.days(365), // 1 year
       enableAcceptEncodingBrotli: true,
       enableAcceptEncodingGzip: true,
@@ -135,6 +145,11 @@ export class ImageResizeBehavior extends Construct {
       origin: new S3Origin(this.imagesBucket, {
         ...s3OriginProps,
         originAccessIdentity,
+        customHeaders: {
+          ...s3OriginProps?.customHeaders,
+          'x-image-resize-inventory-table-name':
+            this.imageResizeInventory.derrivedImagesTable.tableName,
+        },
       }),
       cachePolicy,
       edgeLambdas: [

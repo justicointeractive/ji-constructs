@@ -1,4 +1,6 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { S3 } from '@aws-sdk/client-s3';
+import { UpdateCommand } from '@aws-sdk/lib-dynamodb';
 import {
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
@@ -10,6 +12,10 @@ const s3 = new S3({
   region: 'us-east-1',
 });
 
+const dynamodb = new DynamoDBClient({
+  region: 'us-east-1',
+});
+
 const resizeUrlExpression =
   /^\/(?<baseName>.*)\.(?<extension>[^.]*);(?<paramString>[^;]*);\.(?<format>[^.]*)$/i;
 
@@ -18,19 +24,18 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   const request = event.Records[0].cf.request;
 
-  if (Number(response.status) !== 404) {
-    if (Number(response.status) !== 200) {
-      response.status = String(400);
-    }
+  const responseStatusCode = Number(response.status);
+
+  const resizeParams = extractDataFromUri(request);
+
+  if (resizeParams == null) {
     return response;
   }
 
-  // resized image not found
-  const params = extractDataFromUri(request);
-
-  if (!params) {
-    return response;
-  }
+  const inventoryTableName =
+    request.origin?.s3?.customHeaders?.[
+      'x-image-resize-inventory-table-name'
+    ]?.[0]?.value;
 
   // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
   const [, bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
@@ -40,13 +45,24 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     ? request.origin.s3.path.substring(1) + '/'
     : '';
 
+  if (responseStatusCode === 200) {
+    if (inventoryTableName) {
+      await updateInventory(inventoryTableName, s3KeyPrefix, resizeParams);
+    }
+    return response;
+  }
+
+  if (responseStatusCode !== 404) {
+    return response;
+  }
+
   const maxAge = 31536000;
 
   const { resultImageBuffer, contentType } = await ensureResizedImage(
-    { bucket, s3KeyPrefix },
+    { inventoryTableName, bucket, s3KeyPrefix },
     {
       maxAge,
-      ...params,
+      ...resizeParams,
     }
   );
 
@@ -66,6 +82,30 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   return response;
 };
+
+async function updateInventory(
+  inventoryTableName: string,
+  s3KeyPrefix: string,
+  params: {
+    requestedKey: string;
+    baseName: string;
+    params: Record<string, string>;
+    extension: string;
+  }
+) {
+  await dynamodb.send(
+    new UpdateCommand({
+      TableName: inventoryTableName,
+      Key: { Key: s3KeyPrefix + params.requestedKey },
+      AttributeUpdates: {
+        LastRetrievedFromOrigin: { Value: new Date().toISOString() },
+        BaseKey: {
+          Value: s3KeyPrefix + params.baseName + '.' + params.extension,
+        },
+      },
+    })
+  );
+}
 
 export function extractDataFromUri(request: { uri: string }) {
   const uri = request.uri;
@@ -107,10 +147,8 @@ async function ensureResizedImage(
   {
     bucket,
     s3KeyPrefix,
-  }: {
-    bucket: string;
-    s3KeyPrefix: string;
-  },
+    inventoryTableName,
+  }: { inventoryTableName?: string; bucket: string; s3KeyPrefix: string },
   params: {
     maxAge: number;
     requestedKey: string;
@@ -162,6 +200,10 @@ async function ensureResizedImage(
     StorageClass: 'STANDARD',
     // TODO: Tagging: ??? (some way to apply lifecycle policy to derrived images)
   });
+
+  if (inventoryTableName) {
+    await updateInventory(inventoryTableName, s3KeyPrefix, params);
+  }
 
   return { resultImageBuffer, contentType };
 }

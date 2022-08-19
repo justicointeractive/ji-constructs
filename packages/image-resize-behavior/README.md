@@ -109,3 +109,7 @@ This Construct will create
 - 1 Lambda@Edge function for the Origin Response with permissions to write and read the S3 bucket. This lambda uses [sharp library](https://www.npmjs.com/package/sharp) under the hood.
 - 1 Cloudfront Distribution (optional)
 - 1 S3 bucket (optional)
+
+## Roadmap
+
+- Add a way to keep the derrived images in a separate bucket and/or separate key prefix from the source images, apply Tags to the derrived images, and apply lifecycle policy to the derrived images so they will automatically be cleaned up and don't hang around forever.
