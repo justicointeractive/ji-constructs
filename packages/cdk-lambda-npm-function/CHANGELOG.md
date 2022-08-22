@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-lambda-npm-function-0.1.0...cdk-lambda-npm-function-0.1.1) (2022-08-22)
+
 ## 0.1.0 (2022-08-22)
 
 
