@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.5.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.0...image-resize-behavior-0.5.1) (2022-08-22)
+
+### Dependency Updates
+
+* `workspace-plugin` updated to version `0.1.0`
+
+### Bug Fixes
+
+* **image-resize-behavior:** make sure dependency on cdk-lambda-npm-function is declared ([d542b24](https://github.com/justicointeractive/ji-constructs/commit/d542b240c4f29f322ca5f2165350a7a627ae70fd))
+
 ## [0.5.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.4.3...image-resize-behavior-0.5.0) (2022-08-22)
 
 ### Dependency Updates
