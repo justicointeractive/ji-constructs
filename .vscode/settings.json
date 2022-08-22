@@ -10,7 +10,8 @@
     "elb-rule-priority",
     "start-localstack-docker",
     "ecs-jwt-keypair",
-    "image-resize-behavior"
+    "image-resize-behavior",
+    "lambda-npm-function"
   ],
   "conventionalCommits.gitmoji": false
 }

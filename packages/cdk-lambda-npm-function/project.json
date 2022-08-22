@@ -1,0 +1,48 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/cdk-lambda-npm-function/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/cdk-lambda-npm-function",
+        "tsConfig": "packages/cdk-lambda-npm-function/tsconfig.lib.json",
+        "packageJson": "packages/cdk-lambda-npm-function/package.json",
+        "main": "packages/cdk-lambda-npm-function/src/index.ts",
+        "assets": ["packages/cdk-lambda-npm-function/*.md"]
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/cdk-lambda-npm-function/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/cdk-lambda-npm-function"],
+      "options": {
+        "jestConfig": "packages/cdk-lambda-npm-function/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["cdk-lambda-npm-function:deploy"],
+        "trackDeps": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": []
+}
