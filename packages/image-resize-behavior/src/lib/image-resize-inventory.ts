@@ -1,6 +1,7 @@
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
+import { IBucket } from 'aws-cdk-lib/aws-s3';
 import { LambdaNpmFunction } from 'cdk-lambda-npm-function';
 import { Construct } from 'constructs';
 import { resolve } from 'path';
@@ -8,7 +9,14 @@ import { resolve } from 'path';
 export class ImageResizeInventory extends Construct {
   derrivedImagesTable: Table;
 
-  constructor(scope: Construct, id: string, props: { embedRootDir: string }) {
+  constructor(
+    scope: Construct,
+    id: string,
+    props: {
+      embedRootDir: string;
+      bucket: IBucket;
+    }
+  ) {
     super(scope, id);
 
     const { embedRootDir } = props;
@@ -23,6 +31,10 @@ export class ImageResizeInventory extends Construct {
         embedRootDir,
         'packages/lambdas/image-resize-tidy-function'
       ),
+      environment: {
+        DYNAMODB_TABLE_NAME: this.derrivedImagesTable.tableName,
+        S3_BUCKET_NAME: props.bucket.bucketName,
+      },
     });
 
     const eventRule = new Rule(this, 'Schedule', {

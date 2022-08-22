@@ -54,14 +54,15 @@ export class ImageResizeBehavior extends Construct {
       embedRootDir = `${__dirname}/../../embedded`, // src/lib/../../embedded
     } = props;
 
-    this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory', {
-      embedRootDir,
-    });
-
     this.imagesBucket =
       s3BucketOrProps instanceof Bucket
         ? s3BucketOrProps
         : new Bucket(this, 'Bucket', s3BucketOrProps);
+
+    this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory', {
+      embedRootDir,
+      bucket: this.imagesBucket,
+    });
 
     this.imageOriginResponseLambda = new LambdaNpmFunction(
       this,
@@ -70,11 +71,9 @@ export class ImageResizeBehavior extends Construct {
         projectRoot: resolve(
           `${embedRootDir}/packages/lambdas/image-resize-origin-response-function`
         ),
-        nodejsFunctionProps: {
-          timeout: Duration.seconds(15),
-          memorySize: 1024,
-          ...originResponseLambdaProps,
-        },
+        timeout: Duration.seconds(15),
+        memorySize: 1024,
+        ...originResponseLambdaProps,
       }
     );
 
@@ -91,9 +90,7 @@ export class ImageResizeBehavior extends Construct {
         projectRoot: resolve(
           `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function`
         ),
-        nodejsFunctionProps: {
-          ...viewerRequestLambdaProps,
-        },
+        ...viewerRequestLambdaProps,
       }
     );
 
