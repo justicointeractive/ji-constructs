@@ -2,6 +2,16 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.5.3](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.2...image-resize-behavior-0.5.3) (2022-08-22)
+
+### Dependency Updates
+
+* `cdk-lambda-npm-function` updated to version `0.1.1`
+
+### Bug Fixes
+
+* **image-resize-behavior:** provide the required env vars to tidy lambda ([98c3a49](https://github.com/justicointeractive/ji-constructs/commit/98c3a49d41cc269f3086bfe1dbcf4dfec207b8d8))
+
 ### [0.5.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.1...image-resize-behavior-0.5.2) (2022-08-22)
 
 ### Dependency Updates
