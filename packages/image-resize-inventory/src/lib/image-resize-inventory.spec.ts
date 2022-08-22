@@ -1,7 +1,6 @@
 import { CreateTableCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import { startLocalstackDocker } from '@ji-constructs/start-localstack-docker';
-import { AttributeType } from 'aws-cdk-lib/aws-dynamodb';
 import { ImageResizeInventory } from './image-resize-inventory';
 
 describe('updateInventory', () => {
@@ -35,8 +34,8 @@ describe('updateInventory', () => {
           { AttributeName: 'Key', KeyType: 'RANGE' },
         ],
         AttributeDefinitions: [
-          { AttributeName: 'BaseKey', AttributeType: AttributeType.STRING },
-          { AttributeName: 'Key', AttributeType: AttributeType.STRING },
+          { AttributeName: 'BaseKey', AttributeType: 'S' },
+          { AttributeName: 'Key', AttributeType: 'S' },
         ],
         ProvisionedThroughput: { ReadCapacityUnits: 1, WriteCapacityUnits: 1 },
       })
