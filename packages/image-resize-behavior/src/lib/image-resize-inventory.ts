@@ -37,6 +37,9 @@ export class ImageResizeInventory extends Construct {
       },
     });
 
+    this.derrivedImagesTable.grantReadWriteData(fn);
+    props.bucket.grantDelete(fn);
+
     const eventRule = new Rule(this, 'Schedule', {
       schedule: Schedule.cron({
         minute: '0',
