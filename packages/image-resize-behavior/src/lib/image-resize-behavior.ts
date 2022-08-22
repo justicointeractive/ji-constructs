@@ -10,14 +10,12 @@ import {
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin, S3OriginProps } from 'aws-cdk-lib/aws-cloudfront-origins';
-import { Function as Lambda, Runtime } from 'aws-cdk-lib/aws-lambda';
-import {
-  NodejsFunction,
-  NodejsFunctionProps,
-} from 'aws-cdk-lib/aws-lambda-nodejs';
+import { Function as Lambda } from 'aws-cdk-lib/aws-lambda';
+import { NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Bucket, BucketProps } from 'aws-cdk-lib/aws-s3';
+import { LambdaNpmFunction } from 'cdk-lambda-npm-function';
 import { Construct } from 'constructs';
-import * as path from 'path';
+import { resolve } from 'path';
 import { ImageResizeInventory } from './image-resize-inventory';
 
 export type ImageResizeBehaviorProps = {
@@ -56,42 +54,27 @@ export class ImageResizeBehavior extends Construct {
       embedRootDir = `${__dirname}/../../embedded`, // src/lib/../../embedded
     } = props;
 
-    this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory');
+    this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory', {
+      embedRootDir,
+    });
 
     this.imagesBucket =
       s3BucketOrProps instanceof Bucket
         ? s3BucketOrProps
         : new Bucket(this, 'Bucket', s3BucketOrProps);
 
-    const originResponseCodeRoot = path.resolve(
-      `${embedRootDir}/packages/lambdas/image-resize-origin-response-function`
-    );
-    this.imageOriginResponseLambda = new NodejsFunction(
+    this.imageOriginResponseLambda = new LambdaNpmFunction(
       this,
       'OriginResponseFunction',
       {
-        bundling: {
-          minify: true,
-          nodeModules: [
-            'sharp',
-            '@aws-sdk/client-s3',
-            '@aws-sdk/lib-dynamodb',
-            '@aws-sdk/client-dynamodb',
-          ],
-          commandHooks: {
-            beforeInstall: () => [],
-            beforeBundling: () => [],
-            afterBundling: () => [`rm package.json package-lock.json`],
-          },
+        projectRoot: resolve(
+          `${embedRootDir}/packages/lambdas/image-resize-origin-response-function`
+        ),
+        nodejsFunctionProps: {
+          timeout: Duration.seconds(15),
+          memorySize: 1024,
+          ...originResponseLambdaProps,
         },
-        projectRoot: originResponseCodeRoot,
-        depsLockFilePath: `${originResponseCodeRoot}/package-lock.json`,
-        entry: `${originResponseCodeRoot}/src/index.js`,
-        handler: 'handler',
-        timeout: Duration.seconds(15),
-        runtime: Runtime.NODEJS_16_X,
-        memorySize: 1024,
-        ...originResponseLambdaProps,
       }
     );
 
@@ -101,28 +84,16 @@ export class ImageResizeBehavior extends Construct {
       this.imageOriginResponseLambda
     );
 
-    const viewerRequestCodeRoot = path.resolve(
-      `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function`
-    );
-    this.imageViewerRequestLambda = new NodejsFunction(
+    this.imageViewerRequestLambda = new LambdaNpmFunction(
       this,
       'ViewerRequestFunction',
       {
-        bundling: {
-          minify: true,
-          nodeModules: [],
-          commandHooks: {
-            beforeInstall: () => [],
-            beforeBundling: () => [],
-            afterBundling: () => [`rm package.json package-lock.json`],
-          },
+        projectRoot: resolve(
+          `${embedRootDir}/packages/lambdas/image-resize-viewer-request-function`
+        ),
+        nodejsFunctionProps: {
+          ...viewerRequestLambdaProps,
         },
-        projectRoot: viewerRequestCodeRoot,
-        depsLockFilePath: `${viewerRequestCodeRoot}/package-lock.json`,
-        entry: `${viewerRequestCodeRoot}/src/index.js`,
-        handler: 'handler',
-        runtime: Runtime.NODEJS_16_X,
-        ...viewerRequestLambdaProps,
       }
     );
 

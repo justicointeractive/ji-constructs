@@ -1,11 +1,11 @@
 import { S3 } from '@aws-sdk/client-s3';
+import { ImageResizeInventory } from '@ji-constructs/image-resize-inventory';
 import {
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
 import * as sharp from 'sharp';
 import { Readable } from 'stream';
-import { updateInventory } from './updateInventory';
 
 const s3 = new S3({
   region: 'us-east-1',
@@ -40,9 +40,16 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     ? request.origin.s3.path.substring(1) + '/'
     : '';
 
+  const inventoryClient =
+    (inventoryTableName &&
+      new ImageResizeInventory({
+        tableName: inventoryTableName,
+      })) ||
+    null;
+
   if (responseStatusCode === 200) {
     if (inventoryTableName) {
-      await updateInventory(inventoryTableName, s3KeyPrefix, resizeParams);
+      await inventoryClient?.updateKeyMetadata(s3KeyPrefix, resizeParams);
     }
     return response;
   }
@@ -54,7 +61,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
   const maxAge = 31536000;
 
   const { resultImageBuffer, contentType } = await ensureResizedImage(
-    { inventoryTableName, bucket, s3KeyPrefix },
+    { inventoryClient, bucket, s3KeyPrefix },
     {
       maxAge,
       ...resizeParams,
@@ -118,8 +125,12 @@ async function ensureResizedImage(
   {
     bucket,
     s3KeyPrefix,
-    inventoryTableName,
-  }: { inventoryTableName?: string; bucket: string; s3KeyPrefix: string },
+    inventoryClient,
+  }: {
+    inventoryClient: ImageResizeInventory | null;
+    bucket: string;
+    s3KeyPrefix: string;
+  },
   params: {
     maxAge: number;
     requestedKey: string;
@@ -169,9 +180,7 @@ async function ensureResizedImage(
     // TODO: Tagging: ??? (some way to apply lifecycle policy to derrived images)
   });
 
-  if (inventoryTableName) {
-    await updateInventory(inventoryTableName, s3KeyPrefix, params);
-  }
+  await inventoryClient?.updateKeyMetadata(s3KeyPrefix, params);
 
   return { resultImageBuffer, contentType };
 }

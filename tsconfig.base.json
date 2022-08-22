@@ -25,6 +25,9 @@
       "@ji-constructs/elb-rule-priority": [
         "packages/elb-rule-priority/src/index.ts"
       ],
+      "@ji-constructs/image-resize-inventory": [
+        "packages/image-resize-inventory/src/index.ts"
+      ],
       "@ji-constructs/loadbalanced-ecs-service": [
         "packages/loadbalanced-ecs-service/src/index.ts"
       ],

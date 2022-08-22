@@ -14,7 +14,7 @@ describe('imageResizeBehavior', () => {
 
     const template = Template.fromStack(stack);
 
-    template.resourceCountIs('AWS::Lambda::Function', 2);
+    template.resourceCountIs('AWS::Lambda::Function', 3);
     template.resourceCountIs('AWS::S3::Bucket', 1);
     template.resourceCountIs('AWS::CloudFront::Distribution', 1);
   });

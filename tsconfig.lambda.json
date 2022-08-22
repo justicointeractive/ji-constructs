@@ -1,6 +1,7 @@
 {
   "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "importHelpers": false
+    "importHelpers": false,
+    "noEmit": true
   }
 }

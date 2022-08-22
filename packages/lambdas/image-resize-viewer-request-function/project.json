@@ -4,14 +4,14 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/lambdas/image-resize-viewer-request-function",
         "tsConfig": "packages/lambdas/image-resize-viewer-request-function/tsconfig.lib.json",
         "packageJson": "packages/lambdas/image-resize-viewer-request-function/package.json",
         "main": "packages/lambdas/image-resize-viewer-request-function/src/index.ts",
-        "assets": ["packages/lambdas/image-resize-viewer-request-function/*.md"]
+        "assets": []
       }
     },
     "lint": {

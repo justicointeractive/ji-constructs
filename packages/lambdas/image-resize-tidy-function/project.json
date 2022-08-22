@@ -1,0 +1,37 @@
+{
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/lambdas/image-resize-tidy-function/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/node:webpack",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/lambdas/image-resize-tidy-function",
+        "tsConfig": "packages/lambdas/image-resize-tidy-function/tsconfig.lib.json",
+        "packageJson": "packages/lambdas/image-resize-tidy-function/package.json",
+        "main": "packages/lambdas/image-resize-tidy-function/src/index.ts",
+        "assets": [],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": [
+          "packages/lambdas/image-resize-tidy-function/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/lambdas/image-resize-tidy-function"],
+      "options": {
+        "jestConfig": "packages/lambdas/image-resize-tidy-function/jest.config.ts",
+        "passWithNoTests": true
+      }
+    }
+  },
+  "tags": []
+}

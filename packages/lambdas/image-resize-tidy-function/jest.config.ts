@@ -1,0 +1,17 @@
+/* eslint-disable */
+export default {
+  displayName: 'lambdas-image-resize-tidy-function',
+  preset: '../../../jest.preset.js',
+  globals: {
+    'ts-jest': {
+      tsconfig: '<rootDir>/tsconfig.spec.json',
+    },
+  },
+  testEnvironment: 'node',
+  transform: {
+    '^.+\\.[tj]sx?$': 'ts-jest',
+  },
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx'],
+  coverageDirectory:
+    '../../../coverage/packages/lambdas/image-resize-tidy-function',
+};

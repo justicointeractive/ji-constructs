@@ -4,7 +4,7 @@
   "projectType": "library",
   "targets": {
     "build": {
-      "executor": "@nrwl/js:tsc",
+      "executor": "@nrwl/node:webpack",
       "outputs": ["{options.outputPath}"],
       "options": {
         "outputPath": "dist/packages/lambdas/image-resize-origin-response-function",
@@ -12,9 +12,8 @@
         "packageJson": "packages/lambdas/image-resize-origin-response-function/package.json",
         "buildableProjectDepsInPackageJsonType": "dependencies",
         "main": "packages/lambdas/image-resize-origin-response-function/src/index.ts",
-        "assets": [
-          "packages/lambdas/image-resize-origin-response-function/*.md"
-        ]
+        "assets": [],
+        "generatePackageJson": true
       }
     },
     "lint": {

@@ -13,7 +13,8 @@
         "assets": ["packages/image-resize-behavior/*.md"],
         "embed": [
           "packages/lambdas/image-resize-viewer-request-function",
-          "packages/lambdas/image-resize-origin-response-function"
+          "packages/lambdas/image-resize-origin-response-function",
+          "packages/lambdas/image-resize-tidy-function"
         ]
       }
     },
@@ -52,6 +53,7 @@
   "implicitDependencies": [
     "workspace-plugin",
     "lambdas-image-resize-origin-response-function",
-    "lambdas-image-resize-viewer-request-function"
+    "lambdas-image-resize-viewer-request-function",
+    "lambdas-image-resize-tidy-function"
   ]
 }

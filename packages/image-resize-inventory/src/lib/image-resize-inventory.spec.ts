@@ -1,19 +1,19 @@
 import { CreateTableCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { DynamoDBDocumentClient, GetCommand } from '@aws-sdk/lib-dynamodb';
+import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import { startLocalstackDocker } from '@ji-constructs/start-localstack-docker';
 import { AttributeType } from 'aws-cdk-lib/aws-dynamodb';
-import { updateInventory } from './updateInventory';
+import { ImageResizeInventory } from './image-resize-inventory';
 
 describe('updateInventory', () => {
   let shutdownLocalStack: (() => void) | null;
-  let dynamodbClient: DynamoDBClient;
+  let instance: ImageResizeInventory;
 
   beforeAll(async () => {
     shutdownLocalStack = await startLocalstackDocker({
       services: ['dynamodb'],
       edgePort: 6546,
     });
-    dynamodbClient = new DynamoDBClient({
+    const dynamodb = new DynamoDBClient({
       region: 'us-east-1',
       credentials: {
         accessKeyId: 'test',
@@ -21,7 +21,13 @@ describe('updateInventory', () => {
       },
       endpoint: 'http://localhost.localstack.cloud:6546',
     });
-    await dynamodbClient.send(
+
+    instance = new ImageResizeInventory({
+      tableName: 'testTable',
+      dynamodb,
+    });
+
+    await dynamodb.send(
       new CreateTableCommand({
         TableName: 'testTable',
         KeySchema: [
@@ -41,22 +47,16 @@ describe('updateInventory', () => {
   });
 
   it('should update inventory', async () => {
-    const documentClient = DynamoDBDocumentClient.from(dynamodbClient);
-    await updateInventory(
-      'testTable',
-      'testPrefix/',
-      {
-        requestedKey: 'test/123.png;width=100;.avif',
-        baseKey: 'test/123.png',
-        params: {
-          width: '100',
-          format: 'avif',
-        },
+    await instance.updateKeyMetadata('testPrefix/', {
+      requestedKey: 'test/123.png;width=100;.avif',
+      baseKey: 'test/123.png',
+      params: {
+        width: '100',
+        format: 'avif',
       },
-      documentClient
-    );
+    });
     expect(
-      await documentClient.send(
+      await instance.ddbDocumentClient.send(
         new GetCommand({
           TableName: 'testTable',
           Key: {
@@ -66,5 +66,9 @@ describe('updateInventory', () => {
         })
       )
     ).toMatchObject({ Item: { BaseKey: 'testPrefix/test/123.png' } });
+  });
+
+  it('should list an item', async () => {
+    expect(await instance.listKeysExpiredBefore(new Date())).toHaveLength(1);
   });
 });
