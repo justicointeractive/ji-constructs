@@ -12,6 +12,9 @@ export class LambdaNpmFunction extends NodejsFunction {
     scope: Construct,
     id: string,
     props: {
+      /**
+       * a directory with a package.json file that declares dependencies/devDependencies and main entry point
+       */
       projectRoot: string;
       entry?: string;
       handler?: string;
