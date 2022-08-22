@@ -62,7 +62,9 @@ function createPackageJsonWithPublishableDependencies(
 
   const packageJson = readBuiltPackageJson(project);
 
-  const projDeps = depGraph.dependencies[context.projectName];
+  const projDeps = depGraph.dependencies[context.projectName].filter(
+    (dep) => !dep.target.startsWith('npm:')
+  );
 
   projDeps.forEach((dep) => {
     const depProject = depGraph.nodes[dep.target];
@@ -73,14 +75,13 @@ function createPackageJsonWithPublishableDependencies(
 
     const dependentPackageJson = readBuiltPackageJson(depProject);
 
+    if (dependentPackageJson == null) {
+      return;
+    }
+
     ['dependencies', 'devDependencies', 'peerDependencies'].forEach(
       (depType) => {
-        if (
-          packageJson[depType] &&
-          dep.target in packageJson[depType] &&
-          !dep.target.startsWith('npm:') &&
-          dependentPackageJson != null
-        ) {
+        if (packageJson[depType]?.[dep.target] != null) {
           const { version } = dependentPackageJson;
           packageJson[depType][dep.target] = version;
         }
