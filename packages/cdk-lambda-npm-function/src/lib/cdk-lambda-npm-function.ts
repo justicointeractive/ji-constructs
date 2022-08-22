@@ -19,15 +19,17 @@ export class LambdaNpmFunction extends NodejsFunction {
       entry?: string;
       handler?: string;
       lockfile?: string;
-      nodejsFunctionProps?: NodejsFunctionProps;
-    }
+    } & Omit<
+      NodejsFunctionProps,
+      'projectRoot' | 'entry' | 'handler' | 'depsLockFilePath'
+    >
   ) {
     const {
       projectRoot,
       entry,
       lockfile = 'package-lock.json',
       handler = 'handler',
-      nodejsFunctionProps,
+      ...nodejsFunctionProps
     } = props;
 
     const packageJsonPath = `${projectRoot}/package.json`;
