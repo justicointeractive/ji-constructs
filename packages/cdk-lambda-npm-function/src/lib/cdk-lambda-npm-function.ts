@@ -48,6 +48,7 @@ export class LambdaNpmFunction extends NodejsFunction {
     super(scope, id, {
       bundling: {
         minify: true,
+        forceDockerBundling: true,
         nodeModules: [
           ...Object.keys(packageJsonContents.dependencies ?? {}),
           ...Object.keys(packageJsonContents.devDependencies ?? {}),
