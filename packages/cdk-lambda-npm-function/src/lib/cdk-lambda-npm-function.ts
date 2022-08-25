@@ -29,6 +29,7 @@ export class LambdaNpmFunction extends NodejsFunction {
       entry,
       lockfile = 'package-lock.json',
       handler = 'handler',
+      bundling,
       ...nodejsFunctionProps
     } = props;
 
@@ -56,6 +57,7 @@ export class LambdaNpmFunction extends NodejsFunction {
           beforeBundling: () => [],
           afterBundling: () => [`rm ${lockfile}`],
         },
+        ...bundling,
       },
       projectRoot,
       depsLockFilePath: `${projectRoot}/${lockfile}`,
