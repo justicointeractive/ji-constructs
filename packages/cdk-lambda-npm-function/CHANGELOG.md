@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-lambda-npm-function-0.1.1...cdk-lambda-npm-function-0.1.2) (2022-08-25)
+
+
+### Bug Fixes
+
+* **lambda-npm-function:** allow overriding bundling options ([3b9e331](https://github.com/justicointeractive/ji-constructs/commit/3b9e3314dcc01309dfadd6efe9653b64c522cb20))
+
 ### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-lambda-npm-function-0.1.0...cdk-lambda-npm-function-0.1.1) (2022-08-22)
 
 ## 0.1.0 (2022-08-22)
