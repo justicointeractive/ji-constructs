@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-lambda-npm-function-0.1.2...cdk-lambda-npm-function-0.1.3) (2022-08-25)
+
+
+### Bug Fixes
+
+* **lambda-npm-function:** force docker bundling ([050bc3e](https://github.com/justicointeractive/ji-constructs/commit/050bc3e8d6351acfb3c3f608418bda64e9775697))
+
 ### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-lambda-npm-function-0.1.1...cdk-lambda-npm-function-0.1.2) (2022-08-25)
 
 
