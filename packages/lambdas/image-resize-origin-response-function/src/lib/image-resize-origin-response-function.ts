@@ -1,4 +1,6 @@
+import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
 import { S3 } from '@aws-sdk/client-s3';
+import { RegionInputConfig } from '@aws-sdk/config-resolver';
 import { ImageResizeInventory } from '@ji-constructs/image-resize-inventory';
 import {
   CloudFrontResponseHandler,
@@ -7,9 +9,12 @@ import {
 import * as sharp from 'sharp';
 import { Readable } from 'stream';
 
-const s3 = new S3({
+const regionConfig: RegionInputConfig = {
   region: 'us-east-1',
-});
+};
+
+const s3 = new S3(regionConfig);
+const dynamodb = new DynamoDBClient(regionConfig);
 
 const resizeUrlExpression =
   /^\/(?<baseName>.*)\.(?<extension>[^.]*);(?<paramString>[^;]*);\.(?<format>[^.]*)$/i;
@@ -44,6 +49,9 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     (inventoryTableName &&
       new ImageResizeInventory({
         tableName: inventoryTableName,
+        s3Bucket: bucket,
+        s3,
+        dynamodb,
       })) ||
     null;
 

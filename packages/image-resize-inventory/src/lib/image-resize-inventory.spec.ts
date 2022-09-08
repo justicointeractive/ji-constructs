@@ -1,4 +1,5 @@
 import { CreateTableCommand, DynamoDBClient } from '@aws-sdk/client-dynamodb';
+import { S3Client } from '@aws-sdk/client-s3';
 import { GetCommand } from '@aws-sdk/lib-dynamodb';
 import { startLocalstackDocker } from '@ji-constructs/start-localstack-docker';
 import { ImageResizeInventory } from './image-resize-inventory';
@@ -12,6 +13,14 @@ describe('updateInventory', () => {
       services: ['dynamodb'],
       edgePort: 6546,
     });
+    const s3 = new S3Client({
+      region: 'us-east-1',
+      credentials: {
+        accessKeyId: 'test',
+        secretAccessKey: 'test',
+      },
+      endpoint: 'http://localhost.localstack.cloud:6546',
+    });
     const dynamodb = new DynamoDBClient({
       region: 'us-east-1',
       credentials: {
@@ -23,6 +32,7 @@ describe('updateInventory', () => {
 
     instance = new ImageResizeInventory({
       tableName: 'testTable',
+      s3,
       dynamodb,
     });
 

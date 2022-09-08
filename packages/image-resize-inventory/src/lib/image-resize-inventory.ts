@@ -1,33 +1,29 @@
 import { DynamoDBClient } from '@aws-sdk/client-dynamodb';
-import { S3Client } from '@aws-sdk/client-s3';
+import { DeleteObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import {
+  DeleteCommand,
   DynamoDBDocumentClient,
   ScanCommand,
   UpdateCommand,
 } from '@aws-sdk/lib-dynamodb';
+import { pick } from 'lodash';
 
 export class ImageResizeInventory {
   ddbDocumentClient: DynamoDBDocumentClient;
   s3: S3Client;
   tableName: string;
+  s3Bucket: string;
 
   constructor(options: {
     tableName: string;
-    dynamodb?: DynamoDBClient;
-    s3?: S3Client;
+    s3Bucket: string;
+    dynamodb: DynamoDBClient;
+    s3: S3Client;
   }) {
     this.tableName = options.tableName;
-    this.ddbDocumentClient = DynamoDBDocumentClient.from(
-      options.dynamodb ??
-        new DynamoDBClient({
-          region: 'us-east-1',
-        })
-    );
-    this.s3 =
-      options.s3 ??
-      new S3Client({
-        region: 'us-east-1',
-      });
+    this.s3Bucket = options.s3Bucket;
+    this.ddbDocumentClient = DynamoDBDocumentClient.from(options.dynamodb);
+    this.s3 = options.s3;
   }
 
   async updateKeyMetadata(
@@ -64,5 +60,20 @@ export class ImageResizeInventory {
     );
     const { Items: expireds } = response;
     return expireds;
+  }
+
+  async deleteExpired(expired: Record<string, any>) {
+    await this.s3.send(
+      new DeleteObjectCommand({
+        Bucket: this.s3Bucket,
+        Key: expired.Key,
+      })
+    );
+    await this.ddbDocumentClient.send(
+      new DeleteCommand({
+        TableName: this.tableName,
+        Key: pick(expired, ['Key', 'BaseKey']),
+      })
+    );
   }
 }
