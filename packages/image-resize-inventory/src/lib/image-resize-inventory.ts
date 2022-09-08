@@ -18,9 +18,16 @@ export class ImageResizeInventory {
   }) {
     this.tableName = options.tableName;
     this.ddbDocumentClient = DynamoDBDocumentClient.from(
-      options.dynamodb ?? new DynamoDBClient({})
+      options.dynamodb ??
+        new DynamoDBClient({
+          region: 'us-east-1',
+        })
     );
-    this.s3 = options.s3 ?? new S3Client({});
+    this.s3 =
+      options.s3 ??
+      new S3Client({
+        region: 'us-east-1',
+      });
   }
 
   async updateKeyMetadata(

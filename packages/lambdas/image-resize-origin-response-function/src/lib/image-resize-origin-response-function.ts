@@ -177,7 +177,6 @@ async function ensureResizedImage(
     CacheControl: `max-age=${params.maxAge}`,
     Key: s3KeyPrefix + params.requestedKey,
     StorageClass: 'STANDARD',
-    // TODO: Tagging: ??? (some way to apply lifecycle policy to derrived images)
   });
 
   await inventoryClient?.updateKeyMetadata(s3KeyPrefix, params);

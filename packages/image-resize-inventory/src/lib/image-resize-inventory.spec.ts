@@ -65,6 +65,25 @@ describe('updateInventory', () => {
         })
       )
     ).toMatchObject({ Item: { BaseKey: 'testPrefix/test/123.png' } });
+    await instance.updateKeyMetadata('testPrefix/', {
+      requestedKey: 'test/123.png;width=100;.avif',
+      baseKey: 'test/123.png',
+      params: {
+        width: '100',
+        format: 'avif',
+      },
+    });
+    expect(
+      await instance.ddbDocumentClient.send(
+        new GetCommand({
+          TableName: 'testTable',
+          Key: {
+            BaseKey: 'testPrefix/test/123.png',
+            Key: 'testPrefix/test/123.png;width=100;.avif',
+          },
+        })
+      )
+    ).toMatchObject({ Item: { BaseKey: 'testPrefix/test/123.png' } });
   });
 
   it('should list an item', async () => {
