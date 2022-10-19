@@ -48,7 +48,12 @@ export class LambdaNpmFunction extends NodejsFunction {
     super(scope, id, {
       bundling: {
         minify: true,
-        forceDockerBundling: true,
+        /**
+         *  DO NOT FORCE DOCKER BUNDLING:
+         *  docker bundling requires the ability to mount a volume in the container
+         *  remote docker (circleci) cannot mount a host volume in the container
+         */
+        // forceDockerBundling: true,
         nodeModules: [
           ...Object.keys(packageJsonContents.dependencies ?? {}),
           ...Object.keys(packageJsonContents.devDependencies ?? {}),
