@@ -72,7 +72,7 @@ export class ImageResizeBehavior extends Construct {
           `${embedRootDir}/packages/lambdas/image-resize-origin-response-function`
         ),
         timeout: Duration.seconds(15),
-        memorySize: 1024,
+        memorySize: 1024 * 2, // per performance tuner 2048 MB had best cost/performance
         ...originResponseLambdaProps,
       }
     );
