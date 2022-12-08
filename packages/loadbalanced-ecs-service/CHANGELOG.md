@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.4.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.3.4...loadbalanced-ecs-service-0.4.0) (2022-12-08)
+
+
+### Features
+
+* **loadbalanced-ecs-service:** allow adding additional domain name/alias rules to load balancer ([d9483d0](https://github.com/justicointeractive/ji-constructs/commit/d9483d0082d155ecb1adfa00be5ae0325f6f122b))
+
 ### [0.3.4](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.3.3...loadbalanced-ecs-service-0.3.4) (2022-08-16)
 
 ### Dependency Updates
