@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.4.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.0...loadbalanced-ecs-service-0.4.1) (2022-12-08)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** accept ICertificate rather than Certificate for aliases ([e4f0a50](https://github.com/justicointeractive/ji-constructs/commit/e4f0a50c7071b3f6016d1269dc7fbae90e2ff2aa))
+
 ## [0.4.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.3.4...loadbalanced-ecs-service-0.4.0) (2022-12-08)
 
 
