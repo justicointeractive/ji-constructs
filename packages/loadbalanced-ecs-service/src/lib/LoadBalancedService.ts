@@ -1,6 +1,9 @@
 import { findPrioritySync } from '@ji-constructs/elb-rule-priority';
 import { Duration } from 'aws-cdk-lib';
-import { DnsValidatedCertificate } from 'aws-cdk-lib/aws-certificatemanager';
+import {
+  Certificate,
+  DnsValidatedCertificate,
+} from 'aws-cdk-lib/aws-certificatemanager';
 import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { Cluster, Ec2Service, ICluster } from 'aws-cdk-lib/aws-ecs';
 import {
@@ -44,6 +47,7 @@ export class LoadBalancedService extends Construct {
       serviceFactory,
       domainName,
       route53ZoneName,
+      domainNameAliases,
     } = options;
 
     const domainZone = (this.hostedZone = HostedZone.fromLookup(
@@ -115,6 +119,20 @@ export class LoadBalancedService extends Construct {
       });
     }
 
+    for (const [i, alias] of (domainNameAliases ?? []).entries()) {
+      new ApplicationListenerRule(this, `ALBListenerRuleAlias${i}`, {
+        listener,
+        priority: findPrioritySync(listenerArn, alias.domainName),
+        conditions: [ListenerCondition.hostHeaders([alias.domainName])],
+        action: ListenerAction.forward([targetGroup]),
+      });
+
+      new ApplicationListenerCertificate(this, `ALBListenerCertAlias${i}`, {
+        listener,
+        certificates: [alias.certificate],
+      });
+    }
+
     const service = serviceFactory(this, cluster, {
       vpc,
       targetGroup,
@@ -125,11 +143,16 @@ export class LoadBalancedService extends Construct {
   }
 }
 
+export interface LoadBalancedServiceAlias {
+  certificate: Certificate;
+  domainName: string;
+}
 export interface LoadBalancedServiceContext {
   domainName: string;
   listener: string | LoadBalancedServiceListenerLookup;
   cluster: ICluster | { name: string; securityGroupIds: string[] };
   route53ZoneName?: string;
+  domainNameAliases?: LoadBalancedServiceAlias[];
 }
 export interface LoadBalancedServiceDefaults {
   createRoute53ARecord?: boolean;
