@@ -1,8 +1,8 @@
 import { findPrioritySync } from '@ji-constructs/elb-rule-priority';
 import { Duration } from 'aws-cdk-lib';
 import {
-  Certificate,
   DnsValidatedCertificate,
+  ICertificate,
 } from 'aws-cdk-lib/aws-certificatemanager';
 import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
 import { Cluster, Ec2Service, ICluster } from 'aws-cdk-lib/aws-ecs';
@@ -144,7 +144,7 @@ export class LoadBalancedService extends Construct {
 }
 
 export interface LoadBalancedServiceAlias {
-  certificate: Certificate;
+  certificate: ICertificate;
   domainName: string;
 }
 export interface LoadBalancedServiceContext {
