@@ -28,6 +28,20 @@
         "main": "packages/cdk-shared-database/src/index.ts",
         "assets": ["packages/cdk-shared-database/*.md"]
       }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["cdk-shared-database:deploy"],
+        "trackDeps": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
     }
   },
   "tags": []
