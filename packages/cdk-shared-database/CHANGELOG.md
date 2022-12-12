@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.0...cdk-shared-database-0.1.1) (2022-12-12)
+
+
+### Bug Fixes
+
+* **shared-db:** fixing lambda when used as a node module ([9481833](https://github.com/justicointeractive/ji-constructs/commit/9481833ea2bba1f74c0b3236d99cfdcfb937ed94))
+
 ## 0.1.0 (2022-12-12)
 
 
