@@ -14,16 +14,16 @@ import { Construct } from 'constructs';
 
 export type SharedDatabaseDatabaseProps = {
   databaseInstanceName: string;
-} & (
-  | {
-      sharedDatabase: DatabaseInstance | DatabaseCluster;
-    }
-  | {
-      sharedDbSecret: ISecret;
-      vpc: IVpc;
-      securityGroups: ISecurityGroup[];
-    }
-);
+
+  sharedDatabase:
+    | DatabaseInstance
+    | DatabaseCluster
+    | {
+        secret: ISecret;
+        vpc: IVpc;
+        securityGroups: ISecurityGroup[];
+      };
+};
 
 export class SharedDatabaseDatabase extends Construct {
   databaseInstance: DatabaseSecret;
@@ -43,15 +43,13 @@ export class SharedDatabaseDatabase extends Construct {
       }
     ));
 
-    const secret =
-      'sharedDbSecret' in props
-        ? props.sharedDbSecret
-        : props.sharedDatabase.secret;
+    const {
+      sharedDatabase: { secret, vpc, ...sharedDatabase },
+    } = props;
     const securityGroups =
-      'securityGroups' in props
-        ? props.securityGroups
-        : props.sharedDatabase.connections.securityGroups;
-    const vpc = 'vpc' in props ? props.vpc : props.sharedDatabase.vpc;
+      'securityGroups' in sharedDatabase
+        ? sharedDatabase.securityGroups
+        : sharedDatabase.connections.securityGroups;
 
     assert(secret, 'secret must be attached to database instance');
 

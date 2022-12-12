@@ -38,27 +38,23 @@ describe('cdkSharedDatabase', () => {
 
     const stack = new Stack(app, 'TestStack');
 
-    const secret = Secret.fromSecretNameV2(
-      stack,
-      'SharedDbSecret',
-      'shareddb/secret'
-    );
-
-    const vpc = Vpc.fromVpcAttributes(stack, 'Vpc', {
-      availabilityZones: ['us-abc-123'],
-      publicSubnetIds: ['subnet-123'],
-      vpcId: 'vpc-123',
-    });
-
-    const securityGroups = [
-      SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'sg-123'),
-    ];
-
     new SharedDatabaseDatabase(stack, 'InstanceDb', {
       databaseInstanceName: 'instancedb',
-      sharedDbSecret: secret,
-      securityGroups,
-      vpc,
+      sharedDatabase: {
+        secret: Secret.fromSecretNameV2(
+          stack,
+          'SharedDbSecret',
+          'shareddb/secret-123'
+        ),
+        securityGroups: [
+          SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'sg-123'),
+        ],
+        vpc: Vpc.fromVpcAttributes(stack, 'Vpc', {
+          availabilityZones: ['us-abc-123'],
+          publicSubnetIds: ['subnet-123'],
+          vpcId: 'vpc-123',
+        }),
+      },
     });
 
     const template = Template.fromStack(stack);
