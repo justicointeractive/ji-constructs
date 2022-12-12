@@ -36,7 +36,8 @@
       ],
       "cdk-lambda-npm-function": [
         "packages/cdk-lambda-npm-function/src/index.ts"
-      ]
+      ],
+      "cdk-shared-database": ["packages/cdk-shared-database/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

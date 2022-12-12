@@ -11,7 +11,8 @@
     "start-localstack-docker",
     "ecs-jwt-keypair",
     "image-resize-behavior",
-    "lambda-npm-function"
+    "lambda-npm-function",
+    "shared-db"
   ],
   "conventionalCommits.gitmoji": false
 }
