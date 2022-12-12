@@ -61,7 +61,8 @@ export class SharedDatabaseDatabase extends Construct {
       timeout: Duration.minutes(10),
       vpc,
       bundling: {
-        externalModules: ['pg-native'],
+        nodeModules: ['pg'],
+        forceDockerBundling: true,
       },
       allowPublicSubnet: true,
     });
