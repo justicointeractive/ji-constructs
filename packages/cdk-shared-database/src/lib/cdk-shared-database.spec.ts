@@ -31,6 +31,7 @@ describe('cdkSharedDatabase', () => {
 
     template.resourceCountIs('AWS::SecretsManager::Secret', 2);
     template.resourceCountIs('AWS::RDS::DBInstance', 1);
+    template.resourceCountIs('Custom::SharedDatabaseDatabase', 1);
   });
 
   it('should work with a referenced db instance', () => {
@@ -62,5 +63,6 @@ describe('cdkSharedDatabase', () => {
 
     template.resourceCountIs('AWS::SecretsManager::Secret', 1);
     template.resourceCountIs('AWS::RDS::DBInstance', 0);
+    template.resourceCountIs('Custom::SharedDatabaseDatabase', 1);
   });
 });

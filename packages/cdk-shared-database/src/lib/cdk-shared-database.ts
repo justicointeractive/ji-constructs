@@ -1,5 +1,5 @@
 import assert = require('assert');
-import { Duration } from 'aws-cdk-lib';
+import { CustomResource, Duration } from 'aws-cdk-lib';
 import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
@@ -79,10 +79,6 @@ export class SharedDatabaseDatabase extends Construct {
     }
 
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
-      environment: {
-        SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
-        INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
-      },
       timeout: Duration.minutes(10),
       vpc,
       bundling: {
@@ -107,9 +103,18 @@ export class SharedDatabaseDatabase extends Construct {
     secret.grantRead(role);
     databaseInstanceSecret.grantRead(role);
 
-    new Provider(this, 'Provider', {
+    const dbProvider = new Provider(this, 'Provider', {
       onEventHandler,
       role,
+    });
+
+    const dbResource = new CustomResource(this, 'Db', {
+      serviceToken: dbProvider.serviceToken,
+      resourceType: 'Custom::SharedDatabaseDatabase',
+      properties: {
+        SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
+        INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
+      },
     });
   }
 }

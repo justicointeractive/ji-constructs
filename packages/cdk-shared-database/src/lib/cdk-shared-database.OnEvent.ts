@@ -19,49 +19,8 @@ type EventProps = {
   instanceConnectionObject: DatabaseSecretValue;
 };
 
-const secrets = (async () => {
-  const { SHARED_CONNECTION_SECRET_ARN, INSTANCE_CONNECTION_SECRET_ARN } =
-    process.env;
-  const secrets = new SecretsManager();
-
-  assert(SHARED_CONNECTION_SECRET_ARN);
-  assert(INSTANCE_CONNECTION_SECRET_ARN);
-
-  const sharedConnectionSecret = await secrets
-    .getSecretValue({
-      SecretId: SHARED_CONNECTION_SECRET_ARN,
-    })
-    .promise();
-  const instanceConnectionSecret = await secrets
-    .getSecretValue({
-      SecretId: INSTANCE_CONNECTION_SECRET_ARN,
-    })
-    .promise();
-
-  const sharedConnectionJson = sharedConnectionSecret.SecretString;
-  const instanceConnectionJson = instanceConnectionSecret.SecretString;
-
-  assert(sharedConnectionJson);
-  assert(instanceConnectionJson);
-
-  const sharedConnectionObject = JSON.parse(
-    sharedConnectionJson
-  ) as DatabaseSecretValue;
-
-  const instanceConnectionObject = JSON.parse(
-    instanceConnectionJson
-  ) as DatabaseSecretValue;
-
-  const props: EventProps = {
-    sharedConnectionObject,
-    instanceConnectionObject,
-  };
-
-  return props;
-})();
-
 export const handler: CdkCustomResourceHandler = async (event) => {
-  const props = await secrets;
+  const props: EventProps = await getSecrets(event.ResourceProperties as any);
 
   switch (event.RequestType) {
     case 'Create':
@@ -72,6 +31,48 @@ export const handler: CdkCustomResourceHandler = async (event) => {
       return onDelete(props);
   }
 };
+
+async function getSecrets({
+  SHARED_CONNECTION_SECRET_ARN: sharedConnectionSecretArn,
+  INSTANCE_CONNECTION_SECRET_ARN: instanceConnectionSecretArn,
+}: {
+  SHARED_CONNECTION_SECRET_ARN: string;
+  INSTANCE_CONNECTION_SECRET_ARN: string;
+}) {
+  const sharedConnectionObject = await getSecretAsJson(
+    sharedConnectionSecretArn
+  );
+
+  const instanceConnectionObject = await getSecretAsJson(
+    instanceConnectionSecretArn
+  );
+
+  const props: EventProps = {
+    sharedConnectionObject,
+    instanceConnectionObject,
+  };
+  return props;
+}
+
+async function getSecretAsJson(secretArn: string) {
+  const secrets = new SecretsManager();
+
+  assert(secretArn);
+
+  const secretResponse = await secrets
+    .getSecretValue({
+      SecretId: secretArn,
+    })
+    .promise();
+
+  const secretString = secretResponse.SecretString;
+
+  assert(secretString);
+
+  const secretJsonObject = JSON.parse(secretString) as DatabaseSecretValue;
+
+  return secretJsonObject;
+}
 
 async function onCreate(props: EventProps): Promise<CdkCustomResourceResponse> {
   const provider = providers[props.sharedConnectionObject.engine];
