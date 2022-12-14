@@ -54,6 +54,7 @@ describe('cdkSharedDatabase', () => {
         vpc: Vpc.fromVpcAttributes(stack, 'Vpc', {
           availabilityZones: ['us-abc-123'],
           publicSubnetIds: ['subnet-123'],
+          privateSubnetIds: ['subnet-234'],
           vpcId: 'vpc-123',
         }),
       },
