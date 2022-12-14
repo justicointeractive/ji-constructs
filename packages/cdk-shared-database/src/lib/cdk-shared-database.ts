@@ -8,7 +8,11 @@ import {
   DatabaseInstance,
   DatabaseSecret,
 } from 'aws-cdk-lib/aws-rds';
-import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
+import {
+  AttachmentTargetType,
+  ISecret,
+  SecretAttachmentTargetProps,
+} from 'aws-cdk-lib/aws-secretsmanager';
 import { Provider } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
@@ -18,15 +22,20 @@ export type SharedDatabaseDatabaseProps = {
   sharedDatabase:
     | DatabaseInstance
     | DatabaseCluster
-    | {
+    | ({
         secret: ISecret;
         vpc: IVpc;
         securityGroups: ISecurityGroup[];
-      };
+      } & (
+        | { instanceIdentifier: string }
+        | {
+            clusterIdentifier: string;
+          }
+      ));
 };
 
 export class SharedDatabaseDatabase extends Construct {
-  databaseInstance: DatabaseSecret;
+  databaseInstanceSecret: DatabaseSecret;
 
   constructor(
     scope: Construct,
@@ -35,13 +44,10 @@ export class SharedDatabaseDatabase extends Construct {
   ) {
     super(scope, id);
 
-    const databaseInstance = (this.databaseInstance = new DatabaseSecret(
-      this,
-      'InstanceSecret',
-      {
+    const databaseInstanceSecret = (this.databaseInstanceSecret =
+      new DatabaseSecret(this, 'InstanceSecret', {
         username: databaseInstanceName,
-      }
-    ));
+      }));
 
     const {
       sharedDatabase: { secret, vpc, ...sharedDatabase },
@@ -53,10 +59,29 @@ export class SharedDatabaseDatabase extends Construct {
 
     assert(secret, 'secret must be attached to database instance');
 
+    const secretTarget: SecretAttachmentTargetProps | null =
+      'instanceIdentifier' in sharedDatabase
+        ? {
+            targetType: AttachmentTargetType.RDS_DB_INSTANCE,
+            targetId: sharedDatabase.instanceIdentifier,
+          }
+        : 'clusterIdentifier' in sharedDatabase
+        ? {
+            targetType: AttachmentTargetType.RDS_DB_CLUSTER,
+            targetId: sharedDatabase.clusterIdentifier,
+          }
+        : null;
+
+    if (secretTarget) {
+      databaseInstanceSecret.attach({
+        asSecretAttachmentTarget: () => secretTarget,
+      });
+    }
+
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
       environment: {
         SHARED_CONNECTION_JSON: secret.secretValue.toJSON(),
-        INSTANCE_CONNECTION_JSON: databaseInstance.secretValue.toJSON(),
+        INSTANCE_CONNECTION_JSON: databaseInstanceSecret.secretValue.toJSON(),
       },
       timeout: Duration.minutes(10),
       vpc,

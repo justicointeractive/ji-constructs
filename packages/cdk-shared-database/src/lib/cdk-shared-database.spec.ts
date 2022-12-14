@@ -41,6 +41,7 @@ describe('cdkSharedDatabase', () => {
     new SharedDatabaseDatabase(stack, 'InstanceDb', {
       databaseInstanceName: 'instancedb',
       sharedDatabase: {
+        instanceIdentifier: 'abc-123',
         secret: Secret.fromSecretNameV2(
           stack,
           'SharedDbSecret',
