@@ -79,7 +79,7 @@ export class SharedDatabaseDatabase extends Construct {
     }
 
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
-      timeout: Duration.minutes(10),
+      timeout: Duration.minutes(1),
       vpc,
       bundling: {
         nodeModules: ['pg'],
