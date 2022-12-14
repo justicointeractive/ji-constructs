@@ -2,6 +2,15 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.15](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.14...cdk-shared-database-0.1.15) (2022-12-14)
+
+
+### Bug Fixes
+
+* **shared-db:** resolve circular dependency ([e0ca75e](https://github.com/justicointeractive/ji-constructs/commit/e0ca75e82ef62c2ec88f2d04e05fdbc0fa1ad6a5))
+* **shared-db:** try splitting lambdas ([fde20a5](https://github.com/justicointeractive/ji-constructs/commit/fde20a5a7ca3c0d5d64a443da0fe8eebdcbe6c6a))
+* **shared-db:** try two lambdas, one in vpc the other outside ([35669ea](https://github.com/justicointeractive/ji-constructs/commit/35669ea46660bf74282fb67e5cf8c3583eef9f94))
+
 ### [0.1.14](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.13...cdk-shared-database-0.1.14) (2022-12-14)
 
 ### [0.1.13](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.12...cdk-shared-database-0.1.13) (2022-12-14)
