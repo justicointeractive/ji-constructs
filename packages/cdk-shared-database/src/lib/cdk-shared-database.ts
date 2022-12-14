@@ -111,8 +111,8 @@ export class SharedDatabaseDatabase extends Construct {
       serviceToken: dbProvider.serviceToken,
       resourceType: 'Custom::SharedDatabaseDatabase',
       properties: {
-        SHARED_CONNECTION_JSON: secret.secretValue,
-        INSTANCE_CONNECTION_JSON: databaseInstanceSecret.secretValue,
+        SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
+        INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
       },
     });
 
