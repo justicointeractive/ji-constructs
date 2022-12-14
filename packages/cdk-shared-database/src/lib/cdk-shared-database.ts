@@ -1,7 +1,7 @@
 import assert = require('assert');
 import { Duration } from 'aws-cdk-lib';
 import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
-import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
+import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
   DatabaseCluster,
@@ -72,6 +72,9 @@ export class SharedDatabaseDatabase extends Construct {
 
     const role = new Role(this, 'ProviderRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
+      managedPolicies: [
+        ManagedPolicy.fromAwsManagedPolicyName('AWSLambdaBasicExecutionRole'),
+      ],
     });
 
     secret.grantRead(role);
