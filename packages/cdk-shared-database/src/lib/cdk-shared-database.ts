@@ -84,7 +84,6 @@ export class SharedDatabaseDatabase extends Construct {
       bundling: {
         nodeModules: ['pg'],
       },
-      allowPublicSubnet: true,
     });
 
     for (const securityGroup of securityGroups) {
