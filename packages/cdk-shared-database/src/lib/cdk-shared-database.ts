@@ -1,6 +1,6 @@
 import assert = require('assert');
 import { CustomResource, Duration } from 'aws-cdk-lib';
-import { ISecurityGroup, IVpc, Port, SubnetType } from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
@@ -93,7 +93,6 @@ export class SharedDatabaseDatabase extends Construct {
       bundling: {
         nodeModules: ['pg'],
       },
-      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
       role,
     });
 
