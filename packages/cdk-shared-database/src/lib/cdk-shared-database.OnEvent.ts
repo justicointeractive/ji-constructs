@@ -59,6 +59,8 @@ async function getSecretAsJson(secretArn: string) {
 
   assert(secretArn);
 
+  console.log(`retrieving secret '${secretArn}'`);
+
   const secretResponse = await secrets
     .getSecretValue({
       SecretId: secretArn,
@@ -66,6 +68,8 @@ async function getSecretAsJson(secretArn: string) {
     .promise();
 
   const secretString = secretResponse.SecretString;
+
+  console.log(`retrieved secret '${secretArn}'`);
 
   assert(secretString);
 
@@ -106,7 +110,13 @@ const postgresProvider = {
       ...sharedConnectionObject,
       user: sharedConnectionObject.username,
     });
+    console.log(
+      `connecting to pg '${sharedConnectionObject.host}:${sharedConnectionObject.port}`
+    );
     await client.connect();
+    console.log(
+      `connected to pg '${sharedConnectionObject.host}:${sharedConnectionObject.port}`
+    );
     return client;
   },
   async create(props: EventProps) {
