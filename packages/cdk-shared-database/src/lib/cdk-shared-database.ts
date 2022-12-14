@@ -73,7 +73,9 @@ export class SharedDatabaseDatabase extends Construct {
     const role = new Role(this, 'ProviderRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName('AWSLambdaBasicExecutionRole'),
+        ManagedPolicy.fromAwsManagedPolicyName(
+          'service-role/AWSLambdaBasicExecutionRole'
+        ),
       ],
     });
 
