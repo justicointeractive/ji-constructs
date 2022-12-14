@@ -94,7 +94,6 @@ export class SharedDatabaseDatabase extends Construct {
         nodeModules: ['pg'],
       },
       vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
-      handler: 'vpcHandler',
       role,
     });
 
@@ -103,7 +102,6 @@ export class SharedDatabaseDatabase extends Construct {
       bundling: {
         nodeModules: ['pg'],
       },
-      handler: 'handler',
       role,
     });
 
