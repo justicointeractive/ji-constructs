@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.4](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.3...cdk-shared-database-0.1.4) (2022-12-14)
+
+
+### Bug Fixes
+
+* **shared-db:** fix managed role name ([75f7af7](https://github.com/justicointeractive/ji-constructs/commit/75f7af7d27b3d9e52ab181f763c045c8571074a9))
+
 ### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.2...cdk-shared-database-0.1.3) (2022-12-14)
 
 
