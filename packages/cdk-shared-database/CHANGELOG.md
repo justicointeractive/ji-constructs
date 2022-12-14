@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.14](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.13...cdk-shared-database-0.1.14) (2022-12-14)
+
 ### [0.1.13](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.12...cdk-shared-database-0.1.13) (2022-12-14)
 
 
