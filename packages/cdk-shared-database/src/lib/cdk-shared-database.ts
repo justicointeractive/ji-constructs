@@ -80,8 +80,8 @@ export class SharedDatabaseDatabase extends Construct {
 
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
       environment: {
-        SHARED_CONNECTION_JSON: secret.secretValue.toJSON(),
-        INSTANCE_CONNECTION_JSON: databaseInstanceSecret.secretValue.toJSON(),
+        SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
+        INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
       },
       timeout: Duration.minutes(10),
       vpc,
@@ -105,6 +105,7 @@ export class SharedDatabaseDatabase extends Construct {
     });
 
     secret.grantRead(role);
+    databaseInstanceSecret.grantRead(role);
 
     new Provider(this, 'Provider', {
       onEventHandler,

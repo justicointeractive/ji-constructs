@@ -2,6 +2,7 @@ import type {
   CdkCustomResourceHandler,
   CdkCustomResourceResponse,
 } from 'aws-lambda';
+import { SecretsManager } from 'aws-sdk';
 import assert = require('assert');
 
 type DatabaseSecretValue = {
@@ -18,23 +19,49 @@ type EventProps = {
   instanceConnectionObject: DatabaseSecretValue;
 };
 
-export const handler: CdkCustomResourceHandler = async (event) => {
-  const { SHARED_CONNECTION_JSON, INSTANCE_CONNECTION_JSON } = process.env;
+const secrets = (async () => {
+  const { SHARED_CONNECTION_SECRET_ARN, INSTANCE_CONNECTION_SECRET_ARN } =
+    process.env;
+  const secrets = new SecretsManager();
 
-  assert(SHARED_CONNECTION_JSON);
-  assert(INSTANCE_CONNECTION_JSON);
+  assert(SHARED_CONNECTION_SECRET_ARN);
+  assert(INSTANCE_CONNECTION_SECRET_ARN);
+
+  const sharedConnectionSecret = await secrets
+    .getSecretValue({
+      SecretId: SHARED_CONNECTION_SECRET_ARN,
+    })
+    .promise();
+  const instanceConnectionSecret = await secrets
+    .getSecretValue({
+      SecretId: INSTANCE_CONNECTION_SECRET_ARN,
+    })
+    .promise();
+
+  const sharedConnectionJson = sharedConnectionSecret.SecretString;
+  const instanceConnectionJson = instanceConnectionSecret.SecretString;
+
+  assert(sharedConnectionJson);
+  assert(instanceConnectionJson);
 
   const sharedConnectionObject = JSON.parse(
-    SHARED_CONNECTION_JSON
+    sharedConnectionJson
   ) as DatabaseSecretValue;
+
   const instanceConnectionObject = JSON.parse(
-    INSTANCE_CONNECTION_JSON
+    instanceConnectionJson
   ) as DatabaseSecretValue;
 
   const props: EventProps = {
     sharedConnectionObject,
     instanceConnectionObject,
   };
+
+  return props;
+})();
+
+export const handler: CdkCustomResourceHandler = async (event) => {
+  const props = await secrets;
 
   switch (event.RequestType) {
     case 'Create':
