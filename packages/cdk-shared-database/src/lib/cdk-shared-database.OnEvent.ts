@@ -70,6 +70,36 @@ async function onDelete(props: EventProps): Promise<CdkCustomResourceResponse> {
   };
 }
 
+const postgresProvider = {
+  async connect(props: EventProps) {
+    const { sharedConnectionObject } = props;
+    const pg = await import('pg');
+    const client = new pg.Client({
+      ...sharedConnectionObject,
+      user: sharedConnectionObject.username,
+    });
+    await client.connect();
+    return client;
+  },
+  async create(props: EventProps) {
+    const { instanceConnectionObject } = props;
+    const client = await this.connect(props);
+    await client.query(`
+        create database ${instanceConnectionObject.username};
+        create user ${instanceConnectionObject.username} with encrypted password '${instanceConnectionObject.password}';
+        grant all privileges on database ${instanceConnectionObject.username} to ${instanceConnectionObject.username};
+      `);
+  },
+  async delete(props: EventProps) {
+    const { instanceConnectionObject } = props;
+    const client = await this.connect(props);
+    await client.query(`
+        drop database if exists ${instanceConnectionObject.username};
+        drop user if exists ${instanceConnectionObject.username};
+      `);
+  },
+};
+
 const providers: Record<
   string,
   | {
@@ -78,33 +108,5 @@ const providers: Record<
     }
   | undefined
 > = {
-  postgres: {
-    create: async (props) => {
-      const { sharedConnectionObject, instanceConnectionObject } = props;
-      const pg = await import('pg');
-      const client = new pg.Client({
-        ...sharedConnectionObject,
-        user: sharedConnectionObject.username,
-      });
-      await client.connect();
-      await client.query(`
-        create database ${instanceConnectionObject.username};
-        create user ${instanceConnectionObject.username} with encrypted password '${instanceConnectionObject.password}';
-        grant all privileges on database ${instanceConnectionObject.username} to ${instanceConnectionObject.username};
-      `);
-    },
-    delete: async (props) => {
-      const { sharedConnectionObject, instanceConnectionObject } = props;
-      const pg = await import('pg');
-      const client = new pg.Client({
-        ...sharedConnectionObject,
-        user: sharedConnectionObject.username,
-      });
-      await client.connect();
-      await client.query(`
-        drop database if exists ${instanceConnectionObject.username};
-        drop user if exists ${instanceConnectionObject.username};
-      `);
-    },
-  },
+  postgres: postgresProvider,
 };
