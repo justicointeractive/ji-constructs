@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.2...cdk-shared-database-0.1.3) (2022-12-14)
+
+
+### Bug Fixes
+
+* **shared-db:** give custom resource framework lambda AWSLambdaBasicExecutionRole ([163748e](https://github.com/justicointeractive/ji-constructs/commit/163748e3192d68561b777fd2dab03c04c4ace5bf))
+
 ### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.1...cdk-shared-database-0.1.2) (2022-12-14)
 
 
