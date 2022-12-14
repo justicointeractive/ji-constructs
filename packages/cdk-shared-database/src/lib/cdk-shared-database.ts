@@ -1,6 +1,6 @@
 import assert = require('assert');
 import { CustomResource, Duration } from 'aws-cdk-lib';
-import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
+import { ISecurityGroup, IVpc, Port, SubnetType } from 'aws-cdk-lib/aws-ec2';
 import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
@@ -78,18 +78,6 @@ export class SharedDatabaseDatabase extends Construct {
       });
     }
 
-    const onEventHandler = new NodejsFunction(this, 'OnEvent', {
-      timeout: Duration.minutes(1),
-      vpc,
-      bundling: {
-        nodeModules: ['pg'],
-      },
-    });
-
-    for (const securityGroup of securityGroups) {
-      onEventHandler.connections.allowTo(securityGroup, Port.allTraffic());
-    }
-
     const role = new Role(this, 'ProviderRole', {
       assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
       managedPolicies: [
@@ -98,6 +86,30 @@ export class SharedDatabaseDatabase extends Construct {
         ),
       ],
     });
+
+    const onEventHandlerVpc = new NodejsFunction(this, 'OnEventVpc', {
+      timeout: Duration.minutes(1),
+      vpc,
+      bundling: {
+        nodeModules: ['pg'],
+      },
+      vpcSubnets: { subnetType: SubnetType.PRIVATE_WITH_EGRESS },
+      handler: 'vpcHandler',
+      role,
+    });
+
+    const onEventHandler = new NodejsFunction(this, 'OnEvent', {
+      timeout: Duration.minutes(1),
+      bundling: {
+        nodeModules: ['pg'],
+      },
+      handler: 'handler',
+      role,
+    });
+
+    for (const securityGroup of securityGroups) {
+      onEventHandlerVpc.connections.allowTo(securityGroup, Port.allTraffic());
+    }
 
     secret.grantRead(role);
     databaseInstanceSecret.grantRead(role);
@@ -113,6 +125,7 @@ export class SharedDatabaseDatabase extends Construct {
       properties: {
         SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
         INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
+        VPC_LAMBDA_ARN: onEventHandlerVpc.functionArn,
       },
     });
 
