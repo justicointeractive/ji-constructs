@@ -62,7 +62,6 @@ export class SharedDatabaseDatabase extends Construct {
       vpc,
       bundling: {
         nodeModules: ['pg'],
-        forceDockerBundling: true,
       },
       allowPublicSubnet: true,
     });

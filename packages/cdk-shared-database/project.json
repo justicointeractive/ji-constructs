@@ -26,7 +26,8 @@
         "tsConfig": "packages/cdk-shared-database/tsconfig.lib.json",
         "packageJson": "packages/cdk-shared-database/package.json",
         "main": "packages/cdk-shared-database/src/index.ts",
-        "assets": ["packages/cdk-shared-database/*.md"]
+        "assets": ["packages/cdk-shared-database/*.md"],
+        "generatePackageJson": true
       }
     },
     "version": {
