@@ -2,7 +2,6 @@ import type {
   CdkCustomResourceHandler,
   CdkCustomResourceResponse,
 } from 'aws-lambda';
-import { SecretsManager } from 'aws-sdk';
 import assert = require('assert');
 
 type DatabaseSecretValue = {
@@ -33,18 +32,16 @@ export const handler: CdkCustomResourceHandler = async (event) => {
 };
 
 async function getSecrets({
-  SHARED_CONNECTION_SECRET_ARN: sharedConnectionSecretArn,
-  INSTANCE_CONNECTION_SECRET_ARN: instanceConnectionSecretArn,
+  SHARED_CONNECTION_JSON: sharedConnectionJson,
+  INSTANCE_CONNECTION_JSON: instanceConnectionJson,
 }: {
-  SHARED_CONNECTION_SECRET_ARN: string;
-  INSTANCE_CONNECTION_SECRET_ARN: string;
+  SHARED_CONNECTION_JSON: string;
+  INSTANCE_CONNECTION_JSON: string;
 }) {
-  const sharedConnectionObject = await getSecretAsJson(
-    sharedConnectionSecretArn
-  );
+  const sharedConnectionObject = await getSecretAsJson(sharedConnectionJson);
 
   const instanceConnectionObject = await getSecretAsJson(
-    instanceConnectionSecretArn
+    instanceConnectionJson
   );
 
   const props: EventProps = {
@@ -54,23 +51,8 @@ async function getSecrets({
   return props;
 }
 
-async function getSecretAsJson(secretArn: string) {
-  const secrets = new SecretsManager();
-
-  assert(secretArn);
-
-  const secretResponse = await secrets
-    .getSecretValue({
-      SecretId: secretArn,
-    })
-    .promise();
-
-  const secretString = secretResponse.SecretString;
-
-  assert(secretString);
-
+async function getSecretAsJson(secretString: string) {
   const secretJsonObject = JSON.parse(secretString) as DatabaseSecretValue;
-
   return secretJsonObject;
 }
 
