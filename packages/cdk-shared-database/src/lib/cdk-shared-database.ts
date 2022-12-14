@@ -116,5 +116,7 @@ export class SharedDatabaseDatabase extends Construct {
         INSTANCE_CONNECTION_JSON: databaseInstanceSecret.secretValue,
       },
     });
+
+    dbResource.node.addDependency(secret, databaseInstanceSecret);
   }
 }
