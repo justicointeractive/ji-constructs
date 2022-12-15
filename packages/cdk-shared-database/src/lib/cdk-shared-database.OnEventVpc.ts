@@ -2,6 +2,7 @@ import type {
   CdkCustomResourceHandler,
   CdkCustomResourceResponse,
 } from 'aws-lambda';
+import { postgresProvider } from './postgres-provider';
 import { EventProps } from './types';
 import assert = require('assert');
 
@@ -44,44 +45,6 @@ async function onDelete(props: EventProps): Promise<CdkCustomResourceResponse> {
     PhysicalResourceId: props.sharedConnectionObject.username,
   };
 }
-
-const postgresProvider = {
-  async connect(props: EventProps) {
-    const { sharedConnectionObject } = props;
-    const pg = await import('pg');
-    const client = new pg.Client({
-      ...sharedConnectionObject,
-      user: sharedConnectionObject.username,
-    });
-    console.log(
-      `connecting to pg '${sharedConnectionObject.host}:${sharedConnectionObject.port}`
-    );
-    await client.connect();
-    console.log(
-      `connected to pg '${sharedConnectionObject.host}:${sharedConnectionObject.port}`
-    );
-    return client;
-  },
-  async create(props: EventProps) {
-    const { instanceConnectionObject } = props;
-    const client = await this.connect(props);
-    await client.query(`
-        SET AUTOCOMMIT = ON;
-        create database ${instanceConnectionObject.username};
-        create user ${instanceConnectionObject.username} with encrypted password '${instanceConnectionObject.password}';
-        grant all privileges on database ${instanceConnectionObject.username} to ${instanceConnectionObject.username};
-      `);
-  },
-  async delete(props: EventProps) {
-    const { instanceConnectionObject } = props;
-    const client = await this.connect(props);
-    await client.query(`
-        SET AUTOCOMMIT = ON;
-        drop database if exists ${instanceConnectionObject.username};
-        drop user if exists ${instanceConnectionObject.username};
-      `);
-  },
-};
 
 const providers: Record<
   string,

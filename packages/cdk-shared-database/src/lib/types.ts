@@ -11,3 +11,8 @@ export type EventProps = {
   sharedConnectionObject: DatabaseSecretValue;
   instanceConnectionObject: DatabaseSecretValue;
 };
+
+export type Credentials = {
+  username: string;
+  password: string;
+};
