@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.17](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.16...cdk-shared-database-0.1.17) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** grant vpc lambda required role ([a77d870](https://github.com/justicointeractive/ji-constructs/commit/a77d870ddba2cdc99ff21e1de2dbdda018a24dc7))
+
 ### [0.1.16](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.15...cdk-shared-database-0.1.16) (2022-12-14)
 
 
