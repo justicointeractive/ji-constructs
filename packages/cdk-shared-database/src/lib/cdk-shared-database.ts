@@ -39,7 +39,7 @@ export type SharedDatabaseDatabaseProps = {
 };
 
 export class SharedDatabaseDatabase extends Construct implements IConnectable {
-  databaseInstanceSecret: DatabaseSecret;
+  secret: DatabaseSecret;
   connections: Connections;
 
   constructor(
@@ -49,10 +49,13 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
   ) {
     super(scope, id);
 
-    const databaseInstanceSecret = (this.databaseInstanceSecret =
-      new DatabaseSecret(this, 'InstanceSecret', {
+    const databaseInstanceSecret = (this.secret = new DatabaseSecret(
+      this,
+      'InstanceSecret',
+      {
         username: databaseInstanceName,
-      }));
+      }
+    ));
 
     const {
       sharedDatabase: { secret, vpc, ...sharedDatabase },
