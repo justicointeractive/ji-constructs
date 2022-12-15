@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.20](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.19...cdk-shared-database-0.1.20) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** fix vpc handler name ([cef1a02](https://github.com/justicointeractive/ji-constructs/commit/cef1a020f076e8115644f4930c655db0669ac48f))
+
 ### [0.1.19](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.18...cdk-shared-database-0.1.19) (2022-12-15)
 
 
