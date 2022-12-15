@@ -1,6 +1,6 @@
 {
   "name": "cdk-shared-database",
-  "version": "0.1.23",
+  "version": "0.1.24",
   "peerDependencies": {
     "pg": "^8.8.0"
   }
