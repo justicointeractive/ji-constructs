@@ -6,6 +6,7 @@ import {
   ISecurityGroup,
   IVpc,
   Port,
+  SecurityGroup,
 } from 'aws-cdk-lib/aws-ec2';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
@@ -16,6 +17,7 @@ import {
 import {
   AttachmentTargetType,
   ISecret,
+  Secret,
   SecretAttachmentTargetProps,
 } from 'aws-cdk-lib/aws-secretsmanager';
 import { Provider } from 'aws-cdk-lib/custom-resources';
@@ -26,8 +28,8 @@ export type ExternalDatabase = (
   | { instanceIdentifier: string }
 ) & {
   defaultPort: Port;
-  securityGroups: ISecurityGroup[];
-  secret: ISecret;
+  securityGroups: (ISecurityGroup | string)[];
+  secret: ISecret | string;
   vpc: IVpc;
 };
 
@@ -59,15 +61,30 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
     ));
 
     const {
-      sharedDatabase: { secret, vpc, ...sharedDatabase },
+      sharedDatabase: { vpc, ...sharedDatabase },
     } = props;
+
+    const secret =
+      typeof sharedDatabase.secret === 'string'
+        ? sharedDatabase.secret.startsWith('arn:')
+          ? Secret.fromSecretCompleteArn(
+              this,
+              'SecretByName',
+              sharedDatabase.secret
+            )
+          : Secret.fromSecretNameV2(this, 'SecretByName', sharedDatabase.secret)
+        : sharedDatabase.secret;
 
     this.connections =
       'connections' in sharedDatabase
         ? sharedDatabase.connections
         : new Connections({
             defaultPort: sharedDatabase.defaultPort,
-            securityGroups: sharedDatabase.securityGroups,
+            securityGroups: sharedDatabase.securityGroups.map((sg, i) =>
+              typeof sg === 'string'
+                ? SecurityGroup.fromLookupById(this, `SecurityGroup${i}`, sg)
+                : sg
+            ),
           });
 
     assert(secret, 'secret must be attached to database instance');

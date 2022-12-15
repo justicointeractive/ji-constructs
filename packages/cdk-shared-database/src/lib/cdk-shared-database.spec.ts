@@ -1,11 +1,10 @@
 import { Template } from 'aws-cdk-lib/assertions';
-import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { Port, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
   DatabaseInstance,
   DatabaseInstanceEngine,
   PostgresEngineVersion,
 } from 'aws-cdk-lib/aws-rds';
-import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
 import { App, Stack } from 'aws-cdk-lib/core';
 import { SharedDatabaseDatabase } from './cdk-shared-database';
 
@@ -44,14 +43,8 @@ describe('cdkSharedDatabase', () => {
       sharedDatabase: {
         instanceIdentifier: 'abc-123',
         defaultPort: Port.tcp(5432),
-        secret: Secret.fromSecretNameV2(
-          stack,
-          'SharedDbSecret',
-          'shareddb/secret-123'
-        ),
-        securityGroups: [
-          SecurityGroup.fromSecurityGroupId(stack, 'SecurityGroup', 'sg-123'),
-        ],
+        secret: 'shareddb/secret-123',
+        securityGroups: ['sg-123'],
         vpc: Vpc.fromVpcAttributes(stack, 'Vpc', {
           availabilityZones: ['us-abc-123'],
           publicSubnetIds: ['subnet-123'],
