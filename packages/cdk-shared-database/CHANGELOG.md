@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.31](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.30...cdk-shared-database-0.1.31) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** don't lookup security group if not needed ([f3518c5](https://github.com/justicointeractive/ji-constructs/commit/f3518c5e2a0762b9514bf9b75a17731cfe9349a6))
+
 ### [0.1.30](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.29...cdk-shared-database-0.1.30) (2022-12-15)
 
 
