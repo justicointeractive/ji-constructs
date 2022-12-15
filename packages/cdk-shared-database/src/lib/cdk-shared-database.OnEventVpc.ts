@@ -66,7 +66,7 @@ const postgresProvider = {
     const { instanceConnectionObject } = props;
     const client = await this.connect(props);
     await client.query(`
-        SET AUTOCOMMIT = ON
+        SET AUTOCOMMIT = ON;
         create database ${instanceConnectionObject.username};
         create user ${instanceConnectionObject.username} with encrypted password '${instanceConnectionObject.password}';
         grant all privileges on database ${instanceConnectionObject.username} to ${instanceConnectionObject.username};
@@ -76,7 +76,7 @@ const postgresProvider = {
     const { instanceConnectionObject } = props;
     const client = await this.connect(props);
     await client.query(`
-        SET AUTOCOMMIT = ON
+        SET AUTOCOMMIT = ON;
         drop database if exists ${instanceConnectionObject.username};
         drop user if exists ${instanceConnectionObject.username};
       `);
