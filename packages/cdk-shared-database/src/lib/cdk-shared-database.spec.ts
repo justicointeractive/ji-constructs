@@ -1,5 +1,5 @@
 import { Template } from 'aws-cdk-lib/assertions';
-import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
+import { Port, SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
   DatabaseInstance,
   DatabaseInstanceEngine,
@@ -43,6 +43,7 @@ describe('cdkSharedDatabase', () => {
       databaseInstanceName: 'instancedb',
       sharedDatabase: {
         instanceIdentifier: 'abc-123',
+        defaultPort: Port.tcp(5432),
         secret: Secret.fromSecretNameV2(
           stack,
           'SharedDbSecret',

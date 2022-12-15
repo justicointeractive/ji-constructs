@@ -25,6 +25,7 @@ export type ExternalDatabase = (
   | { clusterIdentifier: string }
   | { instanceIdentifier: string }
 ) & {
+  defaultPort: Port;
   securityGroups: ISecurityGroup[];
   secret: ISecret;
   vpc: IVpc;
@@ -65,6 +66,7 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
       'connections' in sharedDatabase
         ? sharedDatabase.connections
         : new Connections({
+            defaultPort: sharedDatabase.defaultPort,
             securityGroups: sharedDatabase.securityGroups,
           });
 
@@ -97,7 +99,7 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
       },
     });
 
-    this.connections.allowFrom(onEventHandlerVpc, Port.allTraffic());
+    this.connections.allowDefaultPortFrom(onEventHandlerVpc);
 
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
       timeout: Duration.minutes(1),
