@@ -109,11 +109,11 @@ export class SharedDatabaseDatabase extends Construct {
     const dbResource = new CustomResource(this, 'Db', {
       serviceToken: dbProvider.serviceToken,
       resourceType: 'Custom::SharedDatabaseDatabase',
+      removalPolicy: props.removalPolicy,
       properties: {
         SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
         INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
         VPC_LAMBDA_ARN: onEventHandlerVpc.functionArn,
-        removalPolicy: props.removalPolicy,
       },
     });
 

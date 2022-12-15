@@ -16,11 +16,7 @@ export const handler: CdkCustomResourceHandler = async (event) => {
     case 'Update':
       return onCreate(props);
     case 'Delete':
-      if (event.ResourceProperties.removalPolicy === 'destroy') {
-        return onDelete(props);
-      } else {
-        return noop(props);
-      }
+      return onDelete(props);
   }
 };
 
@@ -43,11 +39,6 @@ async function onDelete(props: EventProps): Promise<CdkCustomResourceResponse> {
     `Engine '${props.instanceConnectionObject.engine}' is not implemented`
   );
   await provider.delete(props);
-  return {
-    PhysicalResourceId: props.instanceConnectionObject.username,
-  };
-}
-async function noop(props: EventProps): Promise<CdkCustomResourceResponse> {
   return {
     PhysicalResourceId: props.instanceConnectionObject.username,
   };
