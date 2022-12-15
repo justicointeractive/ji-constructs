@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.29](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.28...cdk-shared-database-0.1.29) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** create db if not exists ([d8d0656](https://github.com/justicointeractive/ji-constructs/commit/d8d06564536242c89834a580d15f4e7f25d13ef8))
+* **shared-db:** quote names and fix create syntax ([f4978b4](https://github.com/justicointeractive/ji-constructs/commit/f4978b45fde80f620956ecad095a329e9c4d2f91))
+
 ### [0.1.28](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.27...cdk-shared-database-0.1.28) (2022-12-15)
 
 ### [0.1.27](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.26...cdk-shared-database-0.1.27) (2022-12-15)
