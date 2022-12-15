@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.21](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.20...cdk-shared-database-0.1.21) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** gotta set autocommit on ([68eab27](https://github.com/justicointeractive/ji-constructs/commit/68eab27ed36c13d8e8dc84aa0933642d815a2eba))
+
 ### [0.1.20](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.19...cdk-shared-database-0.1.20) (2022-12-15)
 
 
