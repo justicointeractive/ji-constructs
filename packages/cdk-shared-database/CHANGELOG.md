@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.32](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.31...cdk-shared-database-0.1.32) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** propagate error from vpc function ([f842643](https://github.com/justicointeractive/ji-constructs/commit/f842643dc262ab448cb29f55e7f97d9dcb7aed71))
+
 ### [0.1.31](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.30...cdk-shared-database-0.1.31) (2022-12-15)
 
 
