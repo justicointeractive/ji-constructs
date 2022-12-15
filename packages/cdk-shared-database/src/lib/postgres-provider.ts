@@ -31,20 +31,24 @@ export const postgresProvider = {
 };
 
 export async function createDatabase(client: Client, credentials: Credentials) {
-  const query = /* sql */ `
-    create database ${credentials.username};
-    create user ${credentials.username} with encrypted password '${credentials.password}';
-    grant all privileges on database ${credentials.username} to ${credentials.username};
-  `;
-  await executeStatements(client, query);
+  await executeStatements(
+    client,
+    /* sql */ `
+    CREATE DATABASE IF NOT EXISTS ${credentials.username};
+    CREATE USER ${credentials.username} WITH ENCRYPTED PASSWORD '${credentials.password}';
+    GRANT ALL PRIVILEGES ON DATABASE ${credentials.username} TO ${credentials.username};
+  `
+  );
 }
 
 export async function deleteDatabase(client: Client, credentials: Credentials) {
-  const query = `
-    drop database if exists ${credentials.username};
-    drop user if exists ${credentials.username};
-  `;
-  await executeStatements(client, query);
+  await executeStatements(
+    client,
+    /* sql */ `
+    DROP DATABASE IF EXISTS ${credentials.username};
+    DROP USER IF EXISTS ${credentials.username};
+  `
+  );
 }
 
 async function executeStatements(client: Client, query: string) {
