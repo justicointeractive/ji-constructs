@@ -1,6 +1,12 @@
 import assert = require('assert');
 import { CustomResource, Duration, RemovalPolicy } from 'aws-cdk-lib';
-import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
+import {
+  Connections,
+  IConnectable,
+  ISecurityGroup,
+  IVpc,
+  Port,
+} from 'aws-cdk-lib/aws-ec2';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
   DatabaseCluster,
@@ -15,28 +21,26 @@ import {
 import { Provider } from 'aws-cdk-lib/custom-resources';
 import { Construct } from 'constructs';
 
+export type ExternalDatabase = (
+  | { clusterIdentifier: string }
+  | { instanceIdentifier: string }
+) & {
+  securityGroups: ISecurityGroup[];
+  secret: ISecret;
+  vpc: IVpc;
+};
+
 export type SharedDatabaseDatabaseProps = {
   databaseInstanceName: string;
 
   removalPolicy?: RemovalPolicy.DESTROY | RemovalPolicy.RETAIN;
 
-  sharedDatabase:
-    | DatabaseInstance
-    | DatabaseCluster
-    | ({
-        secret: ISecret;
-        vpc: IVpc;
-        securityGroups: ISecurityGroup[];
-      } & (
-        | { instanceIdentifier: string }
-        | {
-            clusterIdentifier: string;
-          }
-      ));
+  sharedDatabase: DatabaseInstance | DatabaseCluster | ExternalDatabase;
 };
 
-export class SharedDatabaseDatabase extends Construct {
+export class SharedDatabaseDatabase extends Construct implements IConnectable {
   databaseInstanceSecret: DatabaseSecret;
+  connections: Connections;
 
   constructor(
     scope: Construct,
@@ -53,10 +57,13 @@ export class SharedDatabaseDatabase extends Construct {
     const {
       sharedDatabase: { secret, vpc, ...sharedDatabase },
     } = props;
-    const securityGroups =
-      'securityGroups' in sharedDatabase
-        ? sharedDatabase.securityGroups
-        : sharedDatabase.connections.securityGroups;
+
+    this.connections =
+      'connections' in sharedDatabase
+        ? sharedDatabase.connections
+        : new Connections({
+            securityGroups: sharedDatabase.securityGroups,
+          });
 
     assert(secret, 'secret must be attached to database instance');
 
@@ -73,11 +80,11 @@ export class SharedDatabaseDatabase extends Construct {
           }
         : null;
 
-    if (secretTarget) {
-      databaseInstanceSecret.attach({
-        asSecretAttachmentTarget: () => secretTarget,
-      });
-    }
+    assert(secretTarget);
+
+    databaseInstanceSecret.attach({
+      asSecretAttachmentTarget: () => secretTarget,
+    });
 
     const onEventHandlerVpc = new NodejsFunction(this, 'OnEventVpc', {
       timeout: Duration.minutes(1),
@@ -87,9 +94,7 @@ export class SharedDatabaseDatabase extends Construct {
       },
     });
 
-    for (const securityGroup of securityGroups) {
-      onEventHandlerVpc.connections.allowTo(securityGroup, Port.allTraffic());
-    }
+    this.connections.allowFrom(onEventHandlerVpc, Port.allTraffic());
 
     const onEventHandler = new NodejsFunction(this, 'OnEvent', {
       timeout: Duration.minutes(1),
