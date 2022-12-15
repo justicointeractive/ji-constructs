@@ -82,7 +82,11 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
             defaultPort: sharedDatabase.defaultPort,
             securityGroups: sharedDatabase.securityGroups.map((sg, i) =>
               typeof sg === 'string'
-                ? SecurityGroup.fromLookupById(this, `SecurityGroup${i}`, sg)
+                ? SecurityGroup.fromSecurityGroupId(
+                    this,
+                    `SecurityGroup${i}`,
+                    sg
+                  )
                 : sg
             ),
           });
