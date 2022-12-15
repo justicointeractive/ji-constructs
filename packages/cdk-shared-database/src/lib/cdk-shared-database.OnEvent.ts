@@ -26,6 +26,10 @@ export const handler: CdkCustomResourceHandler = async (event) => {
     })
     .promise();
 
+  if (result.FunctionError) {
+    throw result;
+  }
+
   const resultJson = result.Payload?.toString();
 
   assert(resultJson);
