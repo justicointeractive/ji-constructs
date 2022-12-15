@@ -1,5 +1,5 @@
 import assert = require('assert');
-import { CustomResource, Duration } from 'aws-cdk-lib';
+import { CustomResource, Duration, RemovalPolicy } from 'aws-cdk-lib';
 import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
@@ -17,6 +17,8 @@ import { Construct } from 'constructs';
 
 export type SharedDatabaseDatabaseProps = {
   databaseInstanceName: string;
+
+  removalPolicy?: RemovalPolicy.DESTROY | RemovalPolicy.RETAIN;
 
   sharedDatabase:
     | DatabaseInstance
@@ -111,6 +113,7 @@ export class SharedDatabaseDatabase extends Construct {
         SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
         INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
         VPC_LAMBDA_ARN: onEventHandlerVpc.functionArn,
+        removalPolicy: props.removalPolicy,
       },
     });
 
