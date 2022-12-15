@@ -34,9 +34,9 @@ export async function createDatabase(client: Client, credentials: Credentials) {
   await executeStatements(
     client,
     /* sql */ `
-    CREATE DATABASE IF NOT EXISTS ${credentials.username};
-    CREATE USER ${credentials.username} WITH ENCRYPTED PASSWORD '${credentials.password}';
-    GRANT ALL PRIVILEGES ON DATABASE ${credentials.username} TO ${credentials.username};
+    CREATE DATABASE "${credentials.username}";
+    CREATE USER "${credentials.username}" WITH ENCRYPTED PASSWORD '${credentials.password}';
+    GRANT ALL PRIVILEGES ON DATABASE "${credentials.username}" TO "${credentials.username}";
   `
   );
 }
@@ -45,8 +45,8 @@ export async function deleteDatabase(client: Client, credentials: Credentials) {
   await executeStatements(
     client,
     /* sql */ `
-    DROP DATABASE IF EXISTS ${credentials.username};
-    DROP USER IF EXISTS ${credentials.username};
+    DROP DATABASE IF EXISTS "${credentials.username}";
+    DROP USER IF EXISTS "${credentials.username}";
   `
   );
 }
