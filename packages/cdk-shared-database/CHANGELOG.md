@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.19](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.18...cdk-shared-database-0.1.19) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** lambda payload must be stringified ([98a9997](https://github.com/justicointeractive/ji-constructs/commit/98a999767dbb27b2cc24fc3325fd70449313427a))
+
 ### [0.1.18](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.17...cdk-shared-database-0.1.18) (2022-12-15)
 
 
