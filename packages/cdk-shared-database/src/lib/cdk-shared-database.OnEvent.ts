@@ -5,8 +5,6 @@ import assert = require('assert');
 
 // invoked outside of VPC which can access secrets manager but not the db cluster
 export const handler: CdkCustomResourceHandler = async (event) => {
-  console.log(event);
-
   const props: EventProps = await getSecrets(event.ResourceProperties as any);
 
   const result = await new Lambda()
@@ -25,8 +23,6 @@ export const handler: CdkCustomResourceHandler = async (event) => {
   const resultJson = result.Payload?.toString();
 
   assert(resultJson);
-
-  console.log({ resultJson });
 
   return JSON.parse(resultJson);
 };
