@@ -1,4 +1,3 @@
-import { App, Stack } from 'aws-cdk-lib';
 import { Template } from 'aws-cdk-lib/assertions';
 import { SecurityGroup, Vpc } from 'aws-cdk-lib/aws-ec2';
 import {
@@ -7,6 +6,7 @@ import {
   PostgresEngineVersion,
 } from 'aws-cdk-lib/aws-rds';
 import { Secret } from 'aws-cdk-lib/aws-secretsmanager';
+import { App, Stack } from 'aws-cdk-lib/core';
 import { SharedDatabaseDatabase } from './cdk-shared-database';
 
 describe('cdkSharedDatabase', () => {
