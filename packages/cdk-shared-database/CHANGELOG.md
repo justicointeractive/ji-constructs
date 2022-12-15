@@ -2,6 +2,14 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.25](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.24...cdk-shared-database-0.1.25) (2022-12-15)
+
+
+### Bug Fixes
+
+* **shared-db:** don't reimplement removal policy ([da0af22](https://github.com/justicointeractive/ji-constructs/commit/da0af22238ceb220df98c7d66f1a1f9b1120559f))
+* **shared-db:** make sure changing db instance name updates the resource ([603c741](https://github.com/justicointeractive/ji-constructs/commit/603c741078129c39be4fc9b196554de0c23c01f6))
+
 ### [0.1.24](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.1.23...cdk-shared-database-0.1.24) (2022-12-15)
 
 
