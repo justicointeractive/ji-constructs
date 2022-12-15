@@ -8,6 +8,7 @@ export type DatabaseSecretValue = {
 };
 
 export type EventProps = {
+  databaseInstanceName: string;
   sharedConnectionObject: DatabaseSecretValue;
   instanceConnectionObject: DatabaseSecretValue;
 };

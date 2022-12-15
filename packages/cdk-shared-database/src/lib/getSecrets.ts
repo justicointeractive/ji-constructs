@@ -1,5 +1,5 @@
 import { SecretsManager } from 'aws-sdk';
-import { DatabaseSecretValue, EventProps } from './types';
+import { DatabaseSecretValue } from './types';
 import assert = require('assert');
 
 export async function getSecrets({
@@ -17,11 +17,10 @@ export async function getSecrets({
     instanceConnectionSecretArn
   );
 
-  const props: EventProps = {
+  return {
     sharedConnectionObject,
     instanceConnectionObject,
   };
-  return props;
 }
 
 async function getSecretAsJson(secretArn: string) {

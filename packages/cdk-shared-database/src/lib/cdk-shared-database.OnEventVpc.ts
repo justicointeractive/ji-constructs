@@ -8,7 +8,7 @@ import assert = require('assert');
 
 // invoked within VPC which can access the db cluster but not secrets manager
 export const handler: CdkCustomResourceHandler = async (event) => {
-  const props: EventProps = event.ResourceProperties.connections;
+  const props = event.ResourceProperties as unknown as EventProps;
 
   switch (event.RequestType) {
     case 'Create':
@@ -28,7 +28,7 @@ async function onCreate(props: EventProps): Promise<CdkCustomResourceResponse> {
   );
   await provider.create(props);
   return {
-    PhysicalResourceId: props.instanceConnectionObject.username,
+    PhysicalResourceId: props.databaseInstanceName,
   };
 }
 
@@ -40,7 +40,7 @@ async function onDelete(props: EventProps): Promise<CdkCustomResourceResponse> {
   );
   await provider.delete(props);
   return {
-    PhysicalResourceId: props.instanceConnectionObject.username,
+    PhysicalResourceId: props.databaseInstanceName,
   };
 }
 
