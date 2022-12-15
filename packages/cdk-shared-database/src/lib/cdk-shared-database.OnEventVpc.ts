@@ -6,7 +6,7 @@ import { EventProps } from './types';
 import assert = require('assert');
 
 // invoked within VPC which can access the db cluster but not secrets manager
-export const vpcHandler: CdkCustomResourceHandler = async (event) => {
+export const handler: CdkCustomResourceHandler = async (event) => {
   console.log(event);
 
   const props: EventProps = event.ResourceProperties.connections;
