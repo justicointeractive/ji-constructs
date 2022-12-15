@@ -1,7 +1,6 @@
 import assert = require('assert');
 import { CustomResource, Duration } from 'aws-cdk-lib';
 import { ISecurityGroup, IVpc, Port } from 'aws-cdk-lib/aws-ec2';
-import { ManagedPolicy, Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs';
 import {
   DatabaseCluster,
@@ -78,29 +77,9 @@ export class SharedDatabaseDatabase extends Construct {
       });
     }
 
-    const role = new Role(this, 'ProviderRole', {
-      assumedBy: new ServicePrincipal('lambda.amazonaws.com'),
-      managedPolicies: [
-        ManagedPolicy.fromAwsManagedPolicyName(
-          'service-role/AWSLambdaBasicExecutionRole'
-        ),
-        ManagedPolicy.fromAwsManagedPolicyName(
-          'service-role/AWSLambdaVPCAccessExecutionRole'
-        ),
-      ],
-    });
-
     const onEventHandlerVpc = new NodejsFunction(this, 'OnEventVpc', {
       timeout: Duration.minutes(1),
       vpc,
-      bundling: {
-        nodeModules: ['pg'],
-      },
-      role,
-    });
-
-    const onEventHandler = new NodejsFunction(this, 'OnEvent', {
-      timeout: Duration.minutes(1),
       bundling: {
         nodeModules: ['pg'],
       },
@@ -110,12 +89,19 @@ export class SharedDatabaseDatabase extends Construct {
       onEventHandlerVpc.connections.allowTo(securityGroup, Port.allTraffic());
     }
 
-    secret.grantRead(role);
-    databaseInstanceSecret.grantRead(role);
+    const onEventHandler = new NodejsFunction(this, 'OnEvent', {
+      timeout: Duration.minutes(1),
+      bundling: {
+        nodeModules: ['pg'],
+      },
+    });
+
+    secret.grantRead(onEventHandler);
+    databaseInstanceSecret.grantRead(onEventHandler);
+    onEventHandlerVpc.grantInvoke(onEventHandler);
 
     const dbProvider = new Provider(this, 'Provider', {
       onEventHandler,
-      role,
     });
 
     const dbResource = new CustomResource(this, 'Db', {
