@@ -114,6 +114,7 @@ export class SharedDatabaseDatabase extends Construct {
         SHARED_CONNECTION_SECRET_ARN: secret.secretArn,
         INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
         VPC_LAMBDA_ARN: onEventHandlerVpc.functionArn,
+        databaseInstanceName,
       },
     });
 
