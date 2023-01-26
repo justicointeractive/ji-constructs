@@ -24,6 +24,8 @@ export class ImageResizeInventory extends Construct {
     this.derrivedImagesTable = new Table(this, 'BaseKeyKeyInventoryTable', {
       partitionKey: { name: 'BaseKey', type: AttributeType.STRING },
       sortKey: { name: 'Key', type: AttributeType.STRING },
+      readCapacity: 1,
+      writeCapacity: 1,
     });
 
     const fn = new LambdaNpmFunction(this, 'TidyFn', {
