@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.5.9](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.8...image-resize-behavior-0.5.9) (2023-01-26)
+
+
+### Bug Fixes
+
+* **image-resize-behavior:** don't overprovision dynamodb table ([2f2f0fb](https://github.com/justicointeractive/ji-constructs/commit/2f2f0fbc0ade30a44131c40a8b95fd2f77e4c008))
+
 ### [0.5.8](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.7...image-resize-behavior-0.5.8) (2022-11-10)
 
 ### [0.5.7](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.6...image-resize-behavior-0.5.7) (2022-10-19)
