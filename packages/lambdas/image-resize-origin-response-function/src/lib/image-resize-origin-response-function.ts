@@ -94,7 +94,7 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 };
 
 export function extractDataFromUri(request: { uri: string }) {
-  const uri = request.uri;
+  const uri = decodeURI(request.uri);
   // AWS key is the URI without the initial '/'
   const requestedKey = uri.substring(1);
 
