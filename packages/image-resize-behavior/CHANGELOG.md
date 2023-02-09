@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.5.11](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.10...image-resize-behavior-0.5.11) (2023-02-09)
+
+### Dependency Updates
+
+* `lambdas-image-resize-origin-response-function` updated to version `0.1.0`
 ### [0.5.10](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.9...image-resize-behavior-0.5.10) (2023-02-09)
 
 ### Dependency Updates

@@ -1,6 +1,6 @@
 {
   "name": "@ji-constructs/cdk-image-resize-behavior",
-  "version": "0.5.10",
+  "version": "0.5.11",
   "dependencies": {
     "cdk-lambda-npm-function": "*"
   }
