@@ -28,9 +28,9 @@ describe('image-resize-origin-response-function', () => {
   });
   it('should parse uri with spaces in file name', () => {
     expect(
-      extractDataFromUri({ uri: '/path/to/file%20name.png;;.webp' })
+      extractDataFromUri({ uri: '/path/to/file%20%2C%20name.png;;.webp' })
     ).toMatchObject({
-      baseKey: 'path/to/file name.png',
+      baseKey: 'path/to/file , name.png',
       params: { format: 'webp' },
     });
   });
