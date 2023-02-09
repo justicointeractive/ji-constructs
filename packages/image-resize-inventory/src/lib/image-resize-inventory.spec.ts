@@ -34,6 +34,7 @@ describe('updateInventory', () => {
       tableName: 'testTable',
       s3,
       dynamodb,
+      s3Bucket: 'test-bucket',
     });
 
     await dynamodb.send(
