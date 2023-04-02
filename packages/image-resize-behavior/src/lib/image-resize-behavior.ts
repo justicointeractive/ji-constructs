@@ -5,24 +5,35 @@ import {
   CacheQueryStringBehavior,
   Distribution,
   DistributionProps,
+  KeyGroup,
   LambdaEdgeEventType,
   OriginAccessIdentity,
+  PublicKey,
   ViewerProtocolPolicy,
 } from 'aws-cdk-lib/aws-cloudfront';
 import { S3Origin, S3OriginProps } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Function as Lambda } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
 import { Bucket, BucketProps } from 'aws-cdk-lib/aws-s3';
+import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { LambdaNpmFunction } from 'cdk-lambda-npm-function';
 import { Construct } from 'constructs';
 import { resolve } from 'path';
 import { ImageResizeInventory } from './image-resize-inventory';
 
 export type ImageResizeBehaviorProps = {
+  /**
+   * set to false to attach this behavior to an existing distribution
+   * @default true
+   */
   createDistribution?: boolean;
   s3BucketOrProps?: Bucket | BucketProps;
   s3OriginProps?: Partial<S3OriginProps>;
   s3KeyPrefix?: string;
+  /** if provided, content must be accessed using urls signed with the private key from this key pair */
+  signedUrlPublicKey?: string | ISecret;
+
+  // props for lower level overrides
   originResponseLambdaProps?: NodejsFunctionProps;
   viewerRequestLambdaProps?: NodejsFunctionProps;
   cloudfrontDistributionProps?: DistributionProps;
@@ -52,6 +63,7 @@ export class ImageResizeBehavior extends Construct {
       viewerRequestLambdaProps,
       cloudfrontDistributionProps,
       embedRootDir = `${__dirname}/../../embedded`, // src/lib/../../embedded
+      signedUrlPublicKey,
     } = props;
 
     this.imagesBucket =
@@ -109,6 +121,26 @@ export class ImageResizeBehavior extends Construct {
     const originAccessIdentity = new OriginAccessIdentity(this, 'OAI');
     this.imagesBucket.grantRead(originAccessIdentity);
 
+    const signedUrlEncodedKey =
+      signedUrlPublicKey == null
+        ? signedUrlPublicKey
+        : typeof signedUrlPublicKey === 'string'
+        ? signedUrlPublicKey
+        : signedUrlPublicKey.secretValue.unsafeUnwrap();
+
+    const signedUrlKeyGroups =
+      signedUrlEncodedKey != null
+        ? [
+            new KeyGroup(this, 'KeyGroup', {
+              items: [
+                new PublicKey(this, 'PublicKey', {
+                  encodedKey: signedUrlEncodedKey,
+                }),
+              ],
+            }),
+          ]
+        : undefined;
+
     this.behaviorOptions = {
       origin: new S3Origin(this.imagesBucket, {
         ...s3OriginProps,
@@ -132,6 +164,7 @@ export class ImageResizeBehavior extends Construct {
       ],
       viewerProtocolPolicy: ViewerProtocolPolicy.REDIRECT_TO_HTTPS,
       compress: true,
+      trustedKeyGroups: signedUrlKeyGroups,
       ...cloudfrontDistributionProps?.defaultBehavior,
     };
 
