@@ -28,12 +28,11 @@ export type ImageResizeBehaviorProps = {
    */
   createDistribution?: boolean;
   s3BucketOrProps?: Bucket | BucketProps;
-  s3OriginProps?: Partial<S3OriginProps>;
-  s3KeyPrefix?: string;
   /** if provided, content must be accessed using urls signed with the private key from this key pair */
   signedUrlPublicKey?: string | ISecret;
 
   // props for lower level overrides
+  s3OriginProps?: Partial<S3OriginProps>;
   originResponseLambdaProps?: NodejsFunctionProps;
   viewerRequestLambdaProps?: NodejsFunctionProps;
   cloudfrontDistributionProps?: DistributionProps;
