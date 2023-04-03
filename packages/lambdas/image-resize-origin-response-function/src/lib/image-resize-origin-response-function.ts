@@ -3,6 +3,7 @@ import { S3 } from '@aws-sdk/client-s3';
 import { RegionInputConfig } from '@aws-sdk/config-resolver';
 import { ImageResizeInventory } from '@ji-constructs/image-resize-inventory';
 import {
+  CloudFrontRequest,
   CloudFrontResponseHandler,
   CloudFrontResultResponse,
 } from 'aws-lambda';
@@ -32,10 +33,10 @@ export const handler: CloudFrontResponseHandler = async (event) => {
     return response;
   }
 
-  const inventoryTableName =
-    request.origin?.s3?.customHeaders?.[
-      'x-image-resize-inventory-table-name'
-    ]?.[0]?.value;
+  const inventoryTableName = getCustomHeaderValue(
+    request,
+    'x-image-resize-inventory-table-name'
+  );
 
   // Extracting bucket name. domainName looks like this: bucket-name.s3.region.amazonaws.com"
   const [, bucket] = request.origin?.s3?.domainName.match(/(.*).s3./) ?? [];
@@ -92,6 +93,13 @@ export const handler: CloudFrontResponseHandler = async (event) => {
 
   return response;
 };
+
+function getCustomHeaderValue(
+  request: Pick<CloudFrontRequest, 'origin'>,
+  header: string
+) {
+  return request.origin?.s3?.customHeaders?.[header]?.[0]?.value;
+}
 
 export function extractDataFromUri(request: { uri: string }) {
   const uri = request.uri;

@@ -14,7 +14,7 @@ import {
 import { S3Origin, S3OriginProps } from 'aws-cdk-lib/aws-cloudfront-origins';
 import { Function as Lambda } from 'aws-cdk-lib/aws-lambda';
 import { NodejsFunctionProps } from 'aws-cdk-lib/aws-lambda-nodejs';
-import { Bucket, BucketProps } from 'aws-cdk-lib/aws-s3';
+import { Bucket, BucketProps, IBucket } from 'aws-cdk-lib/aws-s3';
 import { ISecret } from 'aws-cdk-lib/aws-secretsmanager';
 import { LambdaNpmFunction } from 'cdk-lambda-npm-function';
 import { Construct } from 'constructs';
@@ -40,7 +40,8 @@ export type ImageResizeBehaviorProps = {
 };
 
 export class ImageResizeBehavior extends Construct {
-  imagesBucket: Bucket;
+  sourceBucket: IBucket;
+  resizedBucket: IBucket;
   imageOriginResponseLambda: Lambda;
   imageViewerRequestLambda: Lambda;
   behaviorOptions: BehaviorOptions;
@@ -65,14 +66,18 @@ export class ImageResizeBehavior extends Construct {
       signedUrlPublicKey,
     } = props;
 
-    this.imagesBucket =
+    this.sourceBucket =
       s3BucketOrProps instanceof Bucket
         ? s3BucketOrProps
         : new Bucket(this, 'Bucket', s3BucketOrProps);
 
+    this.resizedBucket =
+      // TODO: read-only access to source bucket
+      this.sourceBucket;
+
     this.imageResizeInventory = new ImageResizeInventory(this, 'Inventory', {
       embedRootDir,
-      bucket: this.imagesBucket,
+      bucket: this.resizedBucket,
     });
 
     this.imageOriginResponseLambda = new LambdaNpmFunction(
@@ -88,8 +93,8 @@ export class ImageResizeBehavior extends Construct {
       }
     );
 
-    this.imagesBucket.grantRead(this.imageOriginResponseLambda);
-    this.imagesBucket.grantPut(this.imageOriginResponseLambda);
+    this.sourceBucket.grantRead(this.imageOriginResponseLambda);
+    this.resizedBucket.grantPut(this.imageOriginResponseLambda);
     this.imageResizeInventory.derrivedImagesTable.grantWriteData(
       this.imageOriginResponseLambda
     );
@@ -118,7 +123,7 @@ export class ImageResizeBehavior extends Construct {
     });
 
     const originAccessIdentity = new OriginAccessIdentity(this, 'OAI');
-    this.imagesBucket.grantRead(originAccessIdentity);
+    this.resizedBucket.grantRead(originAccessIdentity);
 
     const signedUrlEncodedKey =
       signedUrlPublicKey == null
@@ -141,13 +146,17 @@ export class ImageResizeBehavior extends Construct {
         : undefined;
 
     this.behaviorOptions = {
-      origin: new S3Origin(this.imagesBucket, {
+      origin: new S3Origin(this.resizedBucket, {
         ...s3OriginProps,
         originAccessIdentity,
         customHeaders: {
           ...s3OriginProps?.customHeaders,
           'x-image-resize-inventory-table-name':
             this.imageResizeInventory.derrivedImagesTable.tableName,
+          'x-image-resize-inventory-source-bucket-arn':
+            this.sourceBucket.bucketArn,
+          'x-image-resize-inventory-resized-bucket-arn':
+            this.resizedBucket.bucketArn,
         },
       }),
       cachePolicy,
