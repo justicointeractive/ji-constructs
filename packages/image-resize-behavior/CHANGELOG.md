@@ -2,6 +2,18 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.11...image-resize-behavior-0.6.0) (2023-04-22)
+
+
+### Features
+
+* allow a public key to be associated with a distribution to require signed urls ([e18ac0c](https://github.com/justicointeractive/ji-constructs/commit/e18ac0c590a54372e6eaae56b778483cb42792f2))
+
+
+### Bug Fixes
+
+* delete unused prop ([ecfdd5b](https://github.com/justicointeractive/ji-constructs/commit/ecfdd5b512ca0404c60518efcefa2186e29893e8))
+
 ### [0.5.11](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.10...image-resize-behavior-0.5.11) (2023-02-09)
 
 ### Dependency Updates
