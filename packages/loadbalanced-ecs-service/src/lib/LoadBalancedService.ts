@@ -1,7 +1,8 @@
 import { findPrioritySync } from '@ji-constructs/elb-rule-priority';
 import { Duration } from 'aws-cdk-lib';
 import {
-  DnsValidatedCertificate,
+  Certificate,
+  CertificateValidation,
   ICertificate,
 } from 'aws-cdk-lib/aws-certificatemanager';
 import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
@@ -25,11 +26,11 @@ import {
 import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
 import * as cdk from 'constructs';
 import { Construct } from 'constructs';
-import { domainNameToZoneName } from './domainNameToZoneName';
 import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListenerLookup';
+import { domainNameToZoneName } from './domainNameToZoneName';
 
 export class LoadBalancedService extends Construct {
-  certificate: DnsValidatedCertificate;
+  certificate: Certificate;
   cluster: ICluster;
   loadBalancer: IApplicationLoadBalancer;
   hostedZone: IHostedZone;
@@ -90,14 +91,10 @@ export class LoadBalancedService extends Construct {
       ...targetGroupProps,
     });
 
-    const cert = (this.certificate = new DnsValidatedCertificate(
-      this,
-      'ACMCert',
-      {
-        domainName,
-        hostedZone: domainZone,
-      }
-    ));
+    const cert = (this.certificate = new Certificate(this, 'ACMCert', {
+      domainName,
+      validation: CertificateValidation.fromDns(domainZone),
+    }));
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
