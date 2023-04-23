@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.4.3](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.2...loadbalanced-ecs-service-0.4.3) (2023-04-23)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** the DnsValidatedCertificate construct was deprecated ([3347c8b](https://github.com/justicointeractive/ji-constructs/commit/3347c8b5dee979eb2852b9df97fe32373721e394))
+
 ### [0.4.2](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.1...loadbalanced-ecs-service-0.4.2) (2023-04-22)
 
 ### [0.4.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.0...loadbalanced-ecs-service-0.4.1) (2022-12-08)
