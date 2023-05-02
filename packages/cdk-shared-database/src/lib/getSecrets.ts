@@ -9,17 +9,17 @@ export async function getSecrets({
   SHARED_CONNECTION_SECRET_ARN: string;
   INSTANCE_CONNECTION_SECRET_ARN: string;
 }) {
-  const sharedConnectionObject = await getSecretAsJson(
+  const sharedConnectionOptions = await getSecretAsJson(
     sharedConnectionSecretArn
   );
 
-  const instanceConnectionObject = await getSecretAsJson(
+  const instanceConnectionOptions = await getSecretAsJson(
     instanceConnectionSecretArn
   );
 
   return {
-    sharedConnectionObject,
-    instanceConnectionObject,
+    sharedConnectionOptions,
+    instanceConnectionOptions,
   };
 }
 

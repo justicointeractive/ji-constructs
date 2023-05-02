@@ -8,7 +8,7 @@ export const handler: CdkCustomResourceHandler = async (event) => {
   const secrets = await getSecrets(event.ResourceProperties as any);
 
   assert(
-    secrets.instanceConnectionObject.username ===
+    secrets.instanceConnectionOptions.username ===
       event.ResourceProperties.databaseInstanceName
   );
 
