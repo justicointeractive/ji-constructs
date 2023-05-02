@@ -2,6 +2,21 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.5.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.1...loadbalanced-ecs-service-0.5.0) (2023-05-02)
+
+### Dependency Updates
+
+* `elb-rule-priority` updated to version `0.1.5`
+
+### Features
+
+* **loadbalanced-ecs-service:** allow user to provide a certificate ([c5d5ca7](https://github.com/justicointeractive/ji-constructs/commit/c5d5ca7c86c792f04e8418fbbcf5f033df0b00a4))
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** the DnsValidatedCertificate construct was deprecated ([3347c8b](https://github.com/justicointeractive/ji-constructs/commit/3347c8b5dee979eb2852b9df97fe32373721e394))
+
 ### [0.4.3](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.2...loadbalanced-ecs-service-0.4.3) (2023-04-23)
 
 
