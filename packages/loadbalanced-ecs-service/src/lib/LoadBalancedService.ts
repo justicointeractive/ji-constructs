@@ -30,7 +30,7 @@ import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListener
 import { domainNameToZoneName } from './domainNameToZoneName';
 
 export class LoadBalancedService extends Construct {
-  certificate: Certificate;
+  certificate: ICertificate;
   cluster: ICluster;
   loadBalancer: IApplicationLoadBalancer;
   hostedZone: IHostedZone;
@@ -91,10 +91,12 @@ export class LoadBalancedService extends Construct {
       ...targetGroupProps,
     });
 
-    const cert = (this.certificate = new Certificate(this, 'ACMCert', {
-      domainName,
-      validation: CertificateValidation.fromDns(domainZone),
-    }));
+    const cert = (this.certificate =
+      options.certificate ??
+      new Certificate(this, 'ACMCert', {
+        domainName,
+        validation: CertificateValidation.fromDns(domainZone),
+      }));
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
@@ -150,6 +152,7 @@ export interface LoadBalancedServiceContext {
   cluster: ICluster | { name: string; securityGroupIds: string[] };
   route53ZoneName?: string;
   domainNameAliases?: LoadBalancedServiceAlias[];
+  certificate?: ICertificate;
 }
 export interface LoadBalancedServiceDefaults {
   createRoute53ARecord?: boolean;
