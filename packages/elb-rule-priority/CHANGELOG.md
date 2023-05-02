@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.5](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.4...elb-rule-priority-0.1.5) (2023-05-02)
+
 ### [0.1.6](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.5...elb-rule-priority-0.1.6) (2023-04-23)
 
 ### [0.1.5](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.4...elb-rule-priority-0.1.5) (2023-04-22)
