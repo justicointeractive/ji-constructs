@@ -9,11 +9,18 @@ export type DatabaseSecretValue = {
 
 export type EventProps = {
   databaseInstanceName: string;
-  sharedConnectionObject: DatabaseSecretValue;
-  instanceConnectionObject: DatabaseSecretValue;
+  templateDatabaseInstanceName?: string;
+  instanceConnectionOptions: DatabaseSecretValue;
+  sharedConnectionOptions: DatabaseSecretValue;
 };
 
 export type Credentials = {
-  username: string;
-  password: string;
+  username?: string;
+  password?: string;
+};
+
+export type DbEventProps = {
+  instanceConnectionOptions: Credentials;
+  sharedConnectionOptions: Credentials;
+  templateDatabaseInstanceName?: string;
 };

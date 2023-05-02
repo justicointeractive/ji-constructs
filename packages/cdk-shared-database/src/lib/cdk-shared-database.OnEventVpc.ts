@@ -21,10 +21,10 @@ export const handler: CdkCustomResourceHandler = async (event) => {
 };
 
 async function onCreate(props: EventProps): Promise<CdkCustomResourceResponse> {
-  const provider = providers[props.sharedConnectionObject.engine];
+  const provider = providers[props.sharedConnectionOptions.engine];
   assert(
     provider,
-    `Engine '${props.instanceConnectionObject.engine}' is not implemented`
+    `Engine '${props.instanceConnectionOptions.engine}' is not implemented`
   );
   await provider.create(props);
   return {
@@ -33,10 +33,10 @@ async function onCreate(props: EventProps): Promise<CdkCustomResourceResponse> {
 }
 
 async function onDelete(props: EventProps): Promise<CdkCustomResourceResponse> {
-  const provider = providers[props.sharedConnectionObject.engine];
+  const provider = providers[props.sharedConnectionOptions.engine];
   assert(
     provider,
-    `Engine '${props.instanceConnectionObject.engine}' is not implemented`
+    `Engine '${props.instanceConnectionOptions.engine}' is not implemented`
   );
   await provider.delete(props);
   return {

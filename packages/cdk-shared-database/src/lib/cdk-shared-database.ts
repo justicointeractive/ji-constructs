@@ -39,6 +39,8 @@ export type SharedDatabaseDatabaseProps = {
   removalPolicy?: RemovalPolicy.DESTROY | RemovalPolicy.RETAIN;
 
   sharedDatabase: DatabaseInstance | DatabaseCluster | ExternalDatabase;
+
+  templateDatabaseInstanceName?: string;
 };
 
 export class SharedDatabaseDatabase extends Construct implements IConnectable {
