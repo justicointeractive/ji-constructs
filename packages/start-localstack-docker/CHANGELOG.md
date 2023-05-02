@@ -4,6 +4,8 @@ This file was generated using [@jscutlery/semver](https://github.com/jscutlery/s
 
 ### [0.4.3](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2...start-localstack-docker-0.4.3) (2023-05-02)
 
+### [0.4.3](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2...start-localstack-docker-0.4.3) (2023-05-02)
+
 ### [0.4.2](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2-alpha.5...start-localstack-docker-0.4.2) (2022-08-16)
 
 ### [0.4.2-alpha.5](https://github.com/justicointeractive/ji-constructs/compare/start-localstack-docker-0.4.2-alpha.4...start-localstack-docker-0.4.2-alpha.5) (2022-08-16)
