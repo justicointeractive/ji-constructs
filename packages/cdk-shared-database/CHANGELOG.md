@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.2...cdk-shared-database-0.2.3) (2023-05-03)
+
+
+### Bug Fixes
+
+* **shared-db:** throw a better error custom resource lambda ([63390c5](https://github.com/justicointeractive/ji-constructs/commit/63390c5ed285f515dc52984acc0ac2f31e55aa6c))
+
 ### [0.2.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.1...cdk-shared-database-0.2.2) (2023-05-03)
 
 
