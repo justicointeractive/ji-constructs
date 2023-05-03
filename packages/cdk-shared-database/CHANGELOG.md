@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.1...cdk-shared-database-0.2.2) (2023-05-03)
+
+
+### Bug Fixes
+
+* **shared-db:** pass template database value to custom resource ([05cf33e](https://github.com/justicointeractive/ji-constructs/commit/05cf33e940dee90fe825ff023efa3752662f10e1))
+
 ### [0.2.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.0...cdk-shared-database-0.2.1) (2023-05-02)
 
 
