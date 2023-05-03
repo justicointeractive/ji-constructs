@@ -50,7 +50,11 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
   constructor(
     scope: Construct,
     id: string,
-    { databaseInstanceName, ...props }: SharedDatabaseDatabaseProps
+    {
+      databaseInstanceName,
+      templateDatabaseInstanceName,
+      ...props
+    }: SharedDatabaseDatabaseProps
   ) {
     super(scope, id);
 
@@ -148,6 +152,7 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
         INSTANCE_CONNECTION_SECRET_ARN: databaseInstanceSecret.secretArn,
         VPC_LAMBDA_ARN: onEventHandlerVpc.functionArn,
         databaseInstanceName,
+        templateDatabaseInstanceName,
       },
     });
 
