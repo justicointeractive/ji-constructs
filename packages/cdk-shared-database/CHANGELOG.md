@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.4](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.3...cdk-shared-database-0.2.4) (2023-05-04)
+
+
+### Bug Fixes
+
+* **shared-db:** workaround for rds super user issue ([d83a911](https://github.com/justicointeractive/ji-constructs/commit/d83a91118a758f8c3261111f7616ef71d5f0d925))
+
 ### [0.2.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.2...cdk-shared-database-0.2.3) (2023-05-03)
 
 
