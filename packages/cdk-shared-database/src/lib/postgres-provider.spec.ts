@@ -3,6 +3,7 @@ import { Credentials } from '../lib/types';
 import { createDatabase, deleteDatabase } from './postgres-provider';
 
 describe('pg provider', () => {
+  const sharedConnectionOptions: Credentials = { username: process.env.USER };
   it('should create and drop db', async () => {
     const client = new Client();
     await client.connect();
@@ -11,11 +12,11 @@ describe('pg provider', () => {
       password: `password${Math.floor(Math.random() * 100000)}`,
     };
     await createDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials,
     });
     await deleteDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials,
     });
     await client.end();
@@ -35,7 +36,7 @@ describe('pg provider', () => {
     };
 
     await createDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials1,
     });
 
@@ -52,7 +53,7 @@ describe('pg provider', () => {
     }
 
     await createDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials2,
       templateDatabaseInstanceName: credentials1.username,
     });
@@ -71,7 +72,7 @@ describe('pg provider', () => {
     }
 
     await deleteDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials2,
     });
 
@@ -89,7 +90,7 @@ describe('pg provider', () => {
     }
 
     await deleteDatabase(client, {
-      sharedConnectionOptions: {},
+      sharedConnectionOptions,
       instanceConnectionOptions: credentials1,
     });
 

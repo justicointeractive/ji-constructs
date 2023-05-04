@@ -77,7 +77,11 @@ export async function createDatabase(client: Client, props: DbEventProps) {
     await client2.connect();
 
     await executeStatements(client2, [
+      sql`GRANT "${templateDatabaseInstanceName}" TO "${sharedCredentials.username}";`,
+      sql`GRANT "${credentials.username}" TO "${sharedCredentials.username}";`,
       sql`REASSIGN OWNED BY "${templateDatabaseInstanceName}" TO "${credentials.username}";`,
+      sql`REVOKE "${templateDatabaseInstanceName}" FROM "${sharedCredentials.username}";`,
+      sql`REVOKE "${credentials.username}" FROM "${sharedCredentials.username}";`,
     ]);
 
     await client2.end();
