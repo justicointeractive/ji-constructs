@@ -1,3 +1,4 @@
+import { RemovalPolicy } from 'aws-cdk-lib';
 import { AttributeType, Table } from 'aws-cdk-lib/aws-dynamodb';
 import { Rule, Schedule } from 'aws-cdk-lib/aws-events';
 import { LambdaFunction } from 'aws-cdk-lib/aws-events-targets';
@@ -26,6 +27,7 @@ export class ImageResizeInventory extends Construct {
       sortKey: { name: 'Key', type: AttributeType.STRING },
       readCapacity: 1,
       writeCapacity: 1,
+      removalPolicy: RemovalPolicy.DESTROY,
     });
 
     const fn = new LambdaNpmFunction(this, 'TidyFn', {
