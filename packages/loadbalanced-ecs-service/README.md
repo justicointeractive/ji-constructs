@@ -1,6 +1,40 @@
 # loadbalanced-ecs-service
 
-This library was generated with [Nx](https://nx.dev).
+## Example
+
+```typescript
+import {
+  LoadBalancedService,
+  LoadBalancedServiceListenerLookup,
+} from '@ji-constructs/loadbalanced-ecs-service';
+
+const lookup = new LoadBalancedServiceListenerLookup(
+  this,
+  'LBLookup',
+  props.listener
+);
+const { vpc } = lookup;
+
+const service = new LoadBalancedService(this, 'Service', {
+  cluster: props.cluster,
+  domainName: props.apiHostname,
+  listener: lookup,
+  targetGroupProps: {
+    healthCheck: {
+      path: '/api',
+    },
+  },
+  serviceFactory: (scope, cluster) => {
+    return new Ec2Service(scope, 'Service', {
+      cluster,
+      taskDefinition: caliobase.taskDefinition,
+      circuitBreaker: {
+        rollback: true,
+      },
+    });
+  },
+});
+```
 
 ## Running unit tests
 
