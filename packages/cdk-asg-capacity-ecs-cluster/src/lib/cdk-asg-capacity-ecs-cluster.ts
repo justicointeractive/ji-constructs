@@ -1,5 +1,6 @@
 import { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
 import {
+  IVpc,
   InstanceClass,
   InstanceSize,
   InstanceType,
@@ -7,7 +8,6 @@ import {
   SecurityGroup,
   SubnetType,
   UserData,
-  Vpc,
 } from 'aws-cdk-lib/aws-ec2';
 import {
   AmiHardwareType,
@@ -19,7 +19,7 @@ import { Role, ServicePrincipal } from 'aws-cdk-lib/aws-iam';
 import { Construct } from 'constructs';
 
 export type CdkAsgCapacityEcsClusterProps = {
-  vpc: Vpc;
+  vpc: IVpc;
   useSpotCapacity: boolean;
   enableManagedTerminationProtection?: boolean;
   instanceType?: InstanceType;
