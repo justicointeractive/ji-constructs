@@ -34,6 +34,9 @@
       "@ji-constructs/start-localstack-docker": [
         "packages/start-localstack-docker/src/index.ts"
       ],
+      "cdk-asg-capacity-ecs-cluster": [
+        "packages/cdk-asg-capacity-ecs-cluster/src/index.ts"
+      ],
       "cdk-lambda-npm-function": [
         "packages/cdk-lambda-npm-function/src/index.ts"
       ],

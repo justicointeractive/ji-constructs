@@ -12,7 +12,8 @@
     "ecs-jwt-keypair",
     "image-resize-behavior",
     "lambda-npm-function",
-    "shared-db"
+    "shared-db",
+    "cdk-asg-capacity-ecs-cluster"
   ],
   "conventionalCommits.gitmoji": false
 }

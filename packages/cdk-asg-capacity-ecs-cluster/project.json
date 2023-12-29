@@ -1,0 +1,49 @@
+{
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/cdk-asg-capacity-ecs-cluster/src",
+  "projectType": "library",
+  "targets": {
+    "build": {
+      "executor": "@nrwl/js:tsc",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/packages/cdk-asg-capacity-ecs-cluster",
+        "tsConfig": "packages/cdk-asg-capacity-ecs-cluster/tsconfig.lib.json",
+        "packageJson": "packages/cdk-asg-capacity-ecs-cluster/package.json",
+        "main": "packages/cdk-asg-capacity-ecs-cluster/src/index.ts",
+        "assets": ["packages/cdk-asg-capacity-ecs-cluster/*.md"],
+        "generatePackageJson": true
+      }
+    },
+    "lint": {
+      "executor": "@nrwl/linter:eslint",
+      "outputs": ["{options.outputFile}"],
+      "options": {
+        "lintFilePatterns": ["packages/cdk-asg-capacity-ecs-cluster/**/*.ts"]
+      }
+    },
+    "test": {
+      "executor": "@nrwl/jest:jest",
+      "outputs": ["coverage/packages/cdk-asg-capacity-ecs-cluster"],
+      "options": {
+        "jestConfig": "packages/cdk-asg-capacity-ecs-cluster/jest.config.ts",
+        "passWithNoTests": true
+      }
+    },
+    "version": {
+      "executor": "@jscutlery/semver:version",
+      "options": {
+        "preset": "conventional",
+        "postTargets": ["cdk-asg-capacity-ecs-cluster:deploy"],
+        "trackDeps": true
+      }
+    },
+    "deploy": {
+      "executor": "ngx-deploy-npm:deploy",
+      "options": {
+        "access": "public"
+      }
+    }
+  },
+  "tags": []
+}
