@@ -4,7 +4,7 @@
   "license": "MIT",
   "scripts": {
     "prepare": "husky install",
-    "release": "nx run-many --all --target=version --parallel=1 && git push --follow-tags",
+    "release": "git fetch --tags --force && nx run-many --all --target=version --parallel=1 && git push --follow-tags",
     "build": "nx run-many --all --target=build",
     "test": "nx run-many --all --target=test"
   },
