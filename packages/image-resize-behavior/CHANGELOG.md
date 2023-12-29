@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.6.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.6.1...image-resize-behavior-0.6.2) (2023-12-29)
+
+
+### Bug Fixes
+
+* **image-resize-behavior:** destroy inventory table with stack ([8bb8f55](https://github.com/justicointeractive/ji-constructs/commit/8bb8f554c2b3b3f1d925b600b3407badb7f7ca41))
+
 ### [0.6.1](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.6.0...image-resize-behavior-0.6.1) (2023-05-02)
 
 ## [0.6.0](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.5.11...image-resize-behavior-0.6.0) (2023-04-22)
