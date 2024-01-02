@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.6.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.5.1...loadbalanced-ecs-service-0.6.0) (2024-01-02)
+
+
+### Features
+
+* **loadbalanced-ecs-service:** break up adding target to loadbalancer ([9248762](https://github.com/justicointeractive/ji-constructs/commit/924876257a9dbfafeae717070e709c86d87f51b7))
+
 ### [0.5.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.5.0...loadbalanced-ecs-service-0.5.1) (2023-12-29)
 
 ## [0.5.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.4.1...loadbalanced-ecs-service-0.5.0) (2023-05-02)
