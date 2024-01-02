@@ -30,10 +30,10 @@ import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListener
 import { domainNameToZoneName } from './domainNameToZoneName';
 
 export class LoadBalancedService extends Construct {
-  certificate: ICertificate;
   cluster: ICluster;
   loadBalancer: IApplicationLoadBalancer;
-  hostedZone: IHostedZone;
+  listener: LoadBalancedServiceListenerLookup;
+  vpc: IVpc;
 
   constructor(
     scope: cdk.Construct,
@@ -42,33 +42,17 @@ export class LoadBalancedService extends Construct {
   ) {
     super(scope, id);
 
-    const {
-      targetGroupProps = {},
-      createRoute53ARecord = true,
-      serviceFactory,
-      domainName,
-      route53ZoneName,
-      domainNameAliases,
-    } = options;
-
-    const domainZone = (this.hostedZone = HostedZone.fromLookup(
-      this,
-      'ECSZone',
-      {
-        domainName: route53ZoneName ?? domainNameToZoneName(domainName),
-      }
-    ));
-
-    const { loadBalancer, listener, vpc, listenerArn } =
+    const { loadBalancer, vpc } = (this.listener =
       typeof options.listener === 'string'
         ? new LoadBalancedServiceListenerLookup(
             this,
             'LBLookup',
             options.listener
           )
-        : options.listener;
+        : options.listener);
 
     this.loadBalancer = loadBalancer;
+    this.vpc = vpc;
 
     const cluster = (this.cluster =
       'name' in options.cluster
@@ -82,6 +66,25 @@ export class LoadBalancedService extends Construct {
         : options.cluster);
 
     cluster.connections.allowFrom(loadBalancer.connections, Port.allTcp());
+  }
+
+  addTarget(
+    options: LoadBalancedServiceTargetOptions
+  ): LoadBalancedServiceTarget {
+    const {
+      targetGroupProps = {},
+      createRoute53ARecord = true,
+      domainName,
+      route53ZoneName,
+      domainNameAliases,
+      service,
+    } = options;
+
+    const { loadBalancer, listener, vpc, listenerArn } = this.listener;
+
+    const domainZone = HostedZone.fromLookup(this, 'ECSZone', {
+      domainName: route53ZoneName ?? domainNameToZoneName(domainName),
+    });
 
     const targetGroup = new ApplicationTargetGroup(this, 'TargetGroup', {
       vpc,
@@ -91,12 +94,12 @@ export class LoadBalancedService extends Construct {
       ...targetGroupProps,
     });
 
-    const cert = (this.certificate =
+    const cert =
       options.certificate ??
       new Certificate(this, 'ACMCert', {
         domainName,
         validation: CertificateValidation.fromDns(domainZone),
-      }));
+      });
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
@@ -132,13 +135,14 @@ export class LoadBalancedService extends Construct {
       });
     }
 
-    const service = serviceFactory(this, cluster, {
-      vpc,
-      targetGroup,
-      hostedZone: domainZone,
-    });
-
     targetGroup.addTarget(service);
+
+    return {
+      service,
+      targetGroup,
+      cert,
+      domainZone,
+    };
   }
 }
 
@@ -147,30 +151,25 @@ export interface LoadBalancedServiceAlias {
   domainName: string;
 }
 export interface LoadBalancedServiceContext {
-  domainName: string;
   listener: string | LoadBalancedServiceListenerLookup;
   cluster: ICluster | { name: string; securityGroupIds: string[] };
+}
+
+export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
+
+export type LoadBalancedServiceTargetOptions = {
+  domainName: string;
+  service: Ec2Service;
   route53ZoneName?: string;
   domainNameAliases?: LoadBalancedServiceAlias[];
   certificate?: ICertificate;
-}
-export interface LoadBalancedServiceDefaults {
   createRoute53ARecord?: boolean;
   targetGroupProps?: Partial<ApplicationTargetGroupProps>;
-}
+};
 
-export interface LoadBalancedServiceFactories {
-  serviceFactory: (
-    scope: Construct,
-    cluster: ICluster,
-    extras: {
-      vpc: IVpc;
-      targetGroup: ApplicationTargetGroup;
-      hostedZone: IHostedZone;
-    }
-  ) => Ec2Service;
-}
-
-export type LoadBalancedServiceOptions = LoadBalancedServiceContext &
-  LoadBalancedServiceDefaults &
-  LoadBalancedServiceFactories;
+export type LoadBalancedServiceTarget = {
+  service: Ec2Service;
+  targetGroup: ApplicationTargetGroup;
+  cert: ICertificate;
+  domainZone: IHostedZone;
+};
