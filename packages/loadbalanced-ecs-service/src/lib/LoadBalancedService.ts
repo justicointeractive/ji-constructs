@@ -5,7 +5,7 @@ import {
   CertificateValidation,
   ICertificate,
 } from 'aws-cdk-lib/aws-certificatemanager';
-import { IVpc, Port } from 'aws-cdk-lib/aws-ec2';
+import { IVpc } from 'aws-cdk-lib/aws-ec2';
 import { Ec2Service } from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationListenerCertificate,
@@ -34,6 +34,7 @@ export class LoadBalancedService extends Construct {
   loadBalancer: IApplicationLoadBalancer;
   listener: LoadBalancedServiceListenerLookup;
   vpc: IVpc;
+  targets: LoadBalancedServiceTarget[] = [];
 
   constructor(
     scope: cdk.Construct,
@@ -58,6 +59,49 @@ export class LoadBalancedService extends Construct {
   addTarget(
     options: LoadBalancedServiceTargetOptions
   ): LoadBalancedServiceTarget {
+    const target = new LoadBalancedServiceTarget(
+      this,
+      `Target${this.targets.length}`,
+      options
+    );
+    this.targets.push(target);
+    return target;
+  }
+}
+
+export interface LoadBalancedServiceAlias {
+  certificate: ICertificate;
+  domainName: string;
+}
+export interface LoadBalancedServiceContext {
+  listener: string | LoadBalancedServiceListenerLookup;
+}
+
+export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
+
+export type LoadBalancedServiceTargetOptions = {
+  domainName: string;
+  service: Ec2Service;
+  healthCheck: HealthCheck;
+  route53ZoneName?: string;
+  domainNameAliases?: LoadBalancedServiceAlias[];
+  certificate?: ICertificate;
+  createRoute53ARecord?: boolean;
+  targetGroupProps?: Partial<ApplicationTargetGroupProps>;
+};
+
+export class LoadBalancedServiceTarget extends Construct {
+  targetGroup: ApplicationTargetGroup;
+  cert: ICertificate;
+  domainZone: IHostedZone;
+
+  constructor(
+    scope: LoadBalancedService,
+    id: string,
+    options: LoadBalancedServiceTargetOptions
+  ) {
+    super(scope, id);
+
     const {
       healthCheck,
       targetGroupProps = {},
@@ -68,27 +112,35 @@ export class LoadBalancedService extends Construct {
       service,
     } = options;
 
-    const { loadBalancer, listener, vpc, listenerArn } = this.listener;
+    const { loadBalancer, listener, vpc, listenerArn } = scope.listener;
 
-    const domainZone = HostedZone.fromLookup(this, 'ECSZone', {
-      domainName: route53ZoneName ?? domainNameToZoneName(domainName),
-    });
+    const domainZone = (this.domainZone = HostedZone.fromLookup(
+      this,
+      'ECSZone',
+      {
+        domainName: route53ZoneName ?? domainNameToZoneName(domainName),
+      }
+    ));
 
-    const targetGroup = new ApplicationTargetGroup(this, 'TargetGroup', {
-      vpc,
-      protocol: ApplicationProtocol.HTTP,
-      deregistrationDelay: Duration.seconds(15),
-      stickinessCookieDuration: Duration.days(1),
-      healthCheck,
-      ...targetGroupProps,
-    });
+    const targetGroup = (this.targetGroup = new ApplicationTargetGroup(
+      this,
+      'TargetGroup',
+      {
+        vpc,
+        protocol: ApplicationProtocol.HTTP,
+        deregistrationDelay: Duration.seconds(15),
+        stickinessCookieDuration: Duration.days(1),
+        healthCheck,
+        ...targetGroupProps,
+      }
+    ));
 
-    const cert =
+    const cert = (this.cert =
       options.certificate ??
       new Certificate(this, 'ACMCert', {
         domainName,
         validation: CertificateValidation.fromDns(domainZone),
-      });
+      }));
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
@@ -124,49 +176,12 @@ export class LoadBalancedService extends Construct {
       });
     }
 
-    targetGroup.addTarget(service);
-
     if (service.connections.securityGroups.length === 0) {
       throw new Error(
         'Service must have a security group attached to it before adding it as a target to a load balancer'
       );
     }
 
-    this.loadBalancer.connections.allowTo(service.connections, Port.allTcp());
-
-    return {
-      service,
-      targetGroup,
-      cert,
-      domainZone,
-    };
+    targetGroup.addTarget(service);
   }
 }
-
-export interface LoadBalancedServiceAlias {
-  certificate: ICertificate;
-  domainName: string;
-}
-export interface LoadBalancedServiceContext {
-  listener: string | LoadBalancedServiceListenerLookup;
-}
-
-export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
-
-export type LoadBalancedServiceTargetOptions = {
-  domainName: string;
-  service: Ec2Service;
-  healthCheck: HealthCheck;
-  route53ZoneName?: string;
-  domainNameAliases?: LoadBalancedServiceAlias[];
-  certificate?: ICertificate;
-  createRoute53ARecord?: boolean;
-  targetGroupProps?: Partial<ApplicationTargetGroupProps>;
-};
-
-export type LoadBalancedServiceTarget = {
-  service: Ec2Service;
-  targetGroup: ApplicationTargetGroup;
-  cert: ICertificate;
-  domainZone: IHostedZone;
-};
