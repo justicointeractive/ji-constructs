@@ -13,6 +13,7 @@ import {
   ApplicationProtocol,
   ApplicationTargetGroup,
   ApplicationTargetGroupProps,
+  HealthCheck,
   IApplicationLoadBalancer,
   ListenerAction,
   ListenerCondition,
@@ -72,6 +73,8 @@ export class LoadBalancedService extends Construct {
     options: LoadBalancedServiceTargetOptions
   ): LoadBalancedServiceTarget {
     const {
+      targetSecurityGroup,
+      healthCheck,
       targetGroupProps = {},
       createRoute53ARecord = true,
       domainName,
@@ -91,6 +94,7 @@ export class LoadBalancedService extends Construct {
       protocol: ApplicationProtocol.HTTP,
       deregistrationDelay: Duration.seconds(15),
       stickinessCookieDuration: Duration.days(1),
+      healthCheck,
       ...targetGroupProps,
     });
 
@@ -137,6 +141,8 @@ export class LoadBalancedService extends Construct {
 
     targetGroup.addTarget(service);
 
+    this.loadBalancer.connections.allowTo(targetSecurityGroup, Port.allTcp());
+
     return {
       service,
       targetGroup,
@@ -160,6 +166,8 @@ export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
 export type LoadBalancedServiceTargetOptions = {
   domainName: string;
   service: Ec2Service;
+  targetSecurityGroup: SecurityGroup;
+  healthCheck: HealthCheck;
   route53ZoneName?: string;
   domainNameAliases?: LoadBalancedServiceAlias[];
   certificate?: ICertificate;
