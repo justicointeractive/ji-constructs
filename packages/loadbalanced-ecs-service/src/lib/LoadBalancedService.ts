@@ -126,7 +126,13 @@ export class LoadBalancedService extends Construct {
 
     targetGroup.addTarget(service);
 
-    this.loadBalancer.connections.allowTo(service, Port.allTcp());
+    if (service.connections.securityGroups.length === 0) {
+      throw new Error(
+        'Service must have a security group attached to it before adding it as a target to a load balancer'
+      );
+    }
+
+    this.loadBalancer.connections.allowTo(service.connections, Port.allTcp());
 
     return {
       service,

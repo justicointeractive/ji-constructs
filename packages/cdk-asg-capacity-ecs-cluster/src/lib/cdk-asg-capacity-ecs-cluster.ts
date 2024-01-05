@@ -97,5 +97,7 @@ export class CdkAsgCapcityEcsCluster extends Construct {
     ));
 
     cluster.addAsgCapacityProvider(capacityProvider);
+
+    cluster.connections.addSecurityGroup(securityGroup);
   }
 }
