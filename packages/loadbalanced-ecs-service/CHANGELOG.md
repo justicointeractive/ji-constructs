@@ -2,6 +2,8 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.6.5](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.4...loadbalanced-ecs-service-0.6.5) (2024-01-05)
+
 ### [0.6.4](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.3...loadbalanced-ecs-service-0.6.4) (2024-01-05)
 
 
