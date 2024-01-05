@@ -5,7 +5,7 @@ import {
   CertificateValidation,
   ICertificate,
 } from 'aws-cdk-lib/aws-certificatemanager';
-import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
+import { IVpc, Port } from 'aws-cdk-lib/aws-ec2';
 import { Ec2Service } from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationListenerCertificate,
@@ -59,7 +59,6 @@ export class LoadBalancedService extends Construct {
     options: LoadBalancedServiceTargetOptions
   ): LoadBalancedServiceTarget {
     const {
-      targetSecurityGroup,
       healthCheck,
       targetGroupProps = {},
       createRoute53ARecord = true,
@@ -127,7 +126,7 @@ export class LoadBalancedService extends Construct {
 
     targetGroup.addTarget(service);
 
-    this.loadBalancer.connections.allowTo(targetSecurityGroup, Port.allTcp());
+    this.loadBalancer.connections.allowTo(service, Port.allTcp());
 
     return {
       service,
@@ -151,7 +150,6 @@ export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
 export type LoadBalancedServiceTargetOptions = {
   domainName: string;
   service: Ec2Service;
-  targetSecurityGroup: SecurityGroup;
   healthCheck: HealthCheck;
   route53ZoneName?: string;
   domainNameAliases?: LoadBalancedServiceAlias[];
