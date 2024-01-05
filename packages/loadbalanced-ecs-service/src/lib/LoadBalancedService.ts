@@ -6,7 +6,7 @@ import {
   ICertificate,
 } from 'aws-cdk-lib/aws-certificatemanager';
 import { IVpc, Port, SecurityGroup } from 'aws-cdk-lib/aws-ec2';
-import { Cluster, Ec2Service, ICluster } from 'aws-cdk-lib/aws-ecs';
+import { Ec2Service } from 'aws-cdk-lib/aws-ecs';
 import {
   ApplicationListenerCertificate,
   ApplicationListenerRule,
@@ -31,7 +31,6 @@ import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListener
 import { domainNameToZoneName } from './domainNameToZoneName';
 
 export class LoadBalancedService extends Construct {
-  cluster: ICluster;
   loadBalancer: IApplicationLoadBalancer;
   listener: LoadBalancedServiceListenerLookup;
   vpc: IVpc;
@@ -54,19 +53,6 @@ export class LoadBalancedService extends Construct {
 
     this.loadBalancer = loadBalancer;
     this.vpc = vpc;
-
-    const cluster = (this.cluster =
-      'name' in options.cluster
-        ? Cluster.fromClusterAttributes(this, 'ECSCluster', {
-            vpc,
-            clusterName: options.cluster.name,
-            securityGroups: options.cluster.securityGroupIds.map((id, i) =>
-              SecurityGroup.fromLookupById(this, `SecurityGroup${i + 1}`, id)
-            ),
-          })
-        : options.cluster);
-
-    cluster.connections.allowFrom(loadBalancer.connections, Port.allTcp());
   }
 
   addTarget(
@@ -158,7 +144,6 @@ export interface LoadBalancedServiceAlias {
 }
 export interface LoadBalancedServiceContext {
   listener: string | LoadBalancedServiceListenerLookup;
-  cluster: ICluster | { name: string; securityGroupIds: string[] };
 }
 
 export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
