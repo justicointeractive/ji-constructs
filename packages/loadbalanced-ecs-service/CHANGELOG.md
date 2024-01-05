@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.6.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.0...loadbalanced-ecs-service-0.6.1) (2024-01-05)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** require healthcheck and fix lb to target security group rule ([92e49c6](https://github.com/justicointeractive/ji-constructs/commit/92e49c61646654eaa35908022a65fb0d6ebd1bf4))
+
 ## [0.6.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.5.1...loadbalanced-ecs-service-0.6.0) (2024-01-02)
 
 
