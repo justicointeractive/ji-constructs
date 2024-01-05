@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.1...cdk-asg-capacity-ecs-cluster-0.1.2) (2024-01-05)
+
+
+### Bug Fixes
+
+* ensure clusters know about security groups and load balanced services require security groups ([b6e4884](https://github.com/justicointeractive/ji-constructs/commit/b6e4884539e15f9d5d894ae1e44babffce40a52e))
+
 ### [0.1.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.0...cdk-asg-capacity-ecs-cluster-0.1.1) (2023-12-29)
 
 
