@@ -44,7 +44,7 @@ export class LoadBalancedService extends Construct {
     super(scope, id);
 
     const { loadBalancer, vpc } = (this.listener =
-      typeof options.listener === 'string'
+      options.listener == null || typeof options.listener === 'string'
         ? new LoadBalancedServiceListenerLookup(
             this,
             'LBLookup',
@@ -73,11 +73,10 @@ export interface LoadBalancedServiceAlias {
   certificate: ICertificate;
   domainName: string;
 }
-export interface LoadBalancedServiceContext {
-  listener: string | LoadBalancedServiceListenerLookup;
-}
 
-export type LoadBalancedServiceOptions = LoadBalancedServiceContext;
+export type LoadBalancedServiceOptions = {
+  listener?: string | LoadBalancedServiceListenerLookup;
+};
 
 export type LoadBalancedServiceTargetOptions = {
   domainName: string;
@@ -112,7 +111,7 @@ export class LoadBalancedServiceTarget extends Construct {
       service,
     } = options;
 
-    const { loadBalancer, listener, vpc, listenerArn } = scope.listener;
+    const { loadBalancer, listener, vpc } = scope.listener;
 
     const domainZone = (this.domainZone = HostedZone.fromLookup(
       this,
@@ -144,7 +143,7 @@ export class LoadBalancedServiceTarget extends Construct {
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
-      priority: findPrioritySync(listenerArn, domainName),
+      priority: findPrioritySync(listener.listenerArn, domainName),
       conditions: [ListenerCondition.hostHeaders([domainName])],
       action: ListenerAction.forward([targetGroup]),
     });
@@ -165,7 +164,7 @@ export class LoadBalancedServiceTarget extends Construct {
     for (const [i, alias] of (domainNameAliases ?? []).entries()) {
       new ApplicationListenerRule(this, `ALBListenerRuleAlias${i}`, {
         listener,
-        priority: findPrioritySync(listenerArn, alias.domainName),
+        priority: findPrioritySync(listener.listenerArn, alias.domainName),
         conditions: [ListenerCondition.hostHeaders([alias.domainName])],
         action: ListenerAction.forward([targetGroup]),
       });
