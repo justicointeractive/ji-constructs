@@ -39,7 +39,7 @@ export class LoadBalancedService extends Construct {
   constructor(
     scope: cdk.Construct,
     id: string,
-    options: LoadBalancedServiceOptions
+    options: LoadBalancedServiceOptions = {}
   ) {
     super(scope, id);
 
