@@ -111,7 +111,7 @@ export class LoadBalancedServiceTarget extends Construct {
       service,
     } = options;
 
-    const { loadBalancer, listener, vpc } = scope.listener;
+    const { loadBalancer, listener, vpc, listenerArn } = scope.listener;
 
     const domainZone = (this.domainZone = HostedZone.fromLookup(
       this,
@@ -134,6 +134,13 @@ export class LoadBalancedServiceTarget extends Construct {
       }
     ));
 
+    const listenerFilter = listenerArn ?? {
+      listenerProtocol: ApplicationProtocol.HTTPS,
+      loadBalancerTags: {
+        'JI-LoadBalancer': '1',
+      },
+    };
+
     const cert = (this.cert =
       options.certificate ??
       new Certificate(this, 'ACMCert', {
@@ -143,7 +150,7 @@ export class LoadBalancedServiceTarget extends Construct {
 
     new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
-      priority: findPrioritySync(listener.listenerArn, domainName),
+      priority: findPrioritySync(listenerFilter, domainName),
       conditions: [ListenerCondition.hostHeaders([domainName])],
       action: ListenerAction.forward([targetGroup]),
     });
@@ -164,7 +171,7 @@ export class LoadBalancedServiceTarget extends Construct {
     for (const [i, alias] of (domainNameAliases ?? []).entries()) {
       new ApplicationListenerRule(this, `ALBListenerRuleAlias${i}`, {
         listener,
-        priority: findPrioritySync(listener.listenerArn, alias.domainName),
+        priority: findPrioritySync(listenerFilter, alias.domainName),
         conditions: [ListenerCondition.hostHeaders([alias.domainName])],
         action: ListenerAction.forward([targetGroup]),
       });

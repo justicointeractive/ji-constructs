@@ -1,11 +1,25 @@
-import { ELBv2 } from "aws-sdk";
-import { DescribeRulesOutput } from "aws-sdk/clients/elbv2";
-import { range, shuffle } from "lodash";
+import { ApplicationProtocol } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { ELBv2 } from 'aws-sdk';
+import {
+  DescribeListenersOutput,
+  DescribeLoadBalancersOutput,
+  DescribeRulesOutput,
+} from 'aws-sdk/clients/elbv2';
+import { range, shuffle } from 'lodash';
 
 export async function findPriority(
-  listenerArn: string,
+  listener:
+    | string
+    | {
+        listenerProtocol: ApplicationProtocol;
+        loadBalancerTags: Record<string, string>;
+      },
   hostname: string
 ): Promise<number | null> {
+  const listenerArn =
+    typeof listener === 'string'
+      ? listener
+      : await resolveListenerArn(listener);
   const rules = await toArray(enumerateRules(listenerArn));
 
   const existingRule = rules?.find((r) =>
@@ -26,7 +40,7 @@ export async function findPriority(
     }
   }
 
-  throw new Error("could not find a priority that was not in use");
+  throw new Error('could not find a priority that was not in use');
 }
 
 export async function findPriorityOrFail(
@@ -64,4 +78,52 @@ async function* enumerateRules(
     yield rulesResponse.Rules!;
     nextMarker = rulesResponse.NextMarker;
   } while (nextMarker);
+}
+
+async function resolveListenerArn(query: {
+  listenerProtocol: ApplicationProtocol;
+  loadBalancerTags: Record<string, string>;
+}) {
+  const elbv2 = new ELBv2();
+
+  // enumerate load balancers finding the first one that matches the tags
+  let nextMarker: string | undefined = undefined;
+  do {
+    const loadBalancersResponse: DescribeLoadBalancersOutput = await elbv2
+      .describeLoadBalancers({
+        Marker: nextMarker,
+      })
+      .promise();
+
+    const loadBalancerTags = await elbv2
+      .describeTags({
+        ResourceArns: loadBalancersResponse.LoadBalancers!.map(
+          (lb) => lb.LoadBalancerArn!
+        ),
+      })
+      .promise();
+
+    const loadBalancerArn = loadBalancerTags.TagDescriptions?.find((t) => {
+      return Object.entries(query.loadBalancerTags).every(([k, v]) => {
+        return t.Tags?.some((tag) => tag.Key === k && tag.Value === v);
+      });
+    })?.ResourceArn;
+
+    const listeners: DescribeListenersOutput = await elbv2
+      .describeListeners({
+        LoadBalancerArn: loadBalancerArn,
+      })
+      .promise();
+
+    const listener = listeners.Listeners?.find((l) => {
+      return l.Protocol === query.listenerProtocol;
+    });
+
+    if (listener) {
+      return listener.ListenerArn!;
+    }
+
+    nextMarker = loadBalancersResponse.NextMarker;
+  } while (nextMarker);
+  throw new Error('could not find listener');
 }
