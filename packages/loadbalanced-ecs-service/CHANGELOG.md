@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.7.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.5...loadbalanced-ecs-service-0.7.0) (2024-01-13)
+
+
+### Features
+
+* **loadbalanced-ecs-service:** autodiscover lb ([888ef33](https://github.com/justicointeractive/ji-constructs/commit/888ef33b90d84148bd7a651e4afefb99acf55a9b))
+
 ### [0.6.5](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.4...loadbalanced-ecs-service-0.6.5) (2024-01-05)
 
 ### [0.6.4](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.3...loadbalanced-ecs-service-0.6.4) (2024-01-05)
