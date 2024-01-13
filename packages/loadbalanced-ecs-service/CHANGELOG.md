@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.7.1](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.0...loadbalanced-ecs-service-0.7.1) (2024-01-13)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** options are no optional ([59e05e8](https://github.com/justicointeractive/ji-constructs/commit/59e05e8dd6fd497e9ba18b92fa7d20ad7e7a5f4c))
+
 ## [0.7.0](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.6.5...loadbalanced-ecs-service-0.7.0) (2024-01-13)
 
 
