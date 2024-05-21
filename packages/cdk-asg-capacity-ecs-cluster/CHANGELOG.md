@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.2...cdk-asg-capacity-ecs-cluster-0.1.3) (2024-05-21)
+
+
+### Bug Fixes
+
+* **cdk-asg-capacity-ecs-cluster:** use private with egress subnets by default ([e516b9a](https://github.com/justicointeractive/ji-constructs/commit/e516b9aa256a20b1bd9130efa2d650470c8173b8))
+
 ### [0.1.2](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.1...cdk-asg-capacity-ecs-cluster-0.1.2) (2024-01-05)
 
 
