@@ -23,6 +23,7 @@ export type CdkAsgCapacityEcsClusterProps = {
   useSpotCapacity: boolean;
   enableManagedTerminationProtection?: boolean;
   instanceType?: InstanceType;
+  subnetType?: SubnetType;
 };
 
 export class CdkAsgCapcityEcsCluster extends Construct {
@@ -45,6 +46,7 @@ export class CdkAsgCapcityEcsCluster extends Construct {
       useSpotCapacity,
       enableManagedTerminationProtection,
       instanceType = InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
+      subnetType = SubnetType.PRIVATE_WITH_EGRESS,
     } = props;
 
     const cluster = (this.cluster = new Cluster(this, 'Cluster', {
@@ -84,7 +86,9 @@ export class CdkAsgCapcityEcsCluster extends Construct {
       vpc,
       launchTemplate,
       maxCapacity: 10,
-      vpcSubnets: { subnetType: SubnetType.PUBLIC },
+      vpcSubnets: {
+        subnetType,
+      },
     }));
 
     const capacityProvider = (this.capacityProvider = new AsgCapacityProvider(
