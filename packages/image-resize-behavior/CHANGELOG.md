@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.6.3](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.6.2...image-resize-behavior-0.6.3) (2024-05-21)
+
+### Dependency Updates
+
+* `ecs-jwt-keypair` updated to version `0.1.10`
 ### [0.6.2](https://github.com/justicointeractive/ji-constructs/compare/image-resize-behavior-0.6.1...image-resize-behavior-0.6.2) (2023-12-29)
 
 
