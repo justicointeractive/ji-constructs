@@ -35,7 +35,7 @@ export function findPrioritySync(
   }
   const asNumber = Number(result.stdout.trim());
   if (isNaN(asNumber) || asNumber === 0) {
-    throw new Error(`invalid result: ${result.stdout}`);
+    throw new Error(`invalid result: "${result.stdout}" (${result.stderr})`);
   }
   return asNumber;
 }
