@@ -5,7 +5,7 @@ import {
   DescribeLoadBalancersOutput,
   DescribeRulesOutput,
 } from 'aws-sdk/clients/elbv2';
-import { range, shuffle } from 'lodash';
+import { chunk, range, shuffle } from 'lodash';
 
 const elbv2 = new ELBv2();
 
@@ -26,21 +26,25 @@ export async function findPriority(
       : await resolveListenerArn(listener);
   const rules = await toArray(enumerateRules(listenerArn));
 
-  const tags = await elbv2
-    .describeTags({
-      ResourceArns: rules.map((r) => r.RuleArn!),
-    })
-    .promise();
+  let existingRule = null;
+  for (const chunkRules of chunk(rules, 20)) {
+    const tags = await elbv2
+      .describeTags({
+        ResourceArns: chunkRules.map((r) => r.RuleArn!),
+      })
+      .promise();
 
-  let existingRule;
-  for (const rule of rules) {
-    const ruleTags = tags.TagDescriptions?.find(
-      (t) => t.ResourceArn === rule.RuleArn
-    );
-    const ruleIdTag = ruleTags?.Tags?.find((t) => t.Key === listenerRuleIdTag);
-    if (ruleIdTag?.Value === listenerRuleId) {
-      existingRule = rule;
-      break;
+    for (const rule of chunkRules) {
+      const ruleTags = tags.TagDescriptions?.find(
+        (t) => t.ResourceArn === rule.RuleArn
+      );
+      const ruleIdTag = ruleTags?.Tags?.find(
+        (t) => t.Key === listenerRuleIdTag
+      );
+      if (ruleIdTag?.Value === listenerRuleId) {
+        existingRule = rule;
+        break;
+      }
     }
   }
 
