@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.9](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.8...elb-rule-priority-0.1.9) (2024-06-08)
+
+
+### Bug Fixes
+
+* can only request 20 rule tags at a time ([0e9caa8](https://github.com/justicointeractive/ji-constructs/commit/0e9caa817b5b0b1a586979e795df64275e0c1f11))
+
 ### [0.1.8](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.7...elb-rule-priority-0.1.8) (2024-06-08)
 
 
