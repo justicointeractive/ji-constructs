@@ -2,6 +2,11 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.7.5](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.4...loadbalanced-ecs-service-0.7.5) (2024-06-08)
+
+### Dependency Updates
+
+* `elb-rule-priority` updated to version `0.1.9`
 ### [0.7.4](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.3...loadbalanced-ecs-service-0.7.4) (2024-06-08)
 
 ### Dependency Updates
