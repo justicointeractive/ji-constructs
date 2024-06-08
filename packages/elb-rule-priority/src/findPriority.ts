@@ -7,6 +7,10 @@ import {
 } from 'aws-sdk/clients/elbv2';
 import { range, shuffle } from 'lodash';
 
+const elbv2 = new ELBv2();
+
+export const listenerRuleIdTag = 'JI-ListenerRule-ID';
+
 export async function findPriority(
   listener:
     | string
@@ -14,7 +18,7 @@ export async function findPriority(
         listenerProtocol: ApplicationProtocol;
         loadBalancerTags: Record<string, string>;
       },
-  hostname: string
+  listenerRuleId: string
 ): Promise<number | null> {
   const listenerArn =
     typeof listener === 'string'
@@ -22,11 +26,23 @@ export async function findPriority(
       : await resolveListenerArn(listener);
   const rules = await toArray(enumerateRules(listenerArn));
 
-  const existingRule = rules?.find((r) =>
-    r.Conditions?.some((condition) =>
-      condition.HostHeaderConfig?.Values?.includes(hostname)
-    )
-  );
+  const tags = await elbv2
+    .describeTags({
+      ResourceArns: rules.map((r) => r.RuleArn!),
+    })
+    .promise();
+
+  let existingRule;
+  for (const rule of rules) {
+    const ruleTags = tags.TagDescriptions?.find(
+      (t) => t.ResourceArn === rule.RuleArn
+    );
+    const ruleIdTag = ruleTags?.Tags?.find((t) => t.Key === listenerRuleIdTag);
+    if (ruleIdTag?.Value === listenerRuleId) {
+      existingRule = rule;
+      break;
+    }
+  }
 
   if (existingRule?.Priority != null) {
     return Number(existingRule.Priority);
@@ -45,9 +61,9 @@ export async function findPriority(
 
 export async function findPriorityOrFail(
   listenerArn: string,
-  hostname: string
+  listenerRuleId: string
 ): Promise<number> {
-  const priority = await findPriority(listenerArn, hostname);
+  const priority = await findPriority(listenerArn, listenerRuleId);
   if (priority == null) {
     throw new Error(`unable to find suitable priority`);
   }
@@ -65,7 +81,6 @@ async function toArray<T>(asyncIterator: AsyncGenerator<T[]>) {
 async function* enumerateRules(
   listenerArn: string
 ): AsyncGenerator<ELBv2.Rule[]> {
-  const elbv2 = new ELBv2();
   let nextMarker: string | undefined = undefined;
   do {
     const rulesResponse: DescribeRulesOutput = await elbv2

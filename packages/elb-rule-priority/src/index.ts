@@ -7,25 +7,25 @@ import { findPriority } from './findPriority';
 export * from './findPriority';
 
 async function run(
-  ...[listenerArn, hostname]: Parameters<typeof findPriority>
+  ...[listenerArn, listenerRuleId]: Parameters<typeof findPriority>
 ) {
-  const priority = await findPriority(listenerArn, hostname);
+  const priority = await findPriority(listenerArn, listenerRuleId);
   console.log(priority);
 }
 
 if (require.main === module) {
   const [, , args] = process.argv;
-  const [listenerArn, hostname] = fromBase64Json(args);
-  run(listenerArn, hostname);
+  const [listenerArn, listenerRuleId] = fromBase64Json(args);
+  run(listenerArn, listenerRuleId);
 }
 
 export function findPrioritySync(
-  ...[listenerArn, hostname]: Parameters<typeof findPriority>
+  ...[listenerArn, listenerRuleId]: Parameters<typeof findPriority>
 ) {
   const scriptPath = path.join(__dirname, './index.js');
   const result = spawnSync(
     'node',
-    [scriptPath, toBase64Json([listenerArn, hostname])],
+    [scriptPath, toBase64Json([listenerArn, listenerRuleId])],
     {
       encoding: 'utf8',
     }

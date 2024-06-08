@@ -1,5 +1,8 @@
-import { findPrioritySync } from '@ji-constructs/elb-rule-priority';
-import { Duration } from 'aws-cdk-lib';
+import {
+  findPrioritySync,
+  listenerRuleIdTag,
+} from '@ji-constructs/elb-rule-priority';
+import { Duration, Stack, Tags } from 'aws-cdk-lib';
 import {
   Certificate,
   CertificateValidation,
@@ -148,12 +151,19 @@ export class LoadBalancedServiceTarget extends Construct {
         validation: CertificateValidation.fromDns(domainZone),
       }));
 
-    new ApplicationListenerRule(this, 'ALBListenerRule', {
+    const listenerRulePath = [
+      Stack.of(this).stackName,
+      this.node.path,
+      'ALBListenerRule',
+    ].join('/');
+
+    const listenerRule = new ApplicationListenerRule(this, 'ALBListenerRule', {
       listener,
-      priority: findPrioritySync(listenerFilter, domainName),
+      priority: findPrioritySync(listenerFilter, listenerRulePath),
       conditions: [ListenerCondition.hostHeaders([domainName])],
       action: ListenerAction.forward([targetGroup]),
     });
+    Tags.of(listenerRule).add(listenerRuleIdTag, listenerRulePath);
 
     new ApplicationListenerCertificate(this, 'ALBListenerCert', {
       listener,
