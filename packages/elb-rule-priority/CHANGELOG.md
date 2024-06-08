@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.1.8](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.7...elb-rule-priority-0.1.8) (2024-06-08)
+
+
+### Bug Fixes
+
+* resolve rule priority by tags rather than hostname ([8d70371](https://github.com/justicointeractive/ji-constructs/commit/8d70371b6b57e6c63e9351cdd4dfb4ac3c772339))
+
 ### [0.1.7](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.6...elb-rule-priority-0.1.7) (2024-01-13)
 
 ### [0.1.6](https://github.com/justicointeractive/ji-constructs/compare/elb-rule-priority-0.1.5...elb-rule-priority-0.1.6) (2024-01-13)
