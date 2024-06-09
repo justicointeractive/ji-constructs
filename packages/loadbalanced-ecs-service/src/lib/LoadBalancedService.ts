@@ -61,13 +61,10 @@ export class LoadBalancedService extends Construct {
   }
 
   addTarget(
+    id: string,
     options: LoadBalancedServiceTargetOptions
   ): LoadBalancedServiceTarget {
-    const target = new LoadBalancedServiceTarget(
-      this,
-      `Target${this.targets.length}`,
-      options
-    );
+    const target = new LoadBalancedServiceTarget(this, id, options);
     this.targets.push(target);
     return target;
   }
