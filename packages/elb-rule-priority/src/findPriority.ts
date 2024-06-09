@@ -11,13 +11,15 @@ const elbv2 = new ELBv2();
 
 export const listenerRuleIdTag = 'JI-ListenerRule-ID';
 
+export type ListenerFilter =
+  | string
+  | {
+      listenerProtocol: ApplicationProtocol;
+      loadBalancerTags: Record<string, string>;
+    };
+
 export async function findPriority(
-  listener:
-    | string
-    | {
-        listenerProtocol: ApplicationProtocol;
-        loadBalancerTags: Record<string, string>;
-      },
+  listener: ListenerFilter,
   listenerRuleId: string
 ): Promise<number | null> {
   const listenerArn =

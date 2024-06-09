@@ -1,4 +1,5 @@
 import {
+  ListenerFilter,
   findPrioritySync,
   listenerRuleIdTag,
 } from '@ji-constructs/elb-rule-priority';
@@ -151,19 +152,18 @@ export class LoadBalancedServiceTarget extends Construct {
         validation: CertificateValidation.fromDns(domainZone),
       }));
 
-    const listenerRulePath = [
-      Stack.of(this).stackName,
-      this.node.path,
+    withPriority(
+      this,
       'ALBListenerRule',
-    ].join('/');
-
-    const listenerRule = new ApplicationListenerRule(this, 'ALBListenerRule', {
-      listener,
-      priority: findPrioritySync(listenerFilter, listenerRulePath),
-      conditions: [ListenerCondition.hostHeaders([domainName])],
-      action: ListenerAction.forward([targetGroup]),
-    });
-    Tags.of(listenerRule).add(listenerRuleIdTag, listenerRulePath);
+      listenerFilter,
+      (id, priority) =>
+        new ApplicationListenerRule(this, id, {
+          listener,
+          priority,
+          conditions: [ListenerCondition.hostHeaders([domainName])],
+          action: ListenerAction.forward([targetGroup]),
+        })
+    );
 
     new ApplicationListenerCertificate(this, 'ALBListenerCert', {
       listener,
@@ -179,12 +179,18 @@ export class LoadBalancedServiceTarget extends Construct {
     }
 
     for (const [i, alias] of (domainNameAliases ?? []).entries()) {
-      new ApplicationListenerRule(this, `ALBListenerRuleAlias${i}`, {
-        listener,
-        priority: findPrioritySync(listenerFilter, alias.domainName),
-        conditions: [ListenerCondition.hostHeaders([alias.domainName])],
-        action: ListenerAction.forward([targetGroup]),
-      });
+      withPriority(
+        this,
+        `ALBListenerRuleAlias${i}`,
+        listenerFilter,
+        (id, priority) =>
+          new ApplicationListenerRule(this, id, {
+            listener,
+            priority,
+            conditions: [ListenerCondition.hostHeaders([alias.domainName])],
+            action: ListenerAction.forward([targetGroup]),
+          })
+      );
 
       new ApplicationListenerCertificate(this, `ALBListenerCertAlias${i}`, {
         listener,
@@ -200,4 +206,21 @@ export class LoadBalancedServiceTarget extends Construct {
 
     targetGroup.addTarget(service);
   }
+}
+
+function withPriority(
+  scope: Construct,
+  id: string,
+  listenerFilter: ListenerFilter,
+  listener: (id: string, priority: number) => ApplicationListenerRule
+) {
+  const listenerRulePath = [
+    Stack.of(scope).stackName,
+    scope.node.path,
+    id,
+  ].join('/');
+  const priority = findPrioritySync(listenerFilter, listenerRulePath);
+  const listenerRule = listener(id, priority);
+  Tags.of(listenerRule).add(listenerRuleIdTag, listenerRulePath);
+  return listenerRule;
 }
