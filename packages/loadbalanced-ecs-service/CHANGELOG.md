@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.7.8](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.7...loadbalanced-ecs-service-0.7.8) (2024-06-09)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** don't auto generate a target id ([19cf93c](https://github.com/justicointeractive/ji-constructs/commit/19cf93c6aa99196b9d5e6e8082b4e8480c95b67e))
+
 ### [0.7.7](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.6...loadbalanced-ecs-service-0.7.7) (2024-06-09)
 
 ### Dependency Updates
