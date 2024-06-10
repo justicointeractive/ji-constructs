@@ -3,7 +3,7 @@ import {
   findPrioritySync,
   listenerRuleIdTag,
 } from '@ji-constructs/elb-rule-priority';
-import { Duration, Stack, Tags } from 'aws-cdk-lib';
+import { Duration, Stack } from 'aws-cdk-lib';
 import {
   Certificate,
   CertificateValidation,
@@ -22,6 +22,7 @@ import {
   ListenerAction,
   ListenerCondition,
 } from 'aws-cdk-lib/aws-elasticloadbalancingv2';
+import { PolicyStatement } from 'aws-cdk-lib/aws-iam';
 import {
   ARecord,
   HostedZone,
@@ -29,6 +30,11 @@ import {
   RecordTarget,
 } from 'aws-cdk-lib/aws-route53';
 import { LoadBalancerTarget } from 'aws-cdk-lib/aws-route53-targets';
+import {
+  AwsCustomResource,
+  AwsCustomResourcePolicy,
+  PhysicalResourceId,
+} from 'aws-cdk-lib/custom-resources';
 import * as cdk from 'constructs';
 import { Construct } from 'constructs';
 import { LoadBalancedServiceListenerLookup } from './LoadBalancedServiceListenerLookup';
@@ -218,6 +224,45 @@ function withPriority(
   ].join('/');
   const priority = findPrioritySync(listenerFilter, listenerRulePath);
   const listenerRule = listener(id, priority);
-  Tags.of(listenerRule).add(listenerRuleIdTag, listenerRulePath);
+
+  // cfn doesn't support tags on listener rules, so we use a custom resource
+  const tagListenerRule = new AwsCustomResource(scope, `${id}Tag`, {
+    onUpdate: {
+      service: 'ElasticLoadBalancingV2',
+      action: 'addTags',
+      parameters: {
+        ResourceArns: [listenerRule.listenerRuleArn],
+        Tags: [
+          {
+            Key: listenerRuleIdTag,
+            Value: listenerRulePath,
+          },
+        ],
+      },
+      physicalResourceId: PhysicalResourceId.of(
+        `${listenerRule.listenerRuleArn}-${listenerRuleIdTag}-${listenerRulePath}`
+      ),
+    },
+    onDelete: {
+      service: 'ElasticLoadBalancingV2',
+      action: 'removeTags',
+      parameters: {
+        ResourceArns: [listenerRule.listenerRuleArn],
+        TagKeys: [listenerRuleIdTag],
+      },
+    },
+    policy: AwsCustomResourcePolicy.fromStatements([
+      new PolicyStatement({
+        actions: [
+          'elasticloadbalancing:AddTags',
+          'elasticloadbalancing:RemoveTags',
+        ],
+        resources: [listenerRule.listenerRuleArn],
+      }),
+    ]),
+  });
+
+  tagListenerRule.node.addDependency(listenerRule);
+
   return listenerRule;
 }
