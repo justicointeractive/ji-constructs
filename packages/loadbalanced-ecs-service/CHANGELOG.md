@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.7.10](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.9...loadbalanced-ecs-service-0.7.10) (2024-06-10)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** tag awscustomresource ([dbd99f8](https://github.com/justicointeractive/ji-constructs/commit/dbd99f82ffbd1b2abb32e4ada5bb68ff4b05e2d8))
+
 ### [0.7.9](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.8...loadbalanced-ecs-service-0.7.9) (2024-06-10)
 
 
