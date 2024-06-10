@@ -228,8 +228,8 @@ function withPriority(
   // cfn doesn't support tags on listener rules, so we use a custom resource
   const tagListenerRule = new AwsCustomResource(scope, `${id}Tag`, {
     onUpdate: {
-      service: 'ElasticLoadBalancingV2',
-      action: 'addTags',
+      service: '@aws-sdk/client-elastic-load-balancing-v2',
+      action: 'AddTagsCommand',
       parameters: {
         ResourceArns: [listenerRule.listenerRuleArn],
         Tags: [
@@ -244,8 +244,8 @@ function withPriority(
       ),
     },
     onDelete: {
-      service: 'ElasticLoadBalancingV2',
-      action: 'removeTags',
+      service: '@aws-sdk/client-elastic-load-balancing-v2',
+      action: 'RemoveTagsCommand',
       parameters: {
         ResourceArns: [listenerRule.listenerRuleArn],
         TagKeys: [listenerRuleIdTag],
