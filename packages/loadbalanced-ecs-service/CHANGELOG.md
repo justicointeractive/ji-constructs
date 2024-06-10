@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.7.9](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.8...loadbalanced-ecs-service-0.7.9) (2024-06-10)
+
+
+### Bug Fixes
+
+* **loadbalanced-ecs-service:** turns out, cfn doesn't support tags for listener rules ([adc0900](https://github.com/justicointeractive/ji-constructs/commit/adc09008a5942f659818b644193a7ab15f4003ef))
+
 ### [0.7.8](https://github.com/justicointeractive/ji-constructs/compare/loadbalanced-ecs-service-0.7.7...loadbalanced-ecs-service-0.7.8) (2024-06-09)
 
 
