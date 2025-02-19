@@ -156,6 +156,12 @@ export class SharedDatabaseDatabase extends Construct implements IConnectable {
       },
     });
 
-    dbResource.node.addDependency(secret, databaseInstanceSecret);
+    dbResource.node.addDependency(
+      secret,
+      databaseInstanceSecret,
+      onEventHandlerVpc,
+      onEventHandler,
+      dbProvider
+    );
   }
 }
