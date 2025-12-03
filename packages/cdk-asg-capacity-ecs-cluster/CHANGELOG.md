@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.2.0...cdk-asg-capacity-ecs-cluster-0.2.1) (2025-12-03)
+
+
+### Bug Fixes
+
+* **cdk-asg-capacity-ecs-cluster:** remove illegal spotOptions from launch template ([6c21913](https://github.com/justicointeractive/ji-constructs/commit/6c21913713010de41993530a307c85605c5c4891))
+
 ## [0.2.0](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.3...cdk-asg-capacity-ecs-cluster-0.2.0) (2025-12-03)
 
 
