@@ -77,11 +77,6 @@ export class CdkAsgCapcityEcsCluster extends Construct {
       {
         instanceType,
         machineImage: EcsOptimizedImage.amazonLinux2(AmiHardwareType.STANDARD),
-        ...(useSpotCapacity
-          ? {
-              spotOptions: {},
-            }
-          : {}),
         securityGroup,
         userData: UserData.forLinux(),
         role: asgRole,
