@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+### [0.2.6](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.5...cdk-shared-database-0.2.6) (2025-12-03)
+
+
+### Bug Fixes
+
+* **cdk-shared-database:** add dependency for onEventHandlerVpc connections ([8074c8c](https://github.com/justicointeractive/ji-constructs/commit/8074c8ccc030d3ee23e9a9d7736dad0c95bea207))
+
 ### [0.2.5](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.4...cdk-shared-database-0.2.5) (2023-12-29)
 
 ### [0.2.4](https://github.com/justicointeractive/ji-constructs/compare/cdk-shared-database-0.2.3...cdk-shared-database-0.2.4) (2023-05-04)
