@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.2.0](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.3...cdk-asg-capacity-ecs-cluster-0.2.0) (2025-12-03)
+
+
+### Features
+
+* **cdk-asg-capacity-ecs-cluster:** mixed instance policy for spot capacity ([b096453](https://github.com/justicointeractive/ji-constructs/commit/b096453ca40ab51cf3b43cc05dbef8c78508e428))
+
 ### [0.1.3](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.1.2...cdk-asg-capacity-ecs-cluster-0.1.3) (2024-05-21)
 
 
