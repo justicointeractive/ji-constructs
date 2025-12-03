@@ -1,4 +1,8 @@
-import { AutoScalingGroup } from 'aws-cdk-lib/aws-autoscaling';
+import {
+  AutoScalingGroup,
+  LaunchTemplateOverrides,
+  SpotAllocationStrategy,
+} from 'aws-cdk-lib/aws-autoscaling';
 import {
   IVpc,
   InstanceClass,
@@ -24,6 +28,7 @@ export type CdkAsgCapacityEcsClusterProps = {
   enableManagedTerminationProtection?: boolean;
   instanceType?: InstanceType;
   subnetType?: SubnetType;
+  launchTemplateOverrides?: LaunchTemplateOverrides[];
 };
 
 export class CdkAsgCapcityEcsCluster extends Construct {
@@ -47,6 +52,7 @@ export class CdkAsgCapcityEcsCluster extends Construct {
       enableManagedTerminationProtection,
       instanceType = InstanceType.of(InstanceClass.T3, InstanceSize.MICRO),
       subnetType = SubnetType.PRIVATE_WITH_EGRESS,
+      launchTemplateOverrides,
     } = props;
 
     const cluster = (this.cluster = new Cluster(this, 'Cluster', {
@@ -84,7 +90,21 @@ export class CdkAsgCapcityEcsCluster extends Construct {
 
     const asg = (this.asg = new AutoScalingGroup(this, 'Asg', {
       vpc,
-      launchTemplate,
+      mixedInstancesPolicy: {
+        launchTemplate: launchTemplate,
+        ...(useSpotCapacity
+          ? {
+              instancesDistribution: {
+                // Prefer spot instances, fall back to on-demand when unavailable
+                onDemandBaseCapacity: 0,
+                onDemandPercentageAboveBaseCapacity: 0, // 0% = all spot when available
+                spotAllocationStrategy:
+                  SpotAllocationStrategy.CAPACITY_OPTIMIZED,
+              },
+            }
+          : {}),
+        launchTemplateOverrides,
+      },
       maxCapacity: 10,
       vpcSubnets: {
         subnetType,
