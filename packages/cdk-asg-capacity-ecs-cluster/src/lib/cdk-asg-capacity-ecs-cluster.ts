@@ -4,6 +4,8 @@ import {
   SpotAllocationStrategy,
 } from 'aws-cdk-lib/aws-autoscaling';
 import {
+  BlockDeviceVolume,
+  EbsDeviceVolumeType,
   IVpc,
   InstanceClass,
   InstanceSize,
@@ -80,6 +82,14 @@ export class CdkAsgCapcityEcsCluster extends Construct {
         securityGroup,
         userData: UserData.forLinux(),
         role: asgRole,
+        blockDevices: [
+          {
+            deviceName: '/dev/xvda',
+            volume: BlockDeviceVolume.ebs(30, {
+              volumeType: EbsDeviceVolumeType.GP3,
+            }),
+          },
+        ],
       }
     ));
 
