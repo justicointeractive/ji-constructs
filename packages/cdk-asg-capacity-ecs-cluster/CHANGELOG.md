@@ -2,6 +2,13 @@
 
 This file was generated using [@jscutlery/semver](https://github.com/jscutlery/semver).
 
+## [0.3.0](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.2.1...cdk-asg-capacity-ecs-cluster-0.3.0) (2026-03-25)
+
+
+### Features
+
+* **cdk-asg-capacity-ecs-cluster:** add block device configuration for launch template ([cfa3abb](https://github.com/justicointeractive/ji-constructs/commit/cfa3abb93bd9750cae3d961bce57d9b400b12924))
+
 ### [0.2.1](https://github.com/justicointeractive/ji-constructs/compare/cdk-asg-capacity-ecs-cluster-0.2.0...cdk-asg-capacity-ecs-cluster-0.2.1) (2025-12-03)
 
 
